@@ -101,7 +101,11 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
         </dependency>
-
+        <!--		java e-mail starter-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
         <!--		=====================TEST=====================-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

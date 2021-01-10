@@ -10,6 +10,8 @@ import smilyk.homeacc.dto.UserDto;
 import smilyk.homeacc.service.user.UserService;
 import smilyk.homeacc.service.validation.ValidatorService;
 
+import javax.mail.MessagingException;
+
 @RestController
 @RequestMapping("v1/user")
 public class UserController {
@@ -21,7 +23,7 @@ public class UserController {
     ValidatorService validatorService;
 
     @PostMapping()
-    public UserDto createUser(@Validated @RequestBody UserDto userDto) {
+    public UserDto createUser(@Validated @RequestBody UserDto userDto) throws MessagingException {
         validatorService.checkUserUnique(userDto.getEmail());
         return userService.createUser(userDto);
     }
