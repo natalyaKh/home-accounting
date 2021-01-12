@@ -11,4 +11,5 @@ import javax.mail.MessagingException;
 public interface UserService {
     UserDto createUser(UserDto userDto) throws MessagingException;
 
+    boolean verifyEmailToken(String token);
 }

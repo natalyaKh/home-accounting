@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.mail.MessagingException;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -51,6 +52,26 @@ public class UserServiceImpl implements UserService {
         userDto.setPassword("");
         return userDto;
     }
+
+    @Override
+    public boolean verifyEmailToken(String token) {
+        boolean returnValue = false;
+        // Find user by token
+        Optional<User> userOptional = userRepository.findUserByEmailVerificationToken(token);
+        //if token exists (dont null), user didn`t make verification before and he should do it
+        if (!userOptional.isPresent()) {
+            boolean hastokenExpired = Utils.hasTokenExpired(token);
+            User userEntity = userOptional.get();
+            if (!hastokenExpired) {
+                userEntity.setEmailVerificationToken(null);
+                userEntity.setEmailVerificationStatus(Boolean.TRUE);
+                userRepository.save(userEntity);
+                returnValue = true;
+            }
+        }
+        return returnValue;
+    }
+
 
     private User userDtoToUserEntity(UserDto userDto) {
         return modelMapper.map(userDto, User.class);
