@@ -25,11 +25,22 @@ public class User extends BaseEntity implements Serializable {
     @Column(nullable = false)
     private String encryptedPassword;
 
+    @Column()
     private String emailVerificationToken;
+
+    @Column(nullable = false)
+    private boolean deleted;
 
     @Column(nullable = false)
     private Boolean emailVerificationStatus = false;
 
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
 
     public String getUserUuid() {
         return userUuid;
@@ -91,13 +102,14 @@ public class User extends BaseEntity implements Serializable {
     }
 
     public User(String userUuid, String firstName, String lastName, String email, String encryptedPassword,
-                String emailVerificationToken, Boolean emailVerificationStatus) {
+                String emailVerificationToken, boolean deleted, Boolean emailVerificationStatus) {
         this.userUuid = userUuid;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.encryptedPassword = encryptedPassword;
         this.emailVerificationToken = emailVerificationToken;
+        this.deleted = deleted;
         this.emailVerificationStatus = emailVerificationStatus;
     }
 }
