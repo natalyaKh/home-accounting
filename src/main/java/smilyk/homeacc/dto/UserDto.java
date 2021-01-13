@@ -12,6 +12,8 @@ import javax.validation.constraints.Size;
 @Setter
 @Builder
 public class UserDto {
+
+    String userUuid;
     @NotNull(message="User name cannot be null")
     @Size(min=2, message= "User name must not be less than two characters")
     private String firstName;

@@ -15,7 +15,7 @@ public class HealthController {
     @Value("${build.version}")
     private String buildVersion;
 
-
+//checked
     @GetMapping()
     public String getVersion() {
         return applicationName + ":"  + buildVersion;

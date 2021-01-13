@@ -35,6 +35,7 @@ public class UserController {
      * @param userDto
      * @return userDto
      */
+    //checked
     @PostMapping()
     public UserDto createUser(@Validated @RequestBody UserDto userDto) throws MessagingException {
         validatorService.checkUserUnique(userDto.getEmail());
@@ -47,8 +48,9 @@ public class UserController {
      * @param userUuid
      * @return userDto
      */
+
     @GetMapping("/{userUuid}")
-    public UserDto getUserByUuid(@RequestParam String userUuid) {
+    public UserDto getUserByUuid(@PathVariable String userUuid) {
         return userService.getUserByUserUuid(userUuid);
     }
 
