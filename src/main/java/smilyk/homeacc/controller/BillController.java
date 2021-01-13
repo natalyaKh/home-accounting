@@ -4,9 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import smilyk.homeacc.dto.BillDto;
+import smilyk.homeacc.dto.UserDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.service.bill.BillService;
 import smilyk.homeacc.service.validation.ValidatorService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("v1/bill")
@@ -45,14 +49,31 @@ public class BillController {
     }
 
     /**
-     *
+     * getting bill by bills name
      * @param billName
      * @return BillDto
      */
+    @GetMapping("/{billName}")
+    public BillDto getBillByBillName(@RequestParam String billName){
+return billService.getBillByBillName(billName);
+    }
+
+    @GetMapping("/allBills/{userUuid}")
+    public List<BillDto> getAllBillsByUserUuid(@RequestParam String userUuid){
+        return billService.getAllBillsByUser(userUuid);
+    }
+
+
+        /**
+         *
+         * @param billName
+         * @return BillDto
+         */
     @PutMapping("/{billName}")
     public BillDto changeMailBill(@RequestParam String billName){
         validatorService.ckeckBill(billName);
         return billService.changeMailBill(billName);
     }
+
 
 }
