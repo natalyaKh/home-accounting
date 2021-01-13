@@ -6,14 +6,12 @@ import org.springframework.web.bind.annotation.*;
 import smilyk.homeacc.dto.BillDto;
 import smilyk.homeacc.dto.OperationStatuDto;
 import smilyk.homeacc.dto.TransferResourcesBetweenBillsDto;
-import smilyk.homeacc.dto.UserDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.enums.RequestOperationName;
 import smilyk.homeacc.enums.RequestOperationStatus;
 import smilyk.homeacc.service.bill.BillService;
 import smilyk.homeacc.service.validation.ValidatorService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,6 +32,7 @@ public class BillController {
      */
 
     @PostMapping
+    //checked
     public BillDto createBill(@Validated @RequestBody BillDto billDto) {
         validatorService.checkUniqueBill(billDto.getBillName());
         validatorService.checkMainBill(billDto.getMainBill());
@@ -49,9 +48,6 @@ public class BillController {
         if (billDto.getDescription() == null) {
             billDto.setDescription("");
         }
-        if (billDto.getCurrencyName() == null) {
-            billDto.setCurrencyName(Currency.ISR);
-        }
         if (billDto.getMainBill() == null) {
             billDto.setMainBill(false);
         }
@@ -64,13 +60,15 @@ public class BillController {
      * @param billName
      * @return BillDto
      */
-    @GetMapping("/{billName}/{/userUuid}")
-    public BillDto getBillByBillName(@RequestParam String billName, @RequestParam String userUuid) {
+    //checked
+    @GetMapping("/{billName}/{userUuid}")
+    public BillDto getBillByBillName(@PathVariable String billName, @PathVariable String userUuid) {
         return billService.getBillByBillName(billName, userUuid);
     }
 
+    //checked
     @GetMapping("/allBills/{userUuid}")
-    public List<BillDto> getAllBillsByUserUuid(@RequestParam String userUuid) {
+    public List<BillDto> getAllBillsByUserUuid(@PathVariable String userUuid) {
         return billService.getAllBillsByUser(userUuid);
     }
 
@@ -79,21 +77,25 @@ public class BillController {
      * @param billsCurrency
      * @return List<BillDto>
      */
+    //checked
     @GetMapping("/allBills/{userUuid}/{billsCurrency}")
-    public List<BillDto> getAllBillsByUserUuidAndCurrency(@RequestParam String userUuid,
-                                                          @RequestParam String billsCurrency) {
+    public List<BillDto> getAllBillsByUserUuidAndCurrency(@PathVariable String userUuid,
+                                                          @PathVariable String billsCurrency) {
         return billService.getAllBillsByUserUuidAndCurrency(userUuid, billsCurrency);
-
+//TODO - check if currency name is valid
+        //TODO - check if user uuid is valid
     }
 
     /**
      * @param billName
      * @return BillDto
      */
+//    checked
     @PutMapping("/{billName}")
-    public BillDto changeMailBill(@RequestParam String billName) {
+    public BillDto changeMailBill(@PathVariable String billName) {
         validatorService.ckeckBill(billName);
         return billService.changeMailBill(billName);
+//        TODO check if bill per user
     }
 
     @PutMapping()
@@ -117,12 +119,14 @@ public class BillController {
      * @param userUuid
      * @return SUCCESS or ERROR
      */
+    //checked
     @DeleteMapping("/{billName}/{userUuid}")
-    public OperationStatuDto deleteBill(@PathVariable String billName, @RequestParam String userUuid) {
+    public OperationStatuDto deleteBill(@PathVariable String billName, @PathVariable String userUuid) {
         OperationStatuDto returnValue = new OperationStatuDto();
         returnValue.setOperationName(RequestOperationName.DELETE.name());
         billService.deleteBill(billName, userUuid);
         returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
         return returnValue;
+//        TODO check if deleted bill is main bill -> exception -> impossible to be without main bill
     }
 }

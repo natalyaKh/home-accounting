@@ -13,6 +13,7 @@ import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
 import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
+import smilyk.homeacc.utils.Utils;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,11 +25,16 @@ public class BillServiceImpl implements BillService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     BillRepository billRepository;
+    @Autowired
+    Utils utils;
 
     @Override
     public BillDto createBill(BillDto billDto) {
         Bill bill = billDtoToBillEntity(billDto);
+        String billUuid = utils.generateUserUuid().toString();
+        bill.setBillUuid(billUuid);
         billRepository.save(bill);
+        billDto.setBillUuid(billUuid);
         LOGGER.info(BillConstants.BILL_WITH_NAME + bill.getBillName() + BillConstants.SAVED);
         return billDto;
     }
@@ -85,7 +91,7 @@ public class BillServiceImpl implements BillService {
         }
         List<BillDto> listBillDto = billsList.stream().map(this::billEntityToBillDto)
                 .filter(b-> b.getCurrencyName().name().equals(billsCurrency)||
-                        b.getCurrencyName().name().equals(Currency.ALL))
+                        b.getCurrencyName().name().equals(Currency.ALL.name()))
                 .collect(Collectors.toList());
         LOGGER.info(BillConstants.BILLS_LIST);
         return listBillDto;
