@@ -5,11 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import smilyk.homeacc.constants.BillConstants;
-import smilyk.homeacc.constants.UserConstants;
 import smilyk.homeacc.dto.BillDto;
 import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
-import smilyk.homeacc.model.User;
 import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
 
