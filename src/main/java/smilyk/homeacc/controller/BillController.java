@@ -33,8 +33,14 @@ public class BillController {
     public BillDto createBill(@Validated @RequestBody BillDto billDto) {
         validatorService.checkUniqueBill(billDto.getBillName());
         validatorService.checkMainBill(billDto.getMainBill());
-        if(billDto.getStartSum() == null){
-            billDto.setStartSum(0.0);
+        if(billDto.getSumUkr() == null){
+            billDto.setSumUkr(0.0);
+        }
+        if(billDto.getSumIsr() == null){
+            billDto.setSumIsr(0.0);
+        }
+        if(billDto.getSumUsa() == null){
+            billDto.setSumUsa(0.0);
         }
         if(billDto.getDescription() == null){
             billDto.setDescription("");

@@ -30,7 +30,15 @@ public class Bill extends BaseEntity implements Serializable {
 
     //by default = 0
     @Column(nullable = false)
-    Double startSum;
+    Double sumIsr;
+
+    //by default = 0
+    @Column(nullable = false)
+    Double sumUkr;
+
+    //by default = 0
+    @Column(nullable = false)
+    Double sumUsa;
 
 //    by default = ISR
     @Column(nullable = false)
