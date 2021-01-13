@@ -81,9 +81,9 @@ public class BillController {
     @GetMapping("/allBills/{userUuid}/{billsCurrency}")
     public List<BillDto> getAllBillsByUserUuidAndCurrency(@PathVariable String userUuid,
                                                           @PathVariable String billsCurrency) {
+        validatorService.checkCurrencyNameValid(billsCurrency);
+        validatorService.checkUserExists(userUuid);
         return billService.getAllBillsByUserUuidAndCurrency(userUuid, billsCurrency);
-//TODO - check if currency name is valid
-        //TODO - check if user uuid is valid
     }
 
     /**
@@ -91,16 +91,15 @@ public class BillController {
      * @return BillDto
      */
 //    checked
-    @PutMapping("/{billName}")
-    public BillDto changeMailBill(@PathVariable String billName) {
+    @PutMapping("/{billName}/{userUuid}")
+    public BillDto changeMailBill(@PathVariable String billName, @PathVariable String userUuid) {
         validatorService.ckeckBill(billName);
+        validatorService.checkBillByUser(billName, userUuid);
         return billService.changeMailBill(billName);
-//        TODO check if bill per user
     }
 
     @PutMapping()
-    public TransferResourcesBetweenBillsDto transferResources(@Validated @RequestBody
-                                                              TransferResourcesBetweenBillsDto transferDto) {
+    public TransferResourcesBetweenBillsDto transferResources(@Validated @RequestBody TransferResourcesBetweenBillsDto transferDto) {
         if(transferDto.getCurrency().equals(Currency.ALL)){
             validatorService.checkBillByUser(transferDto.getBillNameFrom(), transferDto.getUserUuid());
             validatorService.checkBillByUser(transferDto.getBillNameTo(), transferDto.getUserUuid());
@@ -122,11 +121,12 @@ public class BillController {
     //checked
     @DeleteMapping("/{billName}/{userUuid}")
     public OperationStatuDto deleteBill(@PathVariable String billName, @PathVariable String userUuid) {
+        validatorService.checkBillByUser(billName, userUuid);
+        validatorService.checkMainBillsForDeleted(billName);
         OperationStatuDto returnValue = new OperationStatuDto();
         returnValue.setOperationName(RequestOperationName.DELETE.name());
         billService.deleteBill(billName, userUuid);
         returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
         return returnValue;
-//        TODO check if deleted bill is main bill -> exception -> impossible to be without main bill
     }
 }

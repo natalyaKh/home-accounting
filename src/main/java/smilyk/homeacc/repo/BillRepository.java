@@ -18,4 +18,6 @@ public interface BillRepository extends PagingAndSortingRepository<Bill, Long> {
     List<Bill> findAllByUserUuidAndDeleted(String userUuid, boolean b);
 
     Optional<Bill> findByBillNameAndUserUuidAndDeletedAndCurrencyName(String billName, String userUuid, boolean b, String name);
+
+    List<Bill> findAllByDeleted(boolean b);
 }

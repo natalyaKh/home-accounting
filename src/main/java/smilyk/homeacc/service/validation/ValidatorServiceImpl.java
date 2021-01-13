@@ -1,5 +1,7 @@
 package smilyk.homeacc.service.validation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +15,15 @@ import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.repo.UserRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ValidatorServiceImpl implements ValidatorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+    private ObjectMapper mapper = new ObjectMapper();
     @Autowired
     UserRepository userRepository;
 
@@ -32,6 +37,27 @@ public class ValidatorServiceImpl implements ValidatorService {
         if (!user.isEmpty()) {
             LOGGER.error(ValidatorConstants.NOT_UNIQUE_USER + email);
             throw new HomeaccException(ValidatorConstants.NOT_UNIQUE_USER + email);
+        }
+    }
+
+    @Override
+    public void checkUserExists(String userUuid) {
+        LOGGER.info(ValidatorConstants.CHECK_USER_WITH_UUIDL + userUuid);
+        Optional<User> user = userRepository.findByUserUuidAndDeleted(userUuid, false);
+        if (user.isEmpty()) {
+            LOGGER.error(ValidatorConstants.USER_WITH_UUID + userUuid + ValidatorConstants.NOT_FOUND);
+            throw new HomeaccException(ValidatorConstants.NOT_UNIQUE_USER + userUuid);
+        }
+    }
+
+    @Override
+    public void checkMainBillsForDeleted(String billName) {
+        LOGGER.info(ValidatorConstants.CHECK_BILLS_FOR_DELETED);
+//        dont check bill per user - checked it before
+        Optional<Bill> billOptional = billRepository.findByBillNameAndDeleted(billName, false);
+        if(billOptional.get().getMainBill()){
+            LOGGER.error(ValidatorConstants.MAIN_BILL + billName + ValidatorConstants.CHANGE_MAIN_BILL);
+            throw new HomeaccException(ValidatorConstants.MAIN_BILL + billName + ValidatorConstants.CHANGE_MAIN_BILL);
         }
     }
 
@@ -87,6 +113,26 @@ public class ValidatorServiceImpl implements ValidatorService {
                     ValidatorConstants.NOT_FOUND);
         }
     }
+
+    @Override
+    public void checkCurrencyNameValid(String billsCurrency) {
+     List<Currency> currency = Arrays.asList(Currency.values());
+
+     try {
+         Currency.valueOf(billsCurrency);
+     }catch (Exception ex){
+         LOGGER.error(ValidatorConstants.CURRENCY_IS_WRONG + billsCurrency);
+         try {
+             throw new HomeaccException(ValidatorConstants.CURRENCY_IS_WRONG + ValidatorConstants.CHOOSE_CURRENCY +
+                     mapper.writeValueAsString(currency)
+                     );
+         } catch (JsonProcessingException e) {
+             LOGGER.error(e.getMessage());
+             throw new HomeaccException(e.getMessage());
+         }
+     }
+    }
+
 
     @Override
     public void checkMainBill(Boolean mainBill) {

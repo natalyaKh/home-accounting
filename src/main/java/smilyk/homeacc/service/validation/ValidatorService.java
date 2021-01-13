@@ -12,4 +12,10 @@ public interface ValidatorService {
 
     void checkBillByUser(String billNameFrom, String userUuid);
     void checkBillByUserAndCurrency(String billNameFrom, String userUuid, Currency currency);
+
+    void checkCurrencyNameValid(String billsCurrency);
+
+    void checkUserExists(String userUuid);
+
+    void checkMainBillsForDeleted(String billName);
 }
