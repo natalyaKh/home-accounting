@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
         List<User> users = usersPage.getContent();
 
         List<UserDto> returnValue = new ArrayList<>();
-        users.stream().map(this::userEntityToUserDto).forEachOrdered(returnValue::add);
+        users.stream().filter(u->!u.isDeleted()).map(this::userEntityToUserDto).forEachOrdered(returnValue::add);
         LOGGER.info(UserConstants.USERS_LIST);
         return returnValue;
     }

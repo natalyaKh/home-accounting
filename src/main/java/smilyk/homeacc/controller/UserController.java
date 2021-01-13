@@ -48,7 +48,7 @@ public class UserController {
      * @param userUuid
      * @return userDto
      */
-
+//checked
     @GetMapping("/{userUuid}")
     public UserDto getUserByUuid(@PathVariable String userUuid) {
         return userService.getUserByUserUuid(userUuid);
@@ -59,6 +59,7 @@ public class UserController {
      *
      * @return List<userDto>
      */
+    //checked
     @GetMapping()
     public List<UserDto> getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
                                   @RequestParam(value = "limit", defaultValue = "2") int limit) {
@@ -76,6 +77,7 @@ public class UserController {
      * @param userUuid
      * @return SUCCESS or ERROR
      */
+//    checked
     @DeleteMapping("/{userUuid}")
     public OperationStatuDto deleteUser(@PathVariable String userUuid) {
         OperationStatuDto returnValue = new OperationStatuDto();
