@@ -5,6 +5,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import smilyk.homeacc.dto.BillDto;
 import smilyk.homeacc.dto.OperationStatuDto;
+import smilyk.homeacc.dto.TransferResourcesBetweenBillsDto;
 import smilyk.homeacc.dto.UserDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.enums.RequestOperationName;
@@ -74,14 +75,13 @@ public class BillController {
     }
 
     /**
-     *
      * @param userUuid
      * @param billsCurrency
      * @return List<BillDto>
      */
     @GetMapping("/allBills/{userUuid}/{billsCurrency}")
     public List<BillDto> getAllBillsByUserUuidAndCurrency(@RequestParam String userUuid,
-                                                         @RequestParam String billsCurrency){
+                                                          @RequestParam String billsCurrency) {
         return billService.getAllBillsByUserUuidAndCurrency(userUuid, billsCurrency);
 
     }
@@ -96,8 +96,23 @@ public class BillController {
         return billService.changeMailBill(billName);
     }
 
+    @PutMapping()
+    public TransferResourcesBetweenBillsDto transferResources(@Validated @RequestBody
+                                                              TransferResourcesBetweenBillsDto transferDto) {
+        if(transferDto.getCurrency().equals(Currency.ALL)){
+            validatorService.checkBillByUser(transferDto.getBillNameFrom(), transferDto.getUserUuid());
+            validatorService.checkBillByUser(transferDto.getBillNameTo(), transferDto.getUserUuid());
+        }else{
+            validatorService.checkBillByUserAndCurrency(transferDto.getBillNameFrom(), transferDto.getUserUuid(),
+                    transferDto.getCurrency());
+            validatorService.checkBillByUserAndCurrency(transferDto.getBillNameTo(), transferDto.getUserUuid(),
+                    transferDto.getCurrency());
+        }
+        validatorService.checkBillByUser(transferDto.getBillNameFrom(), transferDto.getUserUuid());
+        return billService.transferResources(transferDto);
+    }
+
     /**
-     *
      * @param billName
      * @param userUuid
      * @return SUCCESS or ERROR

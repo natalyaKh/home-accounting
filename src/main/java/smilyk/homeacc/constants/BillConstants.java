@@ -2,7 +2,7 @@ package smilyk.homeacc.constants;
 
 public class BillConstants {
 
-    public static final String BILL_WITH_NAME = "user with provided name: ";
+    public static final String BILL_WITH_NAME = " bill with provided name: ";
     public static final String FOUND = " was found";
     public static final String NOT_FOUND = " was not found";
 
@@ -23,4 +23,8 @@ public class BillConstants {
 
     public static final String NOT_NULL = " not 0 ";
 
+    public static final String CHANGED = " changed ";
+    public static final String FROM = " from: ";
+    public static final String FOR = " for: " ;
+    public static final String TO = " to: ";
 }

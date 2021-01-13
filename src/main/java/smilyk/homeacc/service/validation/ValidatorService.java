@@ -1,6 +1,7 @@
 package smilyk.homeacc.service.validation;
 
 import smilyk.homeacc.dto.BillDto;
+import smilyk.homeacc.enums.Currency;
 
 public interface ValidatorService {
     void checkUserUnique(String email);
@@ -8,4 +9,7 @@ public interface ValidatorService {
 //    can be only one main bill per user
     void checkMainBill(Boolean mainBill);
     void ckeckBill(String billName);
+
+    void checkBillByUser(String billNameFrom, String userUuid);
+    void checkBillByUserAndCurrency(String billNameFrom, String userUuid, Currency currency);
 }

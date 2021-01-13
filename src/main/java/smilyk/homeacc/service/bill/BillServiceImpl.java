@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import smilyk.homeacc.constants.BillConstants;
 import smilyk.homeacc.dto.BillDto;
+import smilyk.homeacc.dto.TransferResourcesBetweenBillsDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
@@ -86,6 +87,76 @@ public class BillServiceImpl implements BillService {
                 .collect(Collectors.toList());
         LOGGER.info(BillConstants.BILLS_LIST);
         return listBillDto;
+    }
+
+    @Override
+    public TransferResourcesBetweenBillsDto transferResources(TransferResourcesBetweenBillsDto transferDto) {
+        Optional<Bill> billFromOptional = billRepository.findByBillNameAndDeleted(transferDto.getBillNameFrom(), false);
+        Bill billFrom = billFromOptional.get();
+        Optional<Bill> billToOptional = billRepository.findByBillNameAndDeleted(transferDto.getBillNameTo(), false);
+        Bill billTo = billToOptional.get();
+        Currency currency = transferDto.getCurrency();
+       if(currency.equals(Currency.ISR) || currency.equals(Currency.ALL)){
+           changeSumByIsrShekel(billFrom, billTo, transferDto.getSum());
+       }
+        if(currency.equals(Currency.UKR) || currency.equals(Currency.ALL)){
+            changeSumByUkrHryvna(billFrom, billTo, transferDto.getSum());
+        }
+        if(currency.equals(Currency.USA) || currency.equals(Currency.ALL)){
+            changeSumByUsaDollar(billFrom, billTo, transferDto.getSum());
+        }
+        return transferDto;
+    }
+
+    private void changeSumByUsaDollar(Bill billFrom, Bill billTo, Double sum) {
+        Double startSumFrom = billFrom.getSumUsa();
+        Double newSumFrom = startSumFrom - sum;
+        billFrom.setSumUsa(newSumFrom);
+        LOGGER.info(BillConstants.CHANGED + BillConstants.SUM_USA +
+                BillConstants.FROM + startSumFrom + BillConstants.TO + newSumFrom
+                + BillConstants.FOR + BillConstants.BILL_WITH_NAME + billFrom.getBillName());
+        Double startSumTo = billTo.getSumUsa();
+        Double newSumTo = startSumTo + sum;
+        billTo.setSumUsa(newSumTo);
+        LOGGER.info(BillConstants.CHANGED + BillConstants.SUM_USA +
+                BillConstants.FROM + startSumFrom + BillConstants.TO + newSumFrom
+                + BillConstants.FOR + BillConstants.BILL_WITH_NAME + billFrom.getBillName());
+        billRepository.save(billFrom);
+        billRepository.save(billTo);
+    }
+
+    private void changeSumByUkrHryvna(Bill billFrom, Bill billTo, Double sum) {
+        Double startSumFrom = billFrom.getSumUkr();
+        Double newSumFrom = startSumFrom - sum;
+        billFrom.setSumUkr(newSumFrom);
+        LOGGER.info(BillConstants.CHANGED + BillConstants.SUM_UKR +
+                BillConstants.FROM + startSumFrom + BillConstants.TO + newSumFrom
+                + BillConstants.FOR + BillConstants.BILL_WITH_NAME + billFrom.getBillName());
+        Double startSumTo = billTo.getSumUkr();
+        Double newSumTo = startSumTo + sum;
+        billTo.setSumUkr(newSumTo);
+        LOGGER.info(BillConstants.CHANGED + BillConstants.SUM_UKR +
+                BillConstants.FROM + startSumFrom + BillConstants.TO + newSumFrom
+                + BillConstants.FOR + BillConstants.BILL_WITH_NAME + billFrom.getBillName());
+        billRepository.save(billFrom);
+        billRepository.save(billTo);
+    }
+
+    private void changeSumByIsrShekel(Bill billFrom, Bill billTo, Double sum) {
+        Double startSumFrom = billFrom.getSumIsr();
+        Double newSumFrom = startSumFrom - sum;
+        billFrom.setSumIsr(newSumFrom);
+        LOGGER.info(BillConstants.CHANGED + BillConstants.SUM_ISR +
+                BillConstants.FROM + startSumFrom + BillConstants.TO + newSumFrom
+                + BillConstants.FOR + BillConstants.BILL_WITH_NAME + billFrom.getBillName());
+        Double startSumTo = billTo.getSumIsr();
+        Double newSumTo = startSumTo + sum;
+        billTo.setSumIsr(newSumTo);
+        LOGGER.info(BillConstants.CHANGED + BillConstants.SUM_ISR +
+                BillConstants.FROM + startSumFrom + BillConstants.TO + newSumFrom
+                + BillConstants.FOR + BillConstants.BILL_WITH_NAME + billFrom.getBillName());
+        billRepository.save(billFrom);
+        billRepository.save(billTo);
     }
 
     private List<BillDto> ListBillEntityToListBillDto(List<Bill> billsList) {

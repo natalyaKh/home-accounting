@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import smilyk.homeacc.constants.ValidatorConstants;
+import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
 import smilyk.homeacc.model.User;
@@ -55,6 +56,38 @@ public class ValidatorServiceImpl implements ValidatorService {
         }
 
     }
+
+    @Override
+    public void checkBillByUser(String billName, String userUuid) {
+        LOGGER.info(ValidatorConstants.CHECK_BILL_BY_BILL_NAME_AND_USER + billName + " "+ userUuid);
+    Optional<Bill> bill = billRepository.findByBillNameAndUserUuidAndDeleted(billName, userUuid, false);
+        if(bill.isEmpty()){
+            LOGGER.error(ValidatorConstants.CHECK_BILL_BY_BILL_NAME + billName + ValidatorConstants.FOR_USER + userUuid +
+                    ValidatorConstants.NOT_FOUND);
+            throw new HomeaccException(ValidatorConstants.CHECK_BILL_BY_BILL_NAME + billName +
+                    ValidatorConstants.FOR_USER + userUuid +
+                    ValidatorConstants.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public void checkBillByUserAndCurrency(String billName, String userUuid, Currency currency) {
+        LOGGER.info(ValidatorConstants.CHECK_BILL_BY_BILL_NAME_AND_USER + billName + " "+ userUuid +
+                ValidatorConstants.AND_CURRENCY + currency.name());
+        Optional<Bill> bill = billRepository.findByBillNameAndUserUuidAndDeletedAndCurrency(
+                billName, userUuid, false, currency.name()
+        );
+        if(bill.isEmpty()){
+            LOGGER.error(ValidatorConstants.CHECK_BILL_BY_BILL_NAME + billName + ValidatorConstants.FOR_USER + userUuid +
+                    ValidatorConstants.AND_CURRENCY + currency.name() +
+                    ValidatorConstants.NOT_FOUND);
+            throw new HomeaccException(ValidatorConstants.CHECK_BILL_BY_BILL_NAME + billName +
+                    ValidatorConstants.FOR_USER + userUuid +
+                    ValidatorConstants.AND_CURRENCY + currency.name() +
+                    ValidatorConstants.NOT_FOUND);
+        }
+    }
+
     @Override
     public void checkMainBill(Boolean mainBill) {
         if(mainBill){
