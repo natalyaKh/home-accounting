@@ -1,6 +1,7 @@
 package smilyk.homeacc.service.bill;
 
 
+import org.springframework.stereotype.Service;
 import smilyk.homeacc.dto.BillDto;
 import smilyk.homeacc.dto.TransferResourcesBetweenBillsDto;
 

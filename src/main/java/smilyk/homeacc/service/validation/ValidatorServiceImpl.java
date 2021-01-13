@@ -74,7 +74,7 @@ public class ValidatorServiceImpl implements ValidatorService {
     public void checkBillByUserAndCurrency(String billName, String userUuid, Currency currency) {
         LOGGER.info(ValidatorConstants.CHECK_BILL_BY_BILL_NAME_AND_USER + billName + " "+ userUuid +
                 ValidatorConstants.AND_CURRENCY + currency.name());
-        Optional<Bill> bill = billRepository.findByBillNameAndUserUuidAndDeletedAndCurrency(
+        Optional<Bill> bill = billRepository.findByBillNameAndUserUuidAndDeletedAndCurrencyName(
                 billName, userUuid, false, currency.name()
         );
         if(bill.isEmpty()){
