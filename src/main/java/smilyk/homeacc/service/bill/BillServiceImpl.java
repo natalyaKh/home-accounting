@@ -5,9 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import smilyk.homeacc.constants.BillConstants;
+import smilyk.homeacc.constants.UserConstants;
 import smilyk.homeacc.dto.BillDto;
 import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
+import smilyk.homeacc.model.User;
 import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
 
@@ -47,8 +49,8 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public BillDto getBillByBillName(String billName) {
-        Optional<Bill> billOptional = billRepository.findByBillNameAndDeleted(billName, false);
+    public BillDto getBillByBillName(String billName, String userUuid) {
+        Optional<Bill> billOptional = billRepository.findByBillNameAndUserUuidAndDeleted(billName, userUuid, false);
         if (!billOptional.isPresent()) {
             LOGGER.info(BillConstants.BILL_WITH_NAME + billName + BillConstants.NOT_FOUND);
             throw new HomeaccException(BillConstants.BILL_WITH_NAME + billName + BillConstants.NOT_FOUND);
@@ -62,7 +64,7 @@ public class BillServiceImpl implements BillService {
     @Override
     public List<BillDto> getAllBillsByUser(String userUuid) {
         List<Bill> billsList = billRepository.findAllByUserUuid(userUuid);
-        if(billsList.size() == 0){
+        if (billsList.size() == 0) {
             LOGGER.info(BillConstants.BILLS_LIST + BillConstants.FOR_USER +
                     userUuid + BillConstants.IS_EMPTY);
         }
@@ -72,8 +74,43 @@ public class BillServiceImpl implements BillService {
         return makeMainBillFirst(listBillDto);
     }
 
+    @Override
+    public void deleteUser(String billName, String userUuid) {
+        Optional<Bill> optionalBill = billRepository.findByBillNameAndUserUuidAndDeleted(
+                billName, userUuid, false);
+        if (!optionalBill.isPresent()) {
+            LOGGER.info(BillConstants.BILL_WITH_NAME + billName +
+                    BillConstants.FOR_USER + userUuid + BillConstants.NOT_FOUND);
+            throw new HomeaccException(BillConstants.BILL_WITH_NAME + billName +
+                    BillConstants.FOR_USER + userUuid + BillConstants.NOT_FOUND);
+        }
+        Bill bill = optionalBill.get();
+        if (bill.getSumIsr() != 0.0) {
+            LOGGER.error(BillConstants.CAN_NOT_DELETE + BillConstants.SUM_ISR +
+                    BillConstants.NOT_NULL);
+            throw new HomeaccException(BillConstants.CAN_NOT_DELETE + BillConstants.SUM_ISR +
+                    BillConstants.NOT_NULL);
+        }
+        if (bill.getSumUkr() != 0.0) {
+            LOGGER.error(BillConstants.CAN_NOT_DELETE + BillConstants.SUM_UKR +
+                    BillConstants.NOT_NULL);
+            throw new HomeaccException(BillConstants.CAN_NOT_DELETE + BillConstants.SUM_UKR +
+                    BillConstants.NOT_NULL);
+        }
+        if (bill.getSumUsa() != 0.0) {
+            LOGGER.error(BillConstants.CAN_NOT_DELETE + BillConstants.SUM_USA +
+                    BillConstants.NOT_NULL);
+            throw new HomeaccException(BillConstants.CAN_NOT_DELETE + BillConstants.SUM_USA +
+                    BillConstants.NOT_NULL);
+        }
+
+        bill.setDeleted(true);
+        billRepository.save(bill);
+        LOGGER.info(BillConstants.BILL_WITH_NAME + billName + BillConstants.DELETED);
+    }
+
     private List<BillDto> makeMainBillFirst(List<BillDto> listBillDto) {
-        BillDto mainBillDto = listBillDto.stream().filter(b-> b.getMainBill())
+        BillDto mainBillDto = listBillDto.stream().filter(b -> b.getMainBill() == true)
                 .findAny().get();
         listBillDto.remove(mainBillDto);
         listBillDto.add(0, mainBillDto);

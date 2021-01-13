@@ -8,11 +8,12 @@ import java.util.Optional;
 
 public interface BillRepository extends PagingAndSortingRepository<Bill, Long> {
 
-    Optional<Bill> findByBillName(String billName);
 
     Optional<Bill> findByBillNameAndDeleted(String billName, boolean b);
 
     Optional<Bill> findByMainBill(boolean b);
 
     List<Bill> findAllByUserUuid(String userUuid);
+
+    Optional<Bill> findByBillNameAndUserUuidAndDeleted(String billName,String userUuid, boolean b);
 }

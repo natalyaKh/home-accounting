@@ -15,4 +15,12 @@ public class BillConstants {
     public static final String IS_EMPTY = " is empty ";
 
 
+    public static final String CAN_NOT_DELETE = " you can not delete bull, if " ;
+
+    public static final String SUM_ISR = " sum by israel shekel ";
+    public static final String SUM_UKR = " sum by ukrainian hryvna ";
+    public static final String SUM_USA = " sum by american dollar ";
+
+    public static final String NOT_NULL = " not 0 ";
+
 }
