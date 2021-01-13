@@ -11,6 +11,6 @@ public interface BillService {
     BillDto changeMailBill(String billName);
     BillDto getBillByBillName(String billName, String userUuid);
     List<BillDto> getAllBillsByUser(String userUuid);
-
-    void deleteUser(String billName, String userUuid);
+    void deleteBill(String billName, String userUuid);
+    List<BillDto> getAllBillsByUserUuidAndCurrency(String userUuid, String billsCurrency);
 }

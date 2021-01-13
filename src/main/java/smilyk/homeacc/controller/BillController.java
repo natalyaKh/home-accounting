@@ -64,13 +64,26 @@ public class BillController {
      * @return BillDto
      */
     @GetMapping("/{billName}/{/userUuid}")
-    public BillDto getBillByBillName(@RequestParam String billName, String userUuid) {
+    public BillDto getBillByBillName(@RequestParam String billName, @RequestParam String userUuid) {
         return billService.getBillByBillName(billName, userUuid);
     }
 
     @GetMapping("/allBills/{userUuid}")
     public List<BillDto> getAllBillsByUserUuid(@RequestParam String userUuid) {
         return billService.getAllBillsByUser(userUuid);
+    }
+
+    /**
+     *
+     * @param userUuid
+     * @param billsCurrency
+     * @return List<BillDto>
+     */
+    @GetMapping("/allBills/{userUuid}/{billsCurrency}")
+    public List<BillDto> getAllBillsByUserUuidAndCurrency(@RequestParam String userUuid,
+                                                         @RequestParam String billsCurrency){
+        return billService.getAllBillsByUserUuidAndCurrency(userUuid, billsCurrency);
+
     }
 
     /**
@@ -90,10 +103,10 @@ public class BillController {
      * @return SUCCESS or ERROR
      */
     @DeleteMapping("/{billName}/{userUuid}")
-    public OperationStatuDto deleteBill(@PathVariable String billName, String userUuid) {
+    public OperationStatuDto deleteBill(@PathVariable String billName, @RequestParam String userUuid) {
         OperationStatuDto returnValue = new OperationStatuDto();
         returnValue.setOperationName(RequestOperationName.DELETE.name());
-        billService.deleteUser(billName, userUuid);
+        billService.deleteBill(billName, userUuid);
         returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
         return returnValue;
     }

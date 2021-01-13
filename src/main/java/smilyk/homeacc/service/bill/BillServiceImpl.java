@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import smilyk.homeacc.constants.BillConstants;
 import smilyk.homeacc.dto.BillDto;
+import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
 import smilyk.homeacc.repo.BillRepository;
@@ -61,19 +62,39 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public List<BillDto> getAllBillsByUser(String userUuid) {
-        List<Bill> billsList = billRepository.findAllByUserUuid(userUuid);
+        List<Bill> billsList = billRepository.findAllByUserUuidAndDeleted(userUuid, false);
         if (billsList.size() == 0) {
             LOGGER.info(BillConstants.BILLS_LIST + BillConstants.FOR_USER +
                     userUuid + BillConstants.IS_EMPTY);
+            return ListBillEntityToListBillDto(billsList);
         }
-        List<BillDto> listBillDto = billsList.stream().map(this::billEntityToBillDto)
-                .collect(Collectors.toList());
+        List<BillDto> listBillDto = ListBillEntityToListBillDto(billsList);
         LOGGER.info(BillConstants.BILLS_LIST);
         return makeMainBillFirst(listBillDto);
     }
+    @Override
+    public List<BillDto> getAllBillsByUserUuidAndCurrency(String userUuid, String billsCurrency) {
+        List<Bill> billsList = billRepository.findAllByUserUuidAndDeleted(userUuid, false);
+        if (billsList.size() == 0) {
+            LOGGER.info(BillConstants.BILLS_LIST + BillConstants.FOR_USER +
+                    userUuid + BillConstants.IS_EMPTY);
+            return ListBillEntityToListBillDto(billsList);
+        }
+        List<BillDto> listBillDto = billsList.stream().map(this::billEntityToBillDto)
+                .filter(b-> b.getCurrencyName().name().equals(billsCurrency)||
+                        b.getCurrencyName().name().equals(Currency.ALL))
+                .collect(Collectors.toList());
+        LOGGER.info(BillConstants.BILLS_LIST);
+        return listBillDto;
+    }
+
+    private List<BillDto> ListBillEntityToListBillDto(List<Bill> billsList) {
+        return billsList.stream().map(this::billEntityToBillDto)
+                .collect(Collectors.toList());
+    }
 
     @Override
-    public void deleteUser(String billName, String userUuid) {
+    public void deleteBill(String billName, String userUuid) {
         Optional<Bill> optionalBill = billRepository.findByBillNameAndUserUuidAndDeleted(
                 billName, userUuid, false);
         if (!optionalBill.isPresent()) {
@@ -106,6 +127,7 @@ public class BillServiceImpl implements BillService {
         billRepository.save(bill);
         LOGGER.info(BillConstants.BILL_WITH_NAME + billName + BillConstants.DELETED);
     }
+
 
     private List<BillDto> makeMainBillFirst(List<BillDto> listBillDto) {
         BillDto mainBillDto = listBillDto.stream().filter(b -> b.getMainBill() == true)
