@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserService {
         mailService.sendVerificationEmailMail(verificationMail);
 //        saving-user
         userRepository.save(userEntity);
+        LOGGER.info(UserConstants.USER_WITH_UUID + userEntity.getUserUuid() + UserConstants.SAVED);
         userDto.setPassword("");
         return userDto;
     }

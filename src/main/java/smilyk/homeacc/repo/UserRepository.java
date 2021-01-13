@@ -8,7 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends PagingAndSortingRepository<User, Long> {
-    Optional<User> findByEmail(String email);
+
     Optional<User> findUserByEmailVerificationToken(String token);
     Optional<User> findUserByUserUuidAndDeleted(String userUuid, boolean b);
+    Optional<User> findByEmailAndDeleted(String email, boolean b);
 }

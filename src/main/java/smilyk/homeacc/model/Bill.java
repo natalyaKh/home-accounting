@@ -1,10 +1,9 @@
 package smilyk.homeacc.model;
 
 import lombok.*;
+import smilyk.homeacc.enums.Currency;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @AllArgsConstructor
@@ -20,18 +19,28 @@ public class Bill extends BaseEntity implements Serializable {
     @Column(nullable = false)
     private String userUuid;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     String billName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     String billUuid;
 
     @Column()
     String description;
 
+    //by default = 0
     @Column(nullable = false)
-    String startSum;
+    Double startSum;
 
+//    by default = ISR
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    Currency currencyName;
+
+//    by default = false
     @Column(nullable = false)
     boolean deleted;
+
+    @Column(nullable = false )
+    Boolean mainBill;
 }
