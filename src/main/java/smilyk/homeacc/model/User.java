@@ -1,10 +1,17 @@
 package smilyk.homeacc.model;
 
+import lombok.*;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity implements Serializable {
@@ -34,82 +41,5 @@ public class User extends BaseEntity implements Serializable {
     @Column(nullable = false)
     private Boolean emailVerificationStatus = false;
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
 
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public String getUserUuid() {
-        return userUuid;
-    }
-
-    public void setUserUuid(String userId) {
-        this.userUuid = userId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getEncryptedPassword() {
-        return encryptedPassword;
-    }
-
-    public void setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
-    }
-
-    public String getEmailVerificationToken() {
-        return emailVerificationToken;
-    }
-
-    public void setEmailVerificationToken(String emailVerificationToken) {
-        this.emailVerificationToken = emailVerificationToken;
-    }
-
-    public Boolean getEmailVerificationStatus() {
-        return emailVerificationStatus;
-    }
-
-    public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
-        this.emailVerificationStatus = emailVerificationStatus;
-    }
-
-    public User() {
-    }
-
-    public User(String userUuid, String firstName, String lastName, String email, String encryptedPassword,
-                String emailVerificationToken, boolean deleted, Boolean emailVerificationStatus) {
-        this.userUuid = userUuid;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.encryptedPassword = encryptedPassword;
-        this.emailVerificationToken = emailVerificationToken;
-        this.deleted = deleted;
-        this.emailVerificationStatus = emailVerificationStatus;
-    }
 }
