@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserByUserUuid(String userUuid) {
-        Optional<User> userOptional = userRepository.findUserByUserUuidAndDeleted(userUuid, false);
+        Optional<User> userOptional = userRepository.findByUserUuidAndDeleted(userUuid, false);
         if (!userOptional.isPresent()) {
             LOGGER.info(UserConstants.USER_WITH_UUID + userUuid + UserConstants.NOT_FOUND);
             throw new HomeaccException(UserConstants.USER_WITH_UUID + userUuid + UserConstants.NOT_FOUND);
