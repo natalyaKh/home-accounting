@@ -26,8 +26,8 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-    ModelMapper modelMapper = new ModelMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+    ModelMapper modelMapper = new ModelMapper();
     @Autowired
     Utils utils;
     @Autowired
@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
         List<User> users = usersPage.getContent();
 
         List<UserDto> returnValue = new ArrayList<>();
-        users.stream().filter(u->!u.isDeleted()).map(this::userEntityToUserDto).forEachOrdered(returnValue::add);
+        users.stream().filter(u -> !u.isDeleted()).map(this::userEntityToUserDto).forEachOrdered(returnValue::add);
         LOGGER.info(UserConstants.USERS_LIST);
         return returnValue;
     }
