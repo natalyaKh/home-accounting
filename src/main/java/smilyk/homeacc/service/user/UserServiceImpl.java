@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
     MailService mailService;
 
     @Override
+//    creating test
     public UserDto createUser(UserDto userDto) throws MessagingException {
         User userEntity = userDtoToUserEntity(userDto);
         userEntity.setUserUuid(utils.generateUserUuid().toString());
@@ -62,6 +63,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+//    TODO create Test
     public boolean verifyEmailToken(String token) {
         boolean returnValue = false;
         // Find user by token
@@ -82,6 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    //    creating test
     public UserDto getUserByUserUuid(String userUuid) {
         Optional<User> userOptional = userRepository.findByUserUuidAndDeleted(userUuid, false);
         if (!userOptional.isPresent()) {
@@ -96,6 +99,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+//    creating test
     public List<UserDto> getAllUsers(int page, int limit) {
         if (page > 0) page = page - 1;
         Pageable pageableRequest = PageRequest.of(page, limit);

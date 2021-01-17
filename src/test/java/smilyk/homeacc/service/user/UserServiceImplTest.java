@@ -7,6 +7,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import smilyk.homeacc.dto.UserDto;
 import smilyk.homeacc.dto.VerificationMailDto;
@@ -17,8 +21,7 @@ import smilyk.homeacc.service.mail.MailSenderImpl;
 import smilyk.homeacc.utils.Utils;
 
 import javax.mail.MessagingException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -34,6 +37,8 @@ class UserServiceImplTest {
     String email = "mail@mail.com";
     String password = "1111";
     User user;
+    User userNotDeleted;
+    User userDeleted ;
     @InjectMocks
     UserServiceImpl userService;
     @Mock
@@ -49,6 +54,26 @@ class UserServiceImplTest {
     void setUp() {
         MockitoAnnotations.initMocks(this);
         user = User.builder()
+                .firstName(userFirstName)
+                .lastName(userLastName)
+                .encryptedPassword(encryptedPassword)
+                .deleted(false)
+                .email(email)
+                .userUuid(userUuid)
+                .emailVerificationStatus(false)
+                .emailVerificationToken(emailVerificationToken)
+                .build();
+        userNotDeleted = User.builder()
+                .firstName(userFirstName)
+                .lastName(userLastName)
+                .encryptedPassword(encryptedPassword)
+                .deleted(false)
+                .email(email)
+                .userUuid(userUuid)
+                .emailVerificationStatus(false)
+                .emailVerificationToken(emailVerificationToken)
+                .build();
+        userDeleted = User.builder()
                 .firstName(userFirstName)
                 .lastName(userLastName)
                 .encryptedPassword(encryptedPassword)
@@ -78,6 +103,8 @@ class UserServiceImplTest {
         assertNotNull(storedUserDto);
         assertEquals(user.getFirstName(), storedUserDto.getFirstName());
         assertNotNull(storedUserDto.getUserUuid());
+        userDto.setPassword("");
+        assertEquals(userDto, storedUserDto);
 //        checking how times called method
         verify(utils, times(1)).generateUserUuid();
         verify(bCryptPasswordEncoder, times(1)).encode(encryptedPassword);
@@ -104,4 +131,68 @@ class UserServiceImplTest {
                 .thenReturn(Optional.empty());
         assertThrows(HomeaccException.class, () -> userService.getUserByUserUuid(userUuid));
     }
+
+    @Test
+    void getAllUsersLimitOneUser() {
+        List<User> usersList = new ArrayList<>();
+        usersList.add(user);
+        usersList.add(userDeleted);
+        Pageable pageable = PageRequest.of(0, 1);
+        Page<User> userPage = new PageImpl<>(usersList, pageable, usersList.size());
+        when(userRepository.findAll(pageable)).thenReturn(userPage);
+        List<User> users = Arrays.asList(user);
+        List<UserDto> storedUsers = userService.getAllUsers(0, 1);
+
+        assertEquals(users.size(), storedUsers.size());
+        assertEquals(users.get(0).getFirstName(), storedUsers.get(0).getFirstName());
+    }
+
+    @Test
+    void getAllUsersLimitTenUser() {
+
+        List<User> usersList = Arrays.asList(user, userNotDeleted);
+        Pageable pageable = PageRequest.of(0, 1);
+        Page<User> userPage = new PageImpl<>(usersList, pageable, usersList.size());
+        when(userRepository.findAll(pageable)).thenReturn(userPage);
+
+        List<UserDto> storedUsers = userService.getAllUsers(0, 1);
+        assertEquals(usersList.size(), storedUsers.size());
+        assertEquals(usersList.get(0).getFirstName(), storedUsers.get(0).getFirstName());
+    }
+
+    @Test
+    void getAllUsersLimitTenUserAnDeletedUser() {
+
+        List<User> usersList = Arrays.asList(user, userDeleted);
+
+        Pageable pageable = PageRequest.of(0, 1);
+        Page<User> userPage = new PageImpl<>(usersList, pageable, usersList.size());
+        when(userRepository.findAll(pageable)).thenReturn(userPage);
+        List<User> users = new ArrayList<>();
+        users.add(user);
+        List<UserDto> storedUsers = userService.getAllUsers(0, 1);
+        assertEquals(users.size(), storedUsers.size());
+        assertEquals(users.get(0).getFirstName(), storedUsers.get(0).getFirstName());
+
+    }
+
+    @Test
+    void deleteUser() {
+        Optional<User> returnCacheValue = Optional.of(user);
+        when(userRepository.findUserByUserUuidAndDeleted(anyString(), eq(false)))
+                .thenReturn(returnCacheValue);
+        when(userRepository.save(user)).thenReturn(user);
+        userService.deleteUser(userUuid);
+
+        assertTrue(user.isDeleted());
+    }
+
+    @Test
+    void DeleteUserWithException(){
+        when(userRepository.findByUserUuidAndDeleted(anyString(), eq(false)))
+                .thenReturn(Optional.empty());
+        assertThrows(HomeaccException.class, () -> userService.getUserByUserUuid(userUuid));
+    }
+
+
 }
