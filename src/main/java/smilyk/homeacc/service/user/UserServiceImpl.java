@@ -114,6 +114,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
+//    creating test
     public void deleteUser(String userUuid) {
         Optional<User> userOptional = userRepository.findUserByUserUuidAndDeleted(userUuid, false);
 
