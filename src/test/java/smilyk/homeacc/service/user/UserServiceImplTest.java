@@ -29,13 +29,12 @@ import static org.mockito.Mockito.*;
 
 class UserServiceImplTest {
     ModelMapper modelMapper = new ModelMapper();
-    String userUuid = "1111";
-    String encryptedPassword = "1234";
-    String emailVerificationToken = "12345";
-    String userLastName = "UserLastName";
-    String userFirstName = "UserFirstName";
-    String email = "mail@mail.com";
-    String password = "1111";
+    String USER_UUID = "1111";
+    String ENCRYPTED_PASSWORD = "1234";
+    String EMAIL_VERIFICATION_TOKEN = "12345";
+    String USER_LAST_NAME = "UserLastName";
+    String USER_FIRST_NAME = "UserFirstName";
+    String EMAIL = "mail@mail.com";
     User user;
     User userNotDeleted;
     User userDeleted ;
@@ -54,34 +53,34 @@ class UserServiceImplTest {
     void setUp() {
         MockitoAnnotations.initMocks(this);
         user = User.builder()
-                .firstName(userFirstName)
-                .lastName(userLastName)
-                .encryptedPassword(encryptedPassword)
+                .firstName(USER_FIRST_NAME)
+                .lastName(USER_LAST_NAME)
+                .encryptedPassword(ENCRYPTED_PASSWORD)
                 .deleted(false)
-                .email(email)
-                .userUuid(userUuid)
+                .email(EMAIL)
+                .userUuid(USER_UUID)
                 .emailVerificationStatus(false)
-                .emailVerificationToken(emailVerificationToken)
+                .emailVerificationToken(EMAIL_VERIFICATION_TOKEN)
                 .build();
-        userNotDeleted = User.builder()
-                .firstName(userFirstName)
-                .lastName(userLastName)
-                .encryptedPassword(encryptedPassword)
+        userNotDeleted = user = User.builder()
+                .firstName(USER_FIRST_NAME)
+                .lastName(USER_LAST_NAME)
+                .encryptedPassword(ENCRYPTED_PASSWORD)
                 .deleted(false)
-                .email(email)
-                .userUuid(userUuid)
+                .email(EMAIL)
+                .userUuid(USER_UUID)
                 .emailVerificationStatus(false)
-                .emailVerificationToken(emailVerificationToken)
+                .emailVerificationToken(EMAIL_VERIFICATION_TOKEN)
                 .build();
-        userDeleted = User.builder()
-                .firstName(userFirstName)
-                .lastName(userLastName)
-                .encryptedPassword(encryptedPassword)
+        userDeleted = user = User.builder()
+                .firstName(USER_FIRST_NAME)
+                .lastName(USER_LAST_NAME)
+                .encryptedPassword(ENCRYPTED_PASSWORD)
                 .deleted(true)
-                .email(email)
-                .userUuid(userUuid)
+                .email(EMAIL)
+                .userUuid(USER_UUID)
                 .emailVerificationStatus(false)
-                .emailVerificationToken(emailVerificationToken)
+                .emailVerificationToken(EMAIL_VERIFICATION_TOKEN)
                 .build();
     }
 
@@ -91,9 +90,9 @@ class UserServiceImplTest {
 //        userEntity.setUserUuid(utils.generateUserUuid().toString());
         when(utils.generateUserUuid()).thenReturn(UUID.randomUUID());
 //        userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-        when(bCryptPasswordEncoder.encode(anyString())).thenReturn(encryptedPassword);
+        when(bCryptPasswordEncoder.encode(anyString())).thenReturn(ENCRYPTED_PASSWORD);
 //        userEntity.setEmailVerificationToken(utils.generateEmailVerificationToken(userEntity.getUserUuid()));
-        when(utils.generateEmailVerificationToken(anyString())).thenReturn(emailVerificationToken);
+        when(utils.generateEmailVerificationToken(anyString())).thenReturn(EMAIL_VERIFICATION_TOKEN);
 //        userRepository.save(userEntity);
         when(userRepository.save(any(User.class))).thenReturn(user);
 
@@ -107,7 +106,7 @@ class UserServiceImplTest {
         assertEquals(userDto, storedUserDto);
 //        checking how times called method
         verify(utils, times(1)).generateUserUuid();
-        verify(bCryptPasswordEncoder, times(1)).encode(encryptedPassword);
+        verify(bCryptPasswordEncoder, times(1)).encode(ENCRYPTED_PASSWORD);
         verify(userRepository, times(1)).save(any(User.class));
 //        instruct method from testing
         Mockito.doNothing().when(mailService).sendVerificationEmailMail(any(VerificationMailDto.class));
@@ -120,7 +119,7 @@ class UserServiceImplTest {
         Optional<User> returnCacheValue = Optional.of(user);
         when(userRepository.findByUserUuidAndDeleted(anyString(), eq(false)))
                 .thenReturn(returnCacheValue);
-        UserDto userDto = userService.getUserByUserUuid(userUuid);
+        UserDto userDto = userService.getUserByUserUuid(USER_UUID);
         assertNotNull(userDto);
         assertEquals("UserFirstName", userDto.getFirstName());
     }
@@ -129,7 +128,7 @@ class UserServiceImplTest {
     void testGetUserByUserUuidException() {
         when(userRepository.findByUserUuidAndDeleted(anyString(), eq(false)))
                 .thenReturn(Optional.empty());
-        assertThrows(HomeaccException.class, () -> userService.getUserByUserUuid(userUuid));
+        assertThrows(HomeaccException.class, () -> userService.getUserByUserUuid(USER_UUID));
     }
 
     @Test
@@ -182,7 +181,7 @@ class UserServiceImplTest {
         when(userRepository.findUserByUserUuidAndDeleted(anyString(), eq(false)))
                 .thenReturn(returnCacheValue);
         when(userRepository.save(user)).thenReturn(user);
-        userService.deleteUser(userUuid);
+        userService.deleteUser(USER_UUID);
 
         assertTrue(user.isDeleted());
     }
@@ -191,7 +190,7 @@ class UserServiceImplTest {
     void DeleteUserWithException(){
         when(userRepository.findByUserUuidAndDeleted(anyString(), eq(false)))
                 .thenReturn(Optional.empty());
-        assertThrows(HomeaccException.class, () -> userService.getUserByUserUuid(userUuid));
+        assertThrows(HomeaccException.class, () -> userService.getUserByUserUuid(USER_UUID));
     }
 
 

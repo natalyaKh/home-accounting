@@ -24,6 +24,7 @@ public class ValidatorServiceImpl implements ValidatorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
     private ObjectMapper mapper = new ObjectMapper();
+
     @Autowired
     UserRepository userRepository;
 
