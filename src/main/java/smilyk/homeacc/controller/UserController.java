@@ -84,7 +84,6 @@ public class UserController {
         returnValue.setOperationName(RequestOperationName.DELETE.name());
 
         userService.deleteUser(userUuid);
-
         returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
         return returnValue;
     }
@@ -95,6 +94,7 @@ public class UserController {
      * @return ERROR or SUCCESS
      * http://localhost:8082/user/email-verification?token=sdfsdf
      * */
+//    TODO createTest
     @GetMapping(path = "/email-verification")
     public OperationStatuDto verifyEmailToken(@RequestParam(value = "token") String token) {
         OperationStatuDto returnValue = new OperationStatuDto();
