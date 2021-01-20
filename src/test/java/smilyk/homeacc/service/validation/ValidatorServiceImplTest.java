@@ -189,8 +189,8 @@ class ValidatorServiceImplTest {
 
     @Test
     void testCkeckBillValid() {
-        when(billRepository.findByBillNameAndDeleted(anyString(), eq(false))).thenReturn(Optional.empty());
-        validatorService.checkUniqueBill(BILL_NAME);
+        when(billRepository.findByBillNameAndDeleted(anyString(), eq(false))).thenReturn(returnCacheValue);
+        validatorService.ckeckBill(BILL_NAME);
     }
 
     @Test

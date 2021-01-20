@@ -219,13 +219,6 @@ class BillServiceImplTest {
     }
 
 
-
-//    if (billsList.size() == 0) {
-//        LOGGER.info(BillConstants.BILLS_LIST + BillConstants.FOR_USER +
-//                userUuid + BillConstants.IS_EMPTY);
-//        return ListBillEntityToListBillDto(billsList);
-//    }
-
     @Test
     void getAllBillsByUserUuidAndCurrencyAllCurrency() {
         List<Bill> billList = Arrays.asList(bill, billCurrencyUsa, mainBill);

@@ -2,6 +2,7 @@ package smilyk.homeacc.service.validation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,6 +115,7 @@ public class ValidatorServiceImpl implements ValidatorService {
         }
     }
 
+    @SneakyThrows
     @Override
     public void checkCurrencyNameValid(String billsCurrency) {
      List<Currency> currency = Arrays.asList(Currency.values());
@@ -122,14 +124,14 @@ public class ValidatorServiceImpl implements ValidatorService {
          Currency.valueOf(billsCurrency);
      }catch (Exception ex){
          LOGGER.error(ValidatorConstants.CURRENCY_IS_WRONG + billsCurrency);
-         try {
+
              throw new HomeaccException(ValidatorConstants.CURRENCY_IS_WRONG + ValidatorConstants.CHOOSE_CURRENCY +
                      mapper.writeValueAsString(currency)
                      );
-         } catch (JsonProcessingException e) {
-             LOGGER.error(e.getMessage());
-             throw new HomeaccException(e.getMessage());
-         }
+//         } catch (JsonProcessingException e) {
+//             LOGGER.error(e.getMessage());
+//             throw new HomeaccException(e.getMessage());
+
      }
     }
 

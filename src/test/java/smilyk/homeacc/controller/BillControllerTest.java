@@ -7,12 +7,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import smilyk.homeacc.dto.BillDto;
-import smilyk.homeacc.dto.OperationStatuDto;
-import smilyk.homeacc.dto.UserDto;
+import smilyk.homeacc.dto.*;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.enums.RequestOperationName;
 import smilyk.homeacc.enums.RequestOperationStatus;
+import smilyk.homeacc.model.Bill;
 import smilyk.homeacc.service.bill.BillService;
 import smilyk.homeacc.service.validation.ValidatorService;
 
@@ -65,16 +64,15 @@ class BillControllerTest {
                 .currencyName(Currency.USA)
                 .mainBill(true)
                 .description("")
-                .sumIsr(0.0)
-                .sumUkr(0.0)
-                .sumUsa(0.0)
+                .sumIsr(SUMM_ISR)
+                .sumUkr(SUMM_UKR)
+                .sumUsa(SUMM_USA)
                 .userUuid(USER_UUID)
                 .build();
         billDtoWithoutFields = BillDto.builder()
                 .billName(BILL_NAME + "notMain")
                 .billUuid(BILL_UUID+"notMain")
                 .currencyName(Currency.USA)
-                .mainBill(true)
                 .description("")
                 .sumIsr(0.0)
                 .sumUkr(0.0)
@@ -99,6 +97,11 @@ class BillControllerTest {
 
         assertNotNull(restoredBillDto);
         assertEquals(billDtoWithoutFields, restoredBillDto);
+        assertEquals(billDtoWithoutFields.getSumUsa(), 0.0);
+        assertEquals(billDtoWithoutFields.getSumUkr(), 0.0);
+        assertEquals(billDtoWithoutFields.getSumIsr(), 0.0);
+        assertEquals(billDtoWithoutFields.getDescription(), "");
+        assertEquals(billDtoWithoutFields.getMainBill(), false);
     }
 
     @Test
@@ -160,8 +163,95 @@ class BillControllerTest {
 
     @Test
     void transferResources() {
-//        TODO
+        Bill bill = Bill.builder()
+                .billName("bill")
+                .billUuid(BILL_UUID)
+                .userUuid(USER_UUID)
+                .currencyName(Currency.ALL)
+                .mainBill(false)
+                .description("")
+                .sumIsr(SUMM_ISR)
+                .sumUkr(SUMM_UKR)
+                .sumUsa(SUMM_USA)
+                .deleted(false)
+                .build();
+        Bill billCurrencyUsa =  Bill.builder()
+                .billName("billCurrencyUsa")
+                .billUuid(BILL_UUID)
+                .userUuid(USER_UUID)
+                .currencyName(Currency.USA)
+                .mainBill(false)
+                .description("")
+                .sumIsr(SUMM_ISR)
+                .sumUkr(SUMM_UKR)
+                .sumUsa(SUMM_USA)
+                .deleted(false)
+                .build();
+
+        TransferResourcesBetweenBillsDto transferResourcesBetweenBillsDto = TransferResourcesBetweenBillsDto.builder()
+                .currency(Currency.USA)
+                .billNameFrom(bill.getBillName())
+                .billNameTo(billCurrencyUsa.getBillName())
+                .sum(100.0)
+                .build();
+
+
+        TransferResourcesResponseDto transferResourcesResponseDto = TransferResourcesResponseDto.builder()
+                .responseBillDtoList(Arrays.asList(mainBillDto, notMainBillDto))
+                .build();
+        when(billService.transferResources(any(TransferResourcesBetweenBillsDto.class)))
+        .thenReturn(transferResourcesResponseDto);
+
+        TransferResourcesResponseDto returnedValue = billController.transferResources(transferResourcesBetweenBillsDto);
+        assertNotNull(returnedValue);
+
     }
+    @Test
+    void transferResources_ISR() {
+        Bill bill = Bill.builder()
+                .billName("bill")
+                .billUuid(BILL_UUID)
+                .userUuid(USER_UUID)
+                .currencyName(Currency.ALL)
+                .mainBill(false)
+                .description("")
+                .sumIsr(SUMM_ISR)
+                .sumUkr(SUMM_UKR)
+                .sumUsa(SUMM_USA)
+                .deleted(false)
+                .build();
+        Bill billCurrencyUsa =  Bill.builder()
+                .billName("billCurrencyUsa")
+                .billUuid(BILL_UUID)
+                .userUuid(USER_UUID)
+                .currencyName(Currency.USA)
+                .mainBill(false)
+                .description("")
+                .sumIsr(SUMM_ISR)
+                .sumUkr(SUMM_UKR)
+                .sumUsa(SUMM_USA)
+                .deleted(false)
+                .build();
+
+        TransferResourcesBetweenBillsDto transferResourcesBetweenBillsDto = TransferResourcesBetweenBillsDto.builder()
+                .currency(Currency.ISR)
+                .billNameFrom(bill.getBillName())
+                .billNameTo(billCurrencyUsa.getBillName())
+                .sum(100.0)
+                .build();
+
+
+        TransferResourcesResponseDto transferResourcesResponseDto = TransferResourcesResponseDto.builder()
+                .responseBillDtoList(Arrays.asList(mainBillDto, notMainBillDto))
+                .build();
+        when(billService.transferResources(any(TransferResourcesBetweenBillsDto.class)))
+                .thenReturn(transferResourcesResponseDto);
+
+        TransferResourcesResponseDto returnedValue = billController.transferResources(transferResourcesBetweenBillsDto);
+        assertNotNull(returnedValue);
+
+    }
+
 
     @Test
     void deleteBill() {
@@ -172,4 +262,5 @@ class BillControllerTest {
         assertEquals(RequestOperationName.DELETE.name(), deleted.getOperationName());
         assertEquals(RequestOperationStatus.SUCCESS.name(), deleted.getOperationResult());
     }
+
 }
