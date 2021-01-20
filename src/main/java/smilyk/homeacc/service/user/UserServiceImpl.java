@@ -114,7 +114,6 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-//    creating test
     public void deleteUser(String userUuid) {
         Optional<User> userOptional = userRepository.findUserByUserUuidAndDeleted(userUuid, false);
 
@@ -131,7 +130,6 @@ public class UserServiceImpl implements UserService {
     private UserDto userEntityToUserDto(User userEntity) {
         return modelMapper.map(userEntity, UserDto.class);
     }
-
 
     private User userDtoToUserEntity(UserDto userDto) {
         return modelMapper.map(userDto, User.class);

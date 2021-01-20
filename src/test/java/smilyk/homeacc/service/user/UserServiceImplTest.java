@@ -35,6 +35,7 @@ class UserServiceImplTest {
     String USER_LAST_NAME = "UserLastName";
     String USER_FIRST_NAME = "UserFirstName";
     String EMAIL = "mail@mail.com";
+    String password = "1111";
     User user;
     User userNotDeleted;
     User userDeleted ;
@@ -62,7 +63,7 @@ class UserServiceImplTest {
                 .emailVerificationStatus(false)
                 .emailVerificationToken(EMAIL_VERIFICATION_TOKEN)
                 .build();
-        userNotDeleted = user = User.builder()
+        userNotDeleted = User.builder()
                 .firstName(USER_FIRST_NAME)
                 .lastName(USER_LAST_NAME)
                 .encryptedPassword(ENCRYPTED_PASSWORD)
@@ -72,7 +73,7 @@ class UserServiceImplTest {
                 .emailVerificationStatus(false)
                 .emailVerificationToken(EMAIL_VERIFICATION_TOKEN)
                 .build();
-        userDeleted = user = User.builder()
+        userDeleted = User.builder()
                 .firstName(USER_FIRST_NAME)
                 .lastName(USER_LAST_NAME)
                 .encryptedPassword(ENCRYPTED_PASSWORD)
@@ -155,7 +156,7 @@ class UserServiceImplTest {
         when(userRepository.findAll(pageable)).thenReturn(userPage);
 
         List<UserDto> storedUsers = userService.getAllUsers(0, 1);
-        assertEquals(usersList.size(), storedUsers.size());
+        assertEquals(2, storedUsers.size());
         assertEquals(usersList.get(0).getFirstName(), storedUsers.get(0).getFirstName());
     }
 

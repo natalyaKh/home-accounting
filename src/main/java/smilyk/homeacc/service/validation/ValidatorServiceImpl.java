@@ -81,7 +81,6 @@ public class ValidatorServiceImpl implements ValidatorService {
             throw new HomeaccException(ValidatorConstants.CHECK_BILL_BY_BILL_NAME + billName +
                     ValidatorConstants.NOT_FOUND);
         }
-
     }
 
     @Override
