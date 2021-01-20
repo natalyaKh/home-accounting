@@ -5,12 +5,13 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 import smilyk.homeacc.constants.SecurityConstants;
 
 import java.util.Date;
 import java.util.UUID;
 
-
+@Service
 public class Utils {
 
     /**    проверка  срока действительности токена  **/

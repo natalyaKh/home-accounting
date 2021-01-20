@@ -72,8 +72,8 @@ public class UserController {
     }
 
     /**
-     *
      * deleted user
+     *
      * @param userUuid
      * @return SUCCESS or ERROR
      */
@@ -90,10 +90,11 @@ public class UserController {
 
     /**
      * verification e-mail
+     *
      * @param token
      * @return ERROR or SUCCESS
      * http://localhost:8082/user/email-verification?token=sdfsdf
-     * */
+     */
 //    TODO createTest
     @GetMapping(path = "/email-verification")
     public OperationStatuDto verifyEmailToken(@RequestParam(value = "token") String token) {

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import smilyk.homeacc.constants.BillConstants;
 import smilyk.homeacc.dto.BillDto;
 import smilyk.homeacc.dto.TransferResourcesBetweenBillsDto;
+import smilyk.homeacc.dto.TransferResourcesResponseDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
@@ -15,6 +16,7 @@ import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
 import smilyk.homeacc.utils.Utils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,10 +27,12 @@ public class BillServiceImpl implements BillService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     BillRepository billRepository;
+
     @Autowired
     Utils utils;
 
     @Override
+//    checked
     public BillDto createBill(BillDto billDto) {
         Bill bill = billDtoToBillEntity(billDto);
         String billUuid = utils.generateUserUuid().toString();
@@ -40,6 +44,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
+//    checked
     public BillDto changeMailBill(String billName) {
         Optional<Bill> mainBillOptional = billRepository.findByMainBill(true);
         if (mainBillOptional.isPresent()) {
@@ -57,6 +62,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
+//    checked
     public BillDto getBillByBillName(String billName, String userUuid) {
         Optional<Bill> billOptional = billRepository.findByBillNameAndUserUuidAndDeleted(billName, userUuid, false);
         if (!billOptional.isPresent()) {
@@ -70,6 +76,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
+//    checked
     public List<BillDto> getAllBillsByUser(String userUuid) {
         List<Bill> billsList = billRepository.findAllByUserUuidAndDeleted(userUuid, false);
         if (billsList.size() == 0) {
@@ -82,6 +89,7 @@ public class BillServiceImpl implements BillService {
         return makeMainBillFirst(listBillDto);
     }
     @Override
+//    checked
     public List<BillDto> getAllBillsByUserUuidAndCurrency(String userUuid, String billsCurrency) {
         List<Bill> billsList = billRepository.findAllByUserUuidAndDeleted(userUuid, false);
         if (billsList.size() == 0) {
@@ -98,25 +106,31 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public TransferResourcesBetweenBillsDto transferResources(TransferResourcesBetweenBillsDto transferDto) {
+    public TransferResourcesResponseDto transferResources(TransferResourcesBetweenBillsDto transferDto) {
         Optional<Bill> billFromOptional = billRepository.findByBillNameAndDeleted(transferDto.getBillNameFrom(), false);
         Bill billFrom = billFromOptional.get();
         Optional<Bill> billToOptional = billRepository.findByBillNameAndDeleted(transferDto.getBillNameTo(), false);
         Bill billTo = billToOptional.get();
         Currency currency = transferDto.getCurrency();
+        TransferResourcesResponseDto resourcesResponseDto = TransferResourcesResponseDto.builder().build();
        if(currency.equals(Currency.ISR) || currency.equals(Currency.ALL)){
-           changeSumByIsrShekel(billFrom, billTo, transferDto.getSum());
+           resourcesResponseDto = changeSumByIsrShekel(billFrom, billTo, transferDto.getSum());
        }
         if(currency.equals(Currency.UKR) || currency.equals(Currency.ALL)){
-            changeSumByUkrHryvna(billFrom, billTo, transferDto.getSum());
+            resourcesResponseDto = changeSumByUkrHryvna(billFrom, billTo, transferDto.getSum());
         }
         if(currency.equals(Currency.USA) || currency.equals(Currency.ALL)){
-            changeSumByUsaDollar(billFrom, billTo, transferDto.getSum());
+            resourcesResponseDto = changeSumByUsaDollar(billFrom, billTo, transferDto.getSum());
         }
-        return transferDto;
+
+//        TransferResourcesResponseDto resourcesResponseDto = TransferResourcesResponseDto.builder()
+//                .responseBillDtoList(Arrays.asList(billEntityToBillDto(billFrom), billEntityToBillDto(billTo)))
+//                .build();
+        return resourcesResponseDto;
     }
 
-    private void changeSumByUsaDollar(Bill billFrom, Bill billTo, Double sum) {
+    private TransferResourcesResponseDto changeSumByUsaDollar(Bill billFrom, Bill billTo, Double sum) {
+//        TODO
         Double startSumFrom = billFrom.getSumUsa();
         Double newSumFrom = startSumFrom - sum;
         billFrom.setSumUsa(newSumFrom);
@@ -129,11 +143,14 @@ public class BillServiceImpl implements BillService {
         LOGGER.info(BillConstants.CHANGED + BillConstants.SUM_USA +
                 BillConstants.FROM + startSumFrom + BillConstants.TO + newSumFrom
                 + BillConstants.FOR + BillConstants.BILL_WITH_NAME + billFrom.getBillName());
-        billRepository.save(billFrom);
-        billRepository.save(billTo);
+        billFrom = billRepository.save(billFrom);
+        billTo = billRepository.save(billTo);
+        return TransferResourcesResponseDto.builder()
+                .responseBillDtoList(Arrays.asList(billEntityToBillDto(billFrom), billEntityToBillDto(billTo)))
+                .build();
     }
 
-    private void changeSumByUkrHryvna(Bill billFrom, Bill billTo, Double sum) {
+    private TransferResourcesResponseDto changeSumByUkrHryvna(Bill billFrom, Bill billTo, Double sum) {
         Double startSumFrom = billFrom.getSumUkr();
         Double newSumFrom = startSumFrom - sum;
         billFrom.setSumUkr(newSumFrom);
@@ -146,11 +163,14 @@ public class BillServiceImpl implements BillService {
         LOGGER.info(BillConstants.CHANGED + BillConstants.SUM_UKR +
                 BillConstants.FROM + startSumFrom + BillConstants.TO + newSumFrom
                 + BillConstants.FOR + BillConstants.BILL_WITH_NAME + billFrom.getBillName());
-        billRepository.save(billFrom);
-        billRepository.save(billTo);
+        billFrom = billRepository.save(billFrom);
+        billTo = billRepository.save(billTo);
+        return TransferResourcesResponseDto.builder()
+                .responseBillDtoList(Arrays.asList(billEntityToBillDto(billFrom), billEntityToBillDto(billTo)))
+                .build();
     }
 
-    private void changeSumByIsrShekel(Bill billFrom, Bill billTo, Double sum) {
+    private TransferResourcesResponseDto changeSumByIsrShekel(Bill billFrom, Bill billTo, Double sum) {
         Double startSumFrom = billFrom.getSumIsr();
         Double newSumFrom = startSumFrom - sum;
         billFrom.setSumIsr(newSumFrom);
@@ -163,8 +183,11 @@ public class BillServiceImpl implements BillService {
         LOGGER.info(BillConstants.CHANGED + BillConstants.SUM_ISR +
                 BillConstants.FROM + startSumFrom + BillConstants.TO + newSumFrom
                 + BillConstants.FOR + BillConstants.BILL_WITH_NAME + billFrom.getBillName());
-        billRepository.save(billFrom);
-        billRepository.save(billTo);
+        billFrom = billRepository.save(billFrom);
+        billTo = billRepository.save(billTo);
+        return TransferResourcesResponseDto.builder()
+                .responseBillDtoList(Arrays.asList(billEntityToBillDto(billFrom), billEntityToBillDto(billTo)))
+                .build();
     }
 
     private List<BillDto> ListBillEntityToListBillDto(List<Bill> billsList) {
@@ -173,6 +196,7 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
+//    checked
     public void deleteBill(String billName, String userUuid) {
         Optional<Bill> optionalBill = billRepository.findByBillNameAndUserUuidAndDeleted(
                 billName, userUuid, false);

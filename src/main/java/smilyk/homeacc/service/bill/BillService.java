@@ -1,9 +1,9 @@
 package smilyk.homeacc.service.bill;
 
 
-import org.springframework.stereotype.Service;
 import smilyk.homeacc.dto.BillDto;
 import smilyk.homeacc.dto.TransferResourcesBetweenBillsDto;
+import smilyk.homeacc.dto.TransferResourcesResponseDto;
 
 import java.util.List;
 
@@ -15,5 +15,5 @@ public interface BillService {
     List<BillDto> getAllBillsByUser(String userUuid);
     void deleteBill(String billName, String userUuid);
     List<BillDto> getAllBillsByUserUuidAndCurrency(String userUuid, String billsCurrency);
-    TransferResourcesBetweenBillsDto transferResources(TransferResourcesBetweenBillsDto transferDto);
+    TransferResourcesResponseDto transferResources(TransferResourcesBetweenBillsDto transferDto);
 }

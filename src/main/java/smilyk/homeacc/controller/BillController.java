@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import smilyk.homeacc.dto.BillDto;
 import smilyk.homeacc.dto.OperationStatuDto;
 import smilyk.homeacc.dto.TransferResourcesBetweenBillsDto;
+import smilyk.homeacc.dto.TransferResourcesResponseDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.enums.RequestOperationName;
 import smilyk.homeacc.enums.RequestOperationStatus;
@@ -99,7 +100,7 @@ public class BillController {
     }
 
     @PutMapping()
-    public TransferResourcesBetweenBillsDto transferResources(@Validated @RequestBody TransferResourcesBetweenBillsDto transferDto) {
+    public TransferResourcesResponseDto transferResources(@Validated @RequestBody TransferResourcesBetweenBillsDto transferDto) {
         if(transferDto.getCurrency().equals(Currency.ALL)){
             validatorService.checkBillByUser(transferDto.getBillNameFrom(), transferDto.getUserUuid());
             validatorService.checkBillByUser(transferDto.getBillNameTo(), transferDto.getUserUuid());
