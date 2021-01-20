@@ -6,12 +6,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import smilyk.homeacc.constants.ValidatorConstants;
+import smilyk.homeacc.dto.TransferResourcesBetweenBillsDto;
+import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
 import smilyk.homeacc.model.User;
 import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.repo.UserRepository;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,13 +25,27 @@ import static org.mockito.Mockito.when;
 
 class ValidatorServiceImplTest {
 
-    String USER_UUID = "1111";
-    String ENCRYPTED_PASSWORD = "1234";
-    String EMAIL_VERIFICATION_TOKEN = "12345";
-    String USER_LAST_NAME = "UserLastName";
-    String USER_FIRST_NAME = "UserFirstName";
-    String EMAIL = "mail@mail.com";
-    User user;
+    private static final String USER_UUID = "1111";
+    private static final String ENCRYPTED_PASSWORD = "1234";
+    private static final String EMAIL_VERIFICATION_TOKEN = "12345";
+    private static final String USER_LAST_NAME = "UserLastName";
+    private static final String USER_FIRST_NAME = "UserFirstName";
+    private static final String EMAIL = "mail@mail.com";
+
+    private static final String BILL_NAME = "BILL_NAME";
+    private static final String BILL_UUID = "1111";
+    private static final Currency All_CURRENCY_NAME = Currency.ALL;
+    private static final Double SUMM_ISR = 100.0;
+    private static final Double SUMM_UKR = 20.0;
+    private static final Double SUMM_USA = 130.0;
+    private User user;
+    private Bill bill;
+    private Bill mainBill;
+    private Bill billCurrencyUsa;
+    private Bill anotherUsersBill;
+    private Bill billForDeleted;
+    Optional<Bill> returnCacheValue;
+    Optional<User> returnCacheValueUser;
 
     @InjectMocks
     ValidatorServiceImpl validatorService;
@@ -40,6 +58,7 @@ class ValidatorServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
+
         user = User.builder()
                 .firstName(USER_FIRST_NAME)
                 .lastName(USER_LAST_NAME)
@@ -50,20 +69,81 @@ class ValidatorServiceImplTest {
                 .emailVerificationStatus(false)
                 .emailVerificationToken(EMAIL_VERIFICATION_TOKEN)
                 .build();
+        bill = Bill.builder()
+                .billName("bill")
+                .billUuid(BILL_UUID)
+                .userUuid(USER_UUID)
+                .currencyName(Currency.ALL)
+                .mainBill(false)
+                .description("")
+                .sumIsr(SUMM_ISR)
+                .sumUkr(SUMM_UKR)
+                .sumUsa(SUMM_USA)
+                .deleted(false)
+                .build();
+        billCurrencyUsa = Bill.builder()
+                .billName("billCurrencyUsa")
+                .billUuid(BILL_UUID)
+                .userUuid(USER_UUID)
+                .currencyName(Currency.USA)
+                .mainBill(false)
+                .description("")
+                .sumIsr(SUMM_ISR)
+                .sumUkr(SUMM_UKR)
+                .sumUsa(SUMM_USA)
+                .deleted(false)
+                .build();
+//        mainBill
+        mainBill = Bill.builder()
+                .billName("mainBill")
+                .billUuid(BILL_UUID)
+                .userUuid(USER_UUID)
+                .currencyName(All_CURRENCY_NAME)
+                .mainBill(true)
+                .description("")
+                .sumIsr(SUMM_ISR)
+                .sumUkr(SUMM_UKR)
+                .sumUsa(SUMM_USA)
+                .deleted(false)
+                .build();
+        anotherUsersBill = Bill.builder()
+                .billName("mainBill")
+                .billUuid(BILL_UUID)
+                .userUuid(USER_UUID)
+                .currencyName(All_CURRENCY_NAME)
+                .mainBill(true)
+                .description("")
+                .sumIsr(SUMM_ISR)
+                .sumUkr(SUMM_UKR)
+                .sumUsa(SUMM_USA)
+                .deleted(false)
+                .build();
+        billForDeleted = Bill.builder()
+                .billName("bill for deleted")
+                .billUuid(BILL_UUID)
+                .userUuid(USER_UUID)
+                .currencyName(Currency.ALL)
+                .mainBill(false)
+                .description("")
+                .sumIsr(0.00)
+                .sumUkr(0.00)
+                .sumUsa(0.00)
+                .deleted(false)
+                .build();
+        returnCacheValue = Optional.of(bill);
+        returnCacheValueUser = Optional.of(user);
+
     }
 
     @Test
     void testCheckUserUniqueNotValid() {
-//        Optional<User> user = userRepository.findByEmailAndDeleted(email, false);
-        Optional<User> returnCacheValue = Optional.of(user);
         when(userRepository.findByEmailAndDeleted(anyString(), eq(false)))
-                .thenReturn(returnCacheValue);
+                .thenReturn(returnCacheValueUser);
         assertThrows(HomeaccException.class, () -> validatorService.checkUserUnique(USER_UUID));
     }
 
     @Test
     void testCheckUserUniqueValid() {
-//        Optional<User> user = userRepository.findByEmailAndDeleted(email, false);
         when(userRepository.findByEmailAndDeleted(anyString(), eq(false)))
                 .thenReturn(Optional.empty());
         validatorService.checkUserUnique("m@mail.com");
@@ -73,63 +153,109 @@ class ValidatorServiceImplTest {
     @Test
     void testCheckUserExistsNotValid() {
         when(userRepository.findByUserUuidAndDeleted(anyString(), eq(false))).thenReturn(Optional.empty());
-
         assertThrows(HomeaccException.class, () -> validatorService.checkUserExists(USER_UUID));
     }
 
     @Test
     void testCheckUserExistsValid() {
-        Optional<User> returnCacheValue = Optional.of(user);
-        when(userRepository.findByUserUuidAndDeleted(anyString(), eq(false))).thenReturn(returnCacheValue);
-
+        when(userRepository.findByUserUuidAndDeleted(anyString(), eq(false))).thenReturn(returnCacheValueUser);
         validatorService.checkUserExists(USER_UUID);
     }
-//      LOGGER.info(ValidatorConstants.CHECK_BILLS_FOR_DELETED);
-//    //        dont check bill per user - checked it before
-//    Optional<Bill> billOptional = billRepository.findByBillNameAndDeleted(billName, false);
-//        if(billOptional.get().getMainBill()){
-//        LOGGER.error(ValidatorConstants.MAIN_BILL + billName + ValidatorConstants.CHANGE_MAIN_BILL);
-//        throw new HomeaccException(ValidatorConstants.MAIN_BILL + billName + ValidatorConstants.CHANGE_MAIN_BILL);
-//    }
+
     @Test
-//    TODO
     void testCheckMainBillsForDeletedNotValid() {
-
+        when(billRepository.findByBillNameAndDeleted(anyString(), eq(false))).thenReturn(returnCacheValue);
+        validatorService.checkMainBillsForDeleted(bill.getBillName());
     }
 
     @Test
-//    TODO
     void testCheckMainBillsForDeletedValid() {
+        returnCacheValue = Optional.of(mainBill);
+        when(billRepository.findByBillNameAndDeleted(anyString(), eq(false))).thenReturn(returnCacheValue);
+        assertThrows(HomeaccException.class, () -> validatorService.checkMainBillsForDeleted(BILL_NAME));
+    }
+
+    @Test
+    void testCheckUniqueBillValid() {
+        when(billRepository.findByBillNameAndDeleted(anyString(), eq(false))).thenReturn(Optional.empty());
+        validatorService.checkUniqueBill(BILL_NAME);
+    }
+
+    @Test
+    void testCheckUniqueBillNotValid() {
+        when(billRepository.findByBillNameAndDeleted(anyString(), eq(false))).thenReturn(returnCacheValue);
+        assertThrows(HomeaccException.class, () -> validatorService.checkUniqueBill(BILL_NAME));
+    }
+
+    @Test
+    void testCkeckBillValid() {
+        when(billRepository.findByBillNameAndDeleted(anyString(), eq(false))).thenReturn(Optional.empty());
+        validatorService.checkUniqueBill(BILL_NAME);
+    }
+
+    @Test
+    void testCheckBillNotValid() {
+        when(billRepository.findByBillNameAndDeleted(anyString(), eq(false))).thenReturn(Optional.empty());
+        assertThrows(HomeaccException.class, () -> validatorService.ckeckBill(BILL_NAME));
+    }
+
+    @Test
+    void testCheckBillByUserValid() {
+        when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(), eq(false)))
+                .thenReturn(returnCacheValue);
+        validatorService.checkBillByUser(BILL_NAME, USER_UUID);
+    }
+
+    @Test
+    void testCheckBillByUserNotValid() {
+        when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(), eq(false)))
+                .thenReturn(Optional.empty());
+        assertThrows(HomeaccException.class, () -> validatorService.checkBillByUser(BILL_NAME, USER_UUID));
+    }
+
+    @Test
+    void testCheckBillByUserAndCurrencyValid() {
+        when(billRepository.findByBillNameAndUserUuidAndDeletedAndCurrencyName(
+                anyString(), anyString(), eq(false), anyString()
+        )).thenReturn(returnCacheValue);
+        validatorService.checkBillByUserAndCurrency(BILL_NAME, USER_UUID, Currency.ALL);
+    }
+
+    @Test
+    void testCheckBillByUserAndCurrencyNotValid() {
+        when(billRepository.findByBillNameAndUserUuidAndDeletedAndCurrencyName(
+                anyString(), anyString(), eq(false), anyString()
+        )).thenReturn(Optional.empty());
+        assertThrows(HomeaccException.class, () -> validatorService.checkBillByUserAndCurrency(BILL_NAME, USER_UUID,
+                Currency.ALL));
+    }
+
+    @Test
+    void testCheckCurrencyNameValid() {
+        List<Currency> currency = Arrays.asList(Currency.values());
+        validatorService.checkCurrencyNameValid(Currency.ALL.name());
+        validatorService.checkCurrencyNameValid(Currency.USA.name());
+        validatorService.checkCurrencyNameValid(Currency.ISR.name());
+        validatorService.checkCurrencyNameValid(Currency.UKR.name());
+    }
+
+    @Test
+    void testCheckCurrencyNameValidWithException() {
+        List<Currency> currency = Arrays.asList(Currency.values());
+        assertThrows(HomeaccException.class, () -> validatorService.checkCurrencyNameValid("Other"));
+    }
+
+    @Test
+    void testCheckMainBillValid() {
+        returnCacheValue = Optional.of(mainBill);
+        when(billRepository.findByMainBill(eq(true))).thenReturn(Optional.empty());
+        validatorService.checkMainBill(true);
 
     }
 
     @Test
-//    TODO
-    void checkUniqueBill() {
-    }
-
-    @Test
-//    TODO
-    void ckeckBill() {
-    }
-
-    @Test
-        //    TODO
-    void checkBillByUser() {
-    }
-
-    @Test
-        //    TODO
-    void checkBillByUserAndCurrency() {
-    }
-
-    @Test
-        //    TODO
-    void checkCurrencyNameValid() {
-    }
-
-    @Test
-        //    TODO
-    void checkMainBill() {
+    void testCheckMainBillNotValid() {
+        when(billRepository.findByMainBill(eq(true))).thenReturn(returnCacheValue);
+        assertThrows(HomeaccException.class, () -> validatorService.checkMainBill(true));
     }
 }
