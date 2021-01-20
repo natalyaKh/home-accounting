@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import smilyk.homeacc.constants.BillConstants;
 import smilyk.homeacc.dto.BillDto;
 import smilyk.homeacc.dto.TransferResourcesBetweenBillsDto;
 import smilyk.homeacc.dto.TransferResourcesResponseDto;
@@ -18,10 +19,7 @@ import smilyk.homeacc.model.User;
 import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.utils.Utils;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -130,8 +128,7 @@ class BillServiceImplTest {
 
     @Test
     void testCreateBill() {
-//        String billUuid = utils.generateUserUuid().toString();
-//        bill.setBillUuid(billUuid);
+
         when(utils.generateUserUuid()).thenReturn(UUID.randomUUID());
         when(billRepository.save(any(Bill.class))).thenReturn(bill);
 
@@ -152,9 +149,8 @@ class BillServiceImplTest {
     void testChangeMailBill() {
         Optional<Bill> returnCacheMainBuild = Optional.of(mainBill);
         Optional<Bill> returnCacheNotMainBuild = Optional.of(bill);
-//        Optional<Bill> mainBillOptional = billRepository.findByMainBill(true);
+
         when(billRepository.findByMainBill(eq(true))).thenReturn(returnCacheMainBuild);
-//        Optional<Bill> billOptional = billRepository.findByBillNameAndDeleted(billName, false);
         when(billRepository.findByBillNameAndDeleted(anyString(), eq(false))).thenReturn(returnCacheNotMainBuild);
         BillDto billDto = billService.changeMailBill(bill.getBillName());
 
@@ -177,7 +173,6 @@ class BillServiceImplTest {
     @Test
     void testGetBillByBillName() {
 
-//        Optional<Bill> billOptional = billRepository.findByBillNameAndUserUuidAndDeleted(billName, userUuid, false);
         Optional<Bill> returnCacheNotMainBuild = Optional.of(bill);
         when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(), eq(false)))
                 .thenReturn(returnCacheNotMainBuild);
@@ -201,57 +196,168 @@ class BillServiceImplTest {
     @Test
     void getAllBillsByUser() {
         List<Bill> billList = Arrays.asList(bill, mainBill);
-//        List<Bill> billsList = billRepository.findAllByUserUuidAndDeleted(userUuid, false);
+
         when(billRepository.findAllByUserUuidAndDeleted(anyString(), eq(false))).thenReturn(billList);
 
         List<BillDto> billDtoList = billService.getAllBillsByUser(USER_UUID);
+
         assertEquals(2, billDtoList.size());
 
     }
+
+    @Test
+    void getAllBillsByUserLogger() {
+        List<Bill> billList = Arrays.asList();
+
+        when(billRepository.findAllByUserUuidAndDeleted(anyString(), eq(false))).thenReturn(billList);
+
+        List<BillDto> billDtoList = billService.getAllBillsByUser(USER_UUID);
+
+        assertEquals(0, billDtoList.size());
+
+
+    }
+
+
+
+//    if (billsList.size() == 0) {
+//        LOGGER.info(BillConstants.BILLS_LIST + BillConstants.FOR_USER +
+//                userUuid + BillConstants.IS_EMPTY);
+//        return ListBillEntityToListBillDto(billsList);
+//    }
 
     @Test
     void getAllBillsByUserUuidAndCurrencyAllCurrency() {
         List<Bill> billList = Arrays.asList(bill, billCurrencyUsa, mainBill);
-        //        List<Bill> billsList = billRepository.findAllByUserUuidAndDeleted(userUuid, false);
+
         when(billRepository.findAllByUserUuidAndDeleted(anyString(), eq(false))).thenReturn(billList);
 
         List<BillDto> billDtoList = billService.getAllBillsByUserUuidAndCurrency(USER_UUID, "ALL");
+
         assertNotNull(billDtoList);
         assertEquals(2, billDtoList.size());
+    }
+
+    @Test
+    void getAllBillsByUserUuidAndCurrencyAllCurrencyNotFoundException() {
+        List<Bill> billList = Arrays.asList();
+        when(billRepository.findAllByUserUuidAndDeleted(anyString(), eq(false))).thenReturn(billList);
+
+        List<BillDto> returnedBillList = billService.getAllBillsByUserUuidAndCurrency(bill.getBillName(),
+                bill.getUserUuid());
+
+        assertEquals(0, returnedBillList.size());
+
     }
     @Test
     void getAllBillsByUserUuidAndCurrencyUSACurrency() {
         List<Bill> billList = Arrays.asList(bill, billCurrencyUsa, mainBill);
+
         when(billRepository.findAllByUserUuidAndDeleted(anyString(), eq(false))).thenReturn(billList);
+
         List<BillDto> billDtoList = billService.getAllBillsByUserUuidAndCurrency(USER_UUID, "USA");
+
         assertNotNull(billDtoList);
         assertEquals(3, billDtoList.size());
     }
 
     @Test
-    void transferResources() {
-//        TODO create parametrize test
-//        Optional<Bill> returnCacheBillFrom = Optional.of(bill);
-//        Optional<Bill> returnCacheBillTo = Optional.of(billCurrencyUsa);
-////        Optional<Bill> billFromOptional = billRepository.findByBillNameAndDeleted(transferDto.getBillNameFrom(), false);
-//        //billfrom
-//        when(billRepository.findByBillNameAndDeleted(eq(transferResourcesBetweenBillsDto.getBillNameFrom()),
-//                eq(false))).thenReturn(returnCacheBillFrom);
-//        //billTo
-//        when(billRepository.findByBillNameAndDeleted(eq(transferResourcesBetweenBillsDto.getBillNameTo()),
-//                eq(false))).thenReturn(returnCacheBillTo);
-//
-//        when(billRepository.save(eq(bill))).thenReturn(bill);
-//
-//        TransferResourcesResponseDto transferResources =
-//                billService.transferResources(transferResourcesBetweenBillsDto);
-//
-//        assertNotNull(transferResources);
-//        assertEquals(30, transferResources.getResponseBillDtoList().get(0).getSumUsa());
-//        assertEquals(230, transferResources.getResponseBillDtoList().get(1).getSumUsa());
+    void transferResourcesCurrencyUsa() {
+        Optional<Bill> returnCacheBillFrom = Optional.of(bill);
+        Optional<Bill> returnCacheBillTo = Optional.of(billCurrencyUsa);
+
+        when(billRepository.findByBillNameAndDeleted(anyString(), anyBoolean()))
+                .thenReturn(returnCacheBillFrom, returnCacheBillTo);
+
+        when(billRepository.save(any(Bill.class))).thenReturn(bill, billCurrencyUsa);
+
+        TransferResourcesResponseDto transferResources =
+                billService.transferResources(transferResourcesBetweenBillsDto);
+
+        assertNotNull(transferResources);
+        assertEquals(30, transferResources.getResponseBillDtoList().get(0).getSumUsa());
+        assertEquals(230, transferResources.getResponseBillDtoList().get(1).getSumUsa());
 //
 //
-//        verify(billRepository, times(2)).save(any(Bill.class));
+        verify(billRepository, times(2)).save(any(Bill.class));
+    }
+
+    @Test
+    void transferResourcesCurrencyIsr() {
+        Bill billCurrencyIsr =  Bill.builder()
+                .billName("billCurrencyUsa")
+                .billUuid(BILL_UUID)
+                .userUuid(USER_UUID)
+                .currencyName(Currency.ISR)
+                .mainBill(false)
+                .description("")
+                .sumIsr(SUMM_ISR)
+                .sumUkr(SUMM_UKR)
+                .sumUsa(SUMM_USA)
+                .deleted(false)
+                .build();
+        transferResourcesBetweenBillsDto = TransferResourcesBetweenBillsDto.builder()
+                .currency(Currency.ISR)
+                .billNameFrom(bill.getBillName())
+                .billNameTo(billCurrencyIsr.getBillName())
+                .sum(100.0)
+                .build();
+
+        Optional<Bill> returnCacheBillFrom = Optional.of(bill);
+        Optional<Bill> returnCacheBillTo = Optional.of(billCurrencyIsr);
+
+        when(billRepository.findByBillNameAndDeleted(anyString(), anyBoolean()))
+                .thenReturn(returnCacheBillFrom, returnCacheBillTo);
+        when(billRepository.save(any(Bill.class))).thenReturn(bill, billCurrencyIsr);
+
+        TransferResourcesResponseDto transferResources =
+                billService.transferResources(transferResourcesBetweenBillsDto);
+
+        assertNotNull(transferResources);
+        assertEquals(0, transferResources.getResponseBillDtoList().get(0).getSumIsr());
+        assertEquals(200, transferResources.getResponseBillDtoList().get(1).getSumIsr());
+
+        verify(billRepository, times(2)).save(any(Bill.class));
+    }
+
+    @Test
+    void transferResourcesCurrencyUkr() {
+        Bill billCurrencyUkr =  Bill.builder()
+                .billName("billCurrencyUkr")
+                .billUuid(BILL_UUID)
+                .userUuid(USER_UUID)
+                .currencyName(Currency.UKR)
+                .mainBill(false)
+                .description("")
+                .sumIsr(SUMM_ISR)
+                .sumUkr(SUMM_UKR)
+                .sumUsa(SUMM_USA)
+                .deleted(false)
+                .build();
+        transferResourcesBetweenBillsDto = TransferResourcesBetweenBillsDto.builder()
+                .currency(Currency.UKR)
+                .billNameFrom(bill.getBillName())
+                .billNameTo(billCurrencyUkr.getBillName())
+                .sum(10.0)
+                .build();
+
+        Optional<Bill> returnCacheBillFrom = Optional.of(bill);
+        Optional<Bill> returnCacheBillTo = Optional.of(billCurrencyUkr);
+
+        when(billRepository.findByBillNameAndDeleted(anyString(), anyBoolean()))
+                .thenReturn(returnCacheBillFrom, returnCacheBillTo);
+
+        when(billRepository.save(any(Bill.class))).thenReturn(bill, billCurrencyUkr);
+
+        TransferResourcesResponseDto transferResources =
+                billService.transferResources(transferResourcesBetweenBillsDto);
+
+        assertNotNull(transferResources);
+        assertEquals(10, transferResources.getResponseBillDtoList().get(0).getSumUkr());
+        assertEquals(30, transferResources.getResponseBillDtoList().get(1).getSumUkr());
+//
+//
+        verify(billRepository, times(2)).save(any(Bill.class));
     }
 
     @Test
@@ -268,10 +374,66 @@ class BillServiceImplTest {
     }
 
     @Test
-    void testDeleteBillException() {
+    void testDeleteBillExceptionIsr() {
         Optional<Bill> returnCacheBill = Optional.of(bill);
         when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(), eq(false)))
                 .thenReturn(returnCacheBill);
+
+        assertThrows(HomeaccException.class, () -> billService.deleteBill(
+                billForDeleted.getBillName(), billForDeleted.getUserUuid()));
+
+    }
+
+    @Test
+    void testDeleteBillExceptionUkr() {
+        Bill billCurrencyUkr =  Bill.builder()
+                .billName("billCurrencyUkr")
+                .billUuid(BILL_UUID)
+                .userUuid(USER_UUID)
+                .currencyName(Currency.UKR)
+                .mainBill(false)
+                .description("")
+                .sumIsr(0.0)
+                .sumUkr(SUMM_UKR)
+                .sumUsa(0.0)
+                .deleted(false)
+                .build();
+        Optional<Bill> returnCacheBill = Optional.of(billCurrencyUkr);
+        when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(), eq(false)))
+                .thenReturn(returnCacheBill);
+
+        assertThrows(HomeaccException.class, () -> billService.deleteBill(
+                billForDeleted.getBillName(), billForDeleted.getUserUuid()));
+
+    }
+
+    @Test
+    void testDeleteBillExceptionUsa() {
+        Bill billCurrencyUsa =  Bill.builder()
+                .billName("billCurrencyUkr")
+                .billUuid(BILL_UUID)
+                .userUuid(USER_UUID)
+                .currencyName(Currency.UKR)
+                .mainBill(false)
+                .description("")
+                .sumIsr(0.0)
+                .sumUkr(0.0)
+                .sumUsa(10.0)
+                .deleted(false)
+                .build();
+        Optional<Bill> returnCacheBill = Optional.of(billCurrencyUsa);
+        when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(), eq(false)))
+                .thenReturn(returnCacheBill);
+
+        assertThrows(HomeaccException.class, () -> billService.deleteBill(
+                billForDeleted.getBillName(), billForDeleted.getUserUuid()));
+    }
+
+    @Test
+    void testDeleteBillNotFoundBillException() {
+
+        when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(), eq(false)))
+                .thenReturn(Optional.empty());
 
         assertThrows(HomeaccException.class, () -> billService.deleteBill(
                 billForDeleted.getBillName(), billForDeleted.getUserUuid()));
