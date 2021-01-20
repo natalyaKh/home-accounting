@@ -34,6 +34,7 @@ class BillControllerTest {
     ValidatorService validatorService;
     private BillDto mainBillDto;
     private BillDto notMainBillDto;
+    private BillDto billDtoWithoutFields;
 
     private static final String USER_UUID = "1212";
     private static final String BILL_NAME = "BILL_NAME";
@@ -64,9 +65,20 @@ class BillControllerTest {
                 .currencyName(Currency.USA)
                 .mainBill(true)
                 .description("")
-                .sumIsr(SUMM_ISR)
-                .sumUkr(SUMM_UKR)
-                .sumUsa(SUMM_USA)
+                .sumIsr(0.0)
+                .sumUkr(0.0)
+                .sumUsa(0.0)
+                .userUuid(USER_UUID)
+                .build();
+        billDtoWithoutFields = BillDto.builder()
+                .billName(BILL_NAME + "notMain")
+                .billUuid(BILL_UUID+"notMain")
+                .currencyName(Currency.USA)
+                .mainBill(true)
+                .description("")
+                .sumIsr(0.0)
+                .sumUkr(0.0)
+                .sumUsa(0.0)
                 .userUuid(USER_UUID)
                 .build();
     }
@@ -78,6 +90,15 @@ class BillControllerTest {
 
         assertNotNull(restoredBillDto);
         assertEquals(mainBillDto, restoredBillDto);
+    }
+
+    @Test
+    void createBillwithoutFields() {
+        when(billService.createBill(any(BillDto.class))).thenReturn(billDtoWithoutFields);
+        BillDto restoredBillDto = billController.createBill(billDtoWithoutFields);
+
+        assertNotNull(restoredBillDto);
+        assertEquals(billDtoWithoutFields, restoredBillDto);
     }
 
     @Test
