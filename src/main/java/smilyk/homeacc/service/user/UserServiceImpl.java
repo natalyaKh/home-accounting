@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -128,17 +126,6 @@ public class UserServiceImpl implements UserService {
         LOGGER.info(UserConstants.USER_WITH_UUID + userUuid + UserConstants.DELETED);
     }
 
-    @Override
-    public UserDto getUserByEmail(String email) {
-        Optional<User> user = userRepository.findByEmailAndDeleted(email, false);
-        if(!user.isPresent()){
-            LOGGER.error(UserConstants.USER_WITH_EMAIL + email + UserConstants.NOT_FOUND);
-            throw new HomeaccException(UserConstants.USER_WITH_EMAIL + email + UserConstants.NOT_FOUND);
-        }
-        UserDto userDto = userEntityToUserDto(user.get());
-        return userDto;
-    }
-
     private UserDto userEntityToUserDto(User userEntity) {
         return modelMapper.map(userEntity, UserDto.class);
     }
@@ -146,26 +133,5 @@ public class UserServiceImpl implements UserService {
 
     private User userDtoToUserEntity(UserDto userDto) {
         return modelMapper.map(userDto, User.class);
-    }
-
-
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByEmailAndDeleted(email, false);
-        if(!user.isPresent()){
-            LOGGER.error(UserConstants.USER_WITH_EMAIL + email + UserConstants.NOT_FOUND);
-            throw new HomeaccException(UserConstants.USER_WITH_EMAIL + email + UserConstants.NOT_FOUND);
-        }
-        User userEntity = user.get();
-        /**
-         * if user.getEmailVerificationStatus() == false -> login return error
-         * если userEntity.getEmailVerificationStatus() == false -> login вернет error
-         */
-        return new org.springframework.security.core.userdetails.User(userEntity.getEmail(),
-                userEntity.getEncryptedPassword(),
-                userEntity.getEmailVerificationStatus(),
-                true, true, true,
-                new ArrayList<>());
     }
 }
