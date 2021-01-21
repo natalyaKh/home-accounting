@@ -26,7 +26,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
                 .permitAll().anyRequest().authenticated()
         .and()
-                .addFilter(new AuthenticationFilter(authenticationManager()));
+                .addFilter(getAuthenticationFilter());
     }
 
 //    @Override
@@ -35,5 +35,16 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 //                .passwordEncoder(bCryptPasswordEncoder);
 //    }
 
-
+    /**
+     * логин пользователя теперь по ссылке ...v1/user/login
+     * change user login link to ...v1/user/login
+     *
+     * @return
+     * @throws Exception
+     */
+    protected AuthenticationFilter getAuthenticationFilter() throws Exception {
+        final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
+        filter.setFilterProcessesUrl("/v1/user/login");
+        return filter;
+    }
 }
