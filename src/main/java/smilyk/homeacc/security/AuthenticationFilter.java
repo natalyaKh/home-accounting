@@ -91,11 +91,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret())
                 .compact();
-//        UserService userService = (UserService) SpringApplicationContext.getBean(BeansConstants.USER_SERVICE_IMPL);
-//        UserDto userDto = userService.getUserByEmail(userName);
+        UserService userService = (UserService) SpringApplicationContext
+                .getBean("userServiceImpl");
+        UserDto userDto = userService.getUserByEmail(userName);
 
         res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
-//        res.addHeader("UserUuid", userDto.getUserUuid());
+        res.addHeader("UserUuid", userDto.getUserUuid());
     }
 
 

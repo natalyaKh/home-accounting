@@ -3,6 +3,7 @@ package smilyk.homeacc.service.user;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -126,6 +127,19 @@ public class UserServiceImpl implements UserService {
         userEntity.setDeleted(true);
         userRepository.save(userEntity);
         LOGGER.info(UserConstants.USER_WITH_UUID + userUuid + UserConstants.DELETED);
+    }
+
+    @Override
+    public UserDto getUserByEmail(String email) {
+        Optional<User> userOptional = userRepository.findByEmailAndDeleted(email, false);
+        if(!userOptional.isPresent()){
+            LOGGER.error(UserConstants.USER_WITH_EMAIL + email + UserConstants.NOT_FOUND);
+            throw new HomeaccException(UserConstants.USER_WITH_EMAIL + email + UserConstants.NOT_FOUND);
+        }
+        User userEntity = userOptional.get();
+        UserDto returnValue = new UserDto();
+        BeanUtils.copyProperties(userEntity, returnValue);
+        return returnValue;
     }
 
     private UserDto userEntityToUserDto(User userEntity) {
