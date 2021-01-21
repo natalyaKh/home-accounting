@@ -15,7 +15,7 @@ import java.util.UUID;
 public class Utils {
 
     /**    проверка  срока действительности токена  **/
-    public static boolean hasTokenExpired(String token) {
+    public  boolean hasTokenExpired(String token) {
         boolean returnValue = false;
         System.err.println(token);
         try {
@@ -30,12 +30,12 @@ public class Utils {
         return returnValue;
     }
 
-    public static UUID generateUserUuid() {
+    public UUID generateUserUuid() {
         return UUID.randomUUID();
     }
 
     /**  Создание  emailVerificationToken **/
-    public static String generateEmailVerificationToken(String userId) {
+    public String generateEmailVerificationToken(String userId) {
         return Jwts.builder()
                 .setSubject(userId)
                 .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))

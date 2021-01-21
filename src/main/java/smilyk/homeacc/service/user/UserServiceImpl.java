@@ -42,6 +42,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto userDto) throws MessagingException {
         User userEntity = userDtoToUserEntity(userDto);
         userEntity.setUserUuid(utils.generateUserUuid().toString());
+//        userEntity.setUserUuid(Utils.generateUserUuid().toString());
 //        password
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
 //        verificationEmail
@@ -63,14 +64,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-//    TODO create Test
     public boolean verifyEmailToken(String token) {
         boolean returnValue = false;
         // Find user by token
         Optional<User> userOptional = userRepository.findUserByEmailVerificationToken(token);
         //if token exists (dont null), user didn`t make verification before and he should do it
         if (userOptional.isPresent()) {
-            boolean hastokenExpired = Utils.hasTokenExpired(token);
+            boolean hastokenExpired = utils.hasTokenExpired(token);
             User userEntity = userOptional.get();
             if (!hastokenExpired) {
                 userEntity.setEmailVerificationToken(null);
@@ -116,7 +116,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String userUuid) {
         Optional<User> userOptional = userRepository.findUserByUserUuidAndDeleted(userUuid, false);
-
         if (!userOptional.isPresent()) {
             LOGGER.info(UserConstants.USER_WITH_UUID + userUuid + UserConstants.NOT_FOUND);
             throw new HomeaccException(UserConstants.USER_WITH_UUID + userUuid + UserConstants.NOT_FOUND);

@@ -24,21 +24,22 @@ class UtilsTest {
 
     @Test
     void hasTokenNotExpired() {
-        String token = Utils.generateEmailVerificationToken("1111");
+        String token = utils.generateEmailVerificationToken("1111");
         System.err.println(token);
-        Boolean expiredToken = Utils.hasTokenExpired(token);
+        Boolean expiredToken = utils.hasTokenExpired(token);
 
         assertNotNull(expiredToken);
         assertFalse(expiredToken);
     }
 
     @Test
+//    TODO
     void hasTokenExpired() {
-       String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTExIiwiZXhwIjoxNjEyMDgwMjIyfQ.HuRyZ9ROE35P7xvEFIWmV9rVHhqvUt3_vNHQnS3pz7bX5LB4PJilESjH-uru41eYeKHVoZahH16P5ppSlYlydQ\n";
-        Boolean expiredToken = Utils.hasTokenExpired(token);
+       String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzZTI2M2ZhZS0xYTZiLTQ0MzQtOGIzZC1iOWQ0Y2YzZjgxNjIiLCJleHAiOjE2MTEyMTgwOTd9.n1ooedMW-WRTvNTrBaPtj1BOyh0tHD7oi4iamwaqmGuCQa015nOQevcEAgBjWx9E2Dv0UZj4p-XzEwVCIiuE3A";
+        Boolean expiredToken = utils.hasTokenExpired(token);
 
         assertNotNull(expiredToken);
-        assertFalse(expiredToken);
+        assertTrue(expiredToken);
     }
 
     @Test
@@ -54,5 +55,7 @@ class UtilsTest {
 
     @Test
     void generateEmailVerificationToken() {
+        String token = utils.generateEmailVerificationToken("1111");
+        assertNotNull(token);
     }
 }

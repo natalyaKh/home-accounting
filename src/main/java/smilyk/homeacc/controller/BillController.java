@@ -101,15 +101,11 @@ public class BillController {
 
     @PutMapping()
     public TransferResourcesResponseDto transferResources(@Validated @RequestBody TransferResourcesBetweenBillsDto transferDto) {
-        if(transferDto.getCurrency().equals(Currency.ALL)){
-            validatorService.checkBillByUser(transferDto.getBillNameFrom(), transferDto.getUserUuid());
-            validatorService.checkBillByUser(transferDto.getBillNameTo(), transferDto.getUserUuid());
-        }else{
             validatorService.checkBillByUserAndCurrency(transferDto.getBillNameFrom(), transferDto.getUserUuid(),
                     transferDto.getCurrency());
             validatorService.checkBillByUserAndCurrency(transferDto.getBillNameTo(), transferDto.getUserUuid(),
                     transferDto.getCurrency());
-        }
+//        }
         validatorService.checkBillByUser(transferDto.getBillNameFrom(), transferDto.getUserUuid());
         return billService.transferResources(transferDto);
     }
@@ -130,4 +126,5 @@ public class BillController {
         returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
         return returnValue;
     }
+
 }

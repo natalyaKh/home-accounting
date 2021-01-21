@@ -73,10 +73,6 @@ class BillControllerTest {
                 .billName(BILL_NAME + "notMain")
                 .billUuid(BILL_UUID+"notMain")
                 .currencyName(Currency.USA)
-                .description("")
-                .sumIsr(0.0)
-                .sumUkr(0.0)
-                .sumUsa(0.0)
                 .userUuid(USER_UUID)
                 .build();
     }

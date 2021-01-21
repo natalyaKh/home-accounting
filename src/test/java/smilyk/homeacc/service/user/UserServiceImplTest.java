@@ -90,6 +90,7 @@ class UserServiceImplTest {
 
 //        userEntity.setUserUuid(utils.generateUserUuid().toString());
         when(utils.generateUserUuid()).thenReturn(UUID.randomUUID());
+//        when(Utils.generateUserUuid()).thenReturn((UUID.randomUUID()));
 //        userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         when(bCryptPasswordEncoder.encode(anyString())).thenReturn(ENCRYPTED_PASSWORD);
 //        userEntity.setEmailVerificationToken(utils.generateEmailVerificationToken(userEntity.getUserUuid()));
@@ -187,12 +188,46 @@ class UserServiceImplTest {
         assertTrue(user.isDeleted());
     }
 
+
     @Test
     void DeleteUserWithException(){
-        when(userRepository.findByUserUuidAndDeleted(anyString(), eq(false)))
+        when(userRepository.findUserByUserUuidAndDeleted(anyString(), eq(false)))
                 .thenReturn(Optional.empty());
-        assertThrows(HomeaccException.class, () -> userService.getUserByUserUuid(USER_UUID));
+        assertThrows(HomeaccException.class, () -> userService.deleteUser(USER_UUID));
     }
 
+    @Test
+    void verifyEmailTokenUserNotConfirmHisEmailTokenNotExpired(){
+        Optional<User> returnCacheValue = Optional.of(user);
+        when(userRepository.findUserByEmailVerificationToken(anyString())).thenReturn(returnCacheValue);
+        when(utils.hasTokenExpired(anyString())).thenReturn(false);
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        Boolean rez = userService.verifyEmailToken("111");
+        assertNotNull(rez);
+        assertTrue(rez);
+    }
+
+    @Test
+    void verifyEmailTokenUserNotConfirmHisEmailTokenExpired(){
+        Optional<User> returnCacheValue = Optional.of(user);
+        when(userRepository.findUserByEmailVerificationToken(anyString())).thenReturn(returnCacheValue);
+        when(utils.hasTokenExpired(anyString())).thenReturn(true);
+//        when(userRepository.save(any(User.class))).thenReturn(user);
+        Boolean rez = userService.verifyEmailToken("111");
+        assertNotNull(rez);
+        assertFalse(rez);
+    }
+
+    @Test
+    void verifyEmailTokenUserConfirmHisEmail(){
+        user.setEmailVerificationStatus(true);
+        Optional<User> returnCacheValue = Optional.of(user);
+        when(userRepository.findUserByEmailVerificationToken(anyString())).thenReturn(Optional.empty());
+//        when(utils.hasTokenExpired(anyString())).thenReturn(true);
+//        when(userRepository.save(any(User.class))).thenReturn(user);
+        Boolean rez = userService.verifyEmailToken("111");
+        assertNotNull(rez);
+        assertFalse(rez);
+    }
 
 }

@@ -86,9 +86,25 @@ class UserControllerTest {
 
        assertEquals(RequestOperationName.DELETE.name(), deleted.getOperationName());
        assertEquals(RequestOperationStatus.SUCCESS.name(), deleted.getOperationResult());
-
-
     }
+
+    @Test
+    void emailVerificationTest(){
+        when(userService.verifyEmailToken(anyString())).thenReturn(true);
+        OperationStatuDto rez  = userController.verifyEmailToken("111");
+
+        assertEquals(RequestOperationName.VERIFY_EMAIL.name(), rez.getOperationName());
+        assertEquals(RequestOperationStatus.SUCCESS.name(), rez.getOperationResult());
+    }
+    @Test
+    void emailVerificationTestWithException(){
+        when(userService.verifyEmailToken(anyString())).thenReturn(false);
+        OperationStatuDto rez  = userController.verifyEmailToken("111");
+
+        assertEquals(RequestOperationName.VERIFY_EMAIL.name(), rez.getOperationName());
+        assertEquals(RequestOperationStatus.ERROR.name(), rez.getOperationResult());
+    }
+
 
 
 }
