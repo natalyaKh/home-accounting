@@ -25,19 +25,18 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
-                .permitAll().anyRequest().authenticated()
+                .permitAll()
+                .antMatchers(HttpMethod.GET, SecurityConstants.CHECK_HEALTH)
+                .permitAll()
+                .antMatchers(HttpMethod.GET, SecurityConstants.VERIFICATION_EMAIL)
+                .permitAll()
+                .anyRequest().authenticated()
         .and()
                 .addFilter(getAuthenticationFilter())
         .addFilter(new AuthorizationFilter(authenticationManager()))
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
-
-//    @Override
-//    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService)
-//                .passwordEncoder(bCryptPasswordEncoder);
-//    }
 
     /**
      * логин пользователя теперь по ссылке ...v1/user/login
