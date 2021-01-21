@@ -17,6 +17,7 @@ public class Utils {
     /**    проверка  срока действительности токена  **/
     public static boolean hasTokenExpired(String token) {
         boolean returnValue = false;
+        System.err.println(token);
         try {
             Claims claims = Jwts.parser().setSigningKey(SecurityConstants.getTokenSecret()).parseClaimsJws(token)
                     .getBody();
@@ -29,12 +30,12 @@ public class Utils {
         return returnValue;
     }
 
-    public UUID generateUserUuid() {
+    public static UUID generateUserUuid() {
         return UUID.randomUUID();
     }
 
     /**  Создание  emailVerificationToken **/
-    public String generateEmailVerificationToken(String userId) {
+    public static String generateEmailVerificationToken(String userId) {
         return Jwts.builder()
                 .setSubject(userId)
                 .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))

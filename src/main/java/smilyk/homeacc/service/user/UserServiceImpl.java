@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
         // Find user by token
         Optional<User> userOptional = userRepository.findUserByEmailVerificationToken(token);
         //if token exists (dont null), user didn`t make verification before and he should do it
-        if (!userOptional.isPresent()) {
+        if (userOptional.isPresent()) {
             boolean hastokenExpired = Utils.hasTokenExpired(token);
             User userEntity = userOptional.get();
             if (!hastokenExpired) {
@@ -130,6 +130,7 @@ public class UserServiceImpl implements UserService {
     private UserDto userEntityToUserDto(User userEntity) {
         return modelMapper.map(userEntity, UserDto.class);
     }
+
 
     private User userDtoToUserEntity(UserDto userDto) {
         return modelMapper.map(userDto, User.class);
