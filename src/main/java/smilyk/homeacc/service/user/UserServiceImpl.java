@@ -137,8 +137,22 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(userDto, User.class);
     }
 
+    /**
+     * load user from db by user email
+     * Using during method login user. Check by userEmail and password if user exist in db.
+     * @param  email
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return null;
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+       Optional<User> userOptional = userRepository.findByEmailAndDeleted(email, false);
+       if(!userOptional.isPresent()){
+           LOGGER.error(UserConstants.USER_WITH_EMAIL + email + UserConstants.NOT_FOUND);
+           throw new HomeaccException(UserConstants.USER_WITH_EMAIL + email + UserConstants.NOT_FOUND);
+       }
+       User userEntity = userOptional.get();
+        return new org.springframework.security.core.userdetails.User(userEntity.getEmail(),
+                userEntity.getEncryptedPassword(), new ArrayList<>());
     }
 }
