@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * onlu user with token has possibility to change his email and/or password
+ * only user with token has possibility to change his email and/or password
  * только тот, кто вошел в приложение имеет вохможность менять свое имя и/или пароль.
  * choosing token for checking if user wants to change his credentials
  * используем токен, что бы убедиться, что пользователь меняет свои данные
@@ -60,5 +60,4 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         }
         return null;
     }
-
 }

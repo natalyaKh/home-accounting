@@ -16,4 +16,5 @@ public class UserConstants {
     public static final String DELETED = " was deleted from db ";
     public static final String SAVED = " was saved";
     public static final String USER_WITH_EMAIL = "user with provided email";
+    public static final String EXISTS = " exists";
 }

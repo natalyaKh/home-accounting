@@ -142,6 +142,17 @@ public class UserServiceImpl implements UserService {
         return returnValue;
     }
 
+    @Override
+    public Boolean getUserByEmailForValidation(String email) {
+        Optional<User> userOptional = userRepository.findByEmailAndDeleted(email, false);
+        if(userOptional.isPresent()){
+            LOGGER.info(UserConstants.USER_WITH_EMAIL + email + UserConstants.EXISTS);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     private UserDto userEntityToUserDto(User userEntity) {
         return modelMapper.map(userEntity, UserDto.class);
     }

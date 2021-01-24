@@ -21,6 +21,7 @@ import org.modelmapper.TypeToken;
 
 @RestController
 @RequestMapping("v1/user")
+
 public class UserController {
 
     @Autowired
@@ -95,7 +96,7 @@ public class UserController {
      * @return ERROR or SUCCESS
      * http://localhost:8082/user/email-verification?token=sdfsdf
      */
-//    TODO createTest
+
     @GetMapping(path = "/email-verification")
     public OperationStatuDto verifyEmailToken(@RequestParam(value = "token") String token) {
         OperationStatuDto returnValue = new OperationStatuDto();
@@ -108,4 +109,17 @@ public class UserController {
         }
         return returnValue;
     }
+
+//    TODO create test
+    /**
+     * method that we need for validation registerUser from front
+     * @param email
+     * return True or False
+     */
+    @GetMapping("/valid/{email}")
+    public Boolean getUserByUserEmail(@PathVariable String email){
+        return userService.getUserByEmailForValidation(email);
+    }
+
+
 }

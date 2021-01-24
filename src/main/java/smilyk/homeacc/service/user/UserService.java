@@ -18,4 +18,6 @@ public interface UserService extends UserDetailsService {
     void deleteUser(String userUuid);
 
     UserDto getUserByEmail(String email);
+
+    Boolean getUserByEmailForValidation(String email);
 }
