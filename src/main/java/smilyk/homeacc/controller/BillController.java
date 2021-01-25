@@ -135,7 +135,7 @@ public class BillController {
      * return True or False
      */
     @GetMapping("/valid/{billName}/{userUuid}")
-    public Boolean getUserByUserEmail(@PathVariable String billName, String userUuid){
+    public Boolean getUserByUserEmail(@PathVariable String billName, @PathVariable String userUuid){
         return billService.getBillByNameForValidation(billName, userUuid);
     }
 
