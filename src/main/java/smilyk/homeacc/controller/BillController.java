@@ -127,4 +127,16 @@ public class BillController {
         return returnValue;
     }
 
+    //    TODO create test
+    /**
+     * method that we need for validation create bill from front
+     * @param billName
+     * @param userUuid
+     * return True or False
+     */
+    @GetMapping("/valid/{billName}/{userUuid}")
+    public Boolean getUserByUserEmail(@PathVariable String billName, String userUuid){
+        return billService.getBillByNameForValidation(billName, userUuid);
+    }
+
 }

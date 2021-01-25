@@ -16,4 +16,6 @@ public interface BillService {
     void deleteBill(String billName, String userUuid);
     List<BillDto> getAllBillsByUserUuidAndCurrency(String userUuid, String billsCurrency);
     TransferResourcesResponseDto transferResources(TransferResourcesBetweenBillsDto transferDto);
+//    for validation
+    Boolean getBillByNameForValidation(String billName, String userUuid);
 }

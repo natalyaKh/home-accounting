@@ -6,12 +6,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import smilyk.homeacc.constants.BillConstants;
+import smilyk.homeacc.constants.UserConstants;
 import smilyk.homeacc.dto.BillDto;
 import smilyk.homeacc.dto.TransferResourcesBetweenBillsDto;
 import smilyk.homeacc.dto.TransferResourcesResponseDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
+import smilyk.homeacc.model.User;
 import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
 import smilyk.homeacc.utils.Utils;
@@ -88,6 +90,7 @@ public class BillServiceImpl implements BillService {
         LOGGER.info(BillConstants.BILLS_LIST);
         return makeMainBillFirst(listBillDto);
     }
+
     @Override
 //    checked
     public List<BillDto> getAllBillsByUserUuidAndCurrency(String userUuid, String billsCurrency) {
@@ -98,7 +101,7 @@ public class BillServiceImpl implements BillService {
             return ListBillEntityToListBillDto(billsList);
         }
         List<BillDto> listBillDto = billsList.stream().map(this::billEntityToBillDto)
-                .filter(b-> b.getCurrencyName().name().equals(billsCurrency)||
+                .filter(b -> b.getCurrencyName().name().equals(billsCurrency) ||
                         b.getCurrencyName().name().equals(Currency.ALL.name()))
                 .collect(Collectors.toList());
         LOGGER.info(BillConstants.BILLS_LIST);
@@ -113,19 +116,15 @@ public class BillServiceImpl implements BillService {
         Bill billTo = billToOptional.get();
         Currency currency = transferDto.getCurrency();
         TransferResourcesResponseDto resourcesResponseDto = TransferResourcesResponseDto.builder().build();
-       if(currency.equals(Currency.ISR) || currency.equals(Currency.ALL)){
-           resourcesResponseDto = changeSumByIsrShekel(billFrom, billTo, transferDto.getSum());
-       }
-        if(currency.equals(Currency.UKR) || currency.equals(Currency.ALL)){
+        if (currency.equals(Currency.ISR) || currency.equals(Currency.ALL)) {
+            resourcesResponseDto = changeSumByIsrShekel(billFrom, billTo, transferDto.getSum());
+        }
+        if (currency.equals(Currency.UKR) || currency.equals(Currency.ALL)) {
             resourcesResponseDto = changeSumByUkrHryvna(billFrom, billTo, transferDto.getSum());
         }
-        if(currency.equals(Currency.USA) || currency.equals(Currency.ALL)){
+        if (currency.equals(Currency.USA) || currency.equals(Currency.ALL)) {
             resourcesResponseDto = changeSumByUsaDollar(billFrom, billTo, transferDto.getSum());
         }
-
-//        TransferResourcesResponseDto resourcesResponseDto = TransferResourcesResponseDto.builder()
-//                .responseBillDtoList(Arrays.asList(billEntityToBillDto(billFrom), billEntityToBillDto(billTo)))
-//                .build();
         return resourcesResponseDto;
     }
 
@@ -231,23 +230,36 @@ public class BillServiceImpl implements BillService {
         LOGGER.info(BillConstants.BILL_WITH_NAME + billName + BillConstants.DELETED);
     }
 
-
-    private List<BillDto> makeMainBillFirst(List<BillDto> listBillDto) {
-        BillDto mainBillDto = listBillDto.stream().filter(b -> b.getMainBill() == true)
-                .findAny().get();
-        listBillDto.remove(mainBillDto);
-        listBillDto.add(0, mainBillDto);
-        return listBillDto;
+    @Override
+    public Boolean getBillByNameForValidation(String billName, String userUuid) {
+        Optional<Bill> billOptional = billRepository.findByBillNameAndUserUuidAndDeleted(
+                billName, userUuid, false
+        );
+        if (billOptional.isPresent()) {
+            LOGGER.info(BillConstants.BILL_WITH_NAME + billName
+                    + BillConstants.FOR_USER + userUuid + BillConstants.EXISTS);
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    private BillDto billEntityToBillDto(Bill bill) {
-        return modelMapper.map(bill, BillDto.class);
-    }
+        private List<BillDto> makeMainBillFirst (List < BillDto > listBillDto) {
+            BillDto mainBillDto = listBillDto.stream().filter(b -> b.getMainBill() == true)
+                    .findAny().get();
+            listBillDto.remove(mainBillDto);
+            listBillDto.add(0, mainBillDto);
+            return listBillDto;
+        }
 
-    private Bill billDtoToBillEntity(BillDto billDto) {
-        return modelMapper.map(billDto, Bill.class);
+        private BillDto billEntityToBillDto (Bill bill){
+            return modelMapper.map(bill, BillDto.class);
+        }
+
+        private Bill billDtoToBillEntity (BillDto billDto){
+            return modelMapper.map(billDto, Bill.class);
+        }
     }
-}
 
 
 
