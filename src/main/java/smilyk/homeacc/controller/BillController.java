@@ -34,6 +34,7 @@ public class BillController {
 
     @PostMapping
     //checked
+    //    front +
     public BillDto createBill(@Validated @RequestBody BillDto billDto) {
         validatorService.checkUniqueBill(billDto.getBillName());
         validatorService.checkMainBill(billDto.getMainBill());
@@ -62,12 +63,14 @@ public class BillController {
      * @return BillDto
      */
     //checked
+    //    front +
     @GetMapping("/{billName}/{userUuid}")
     public BillDto getBillByBillName(@PathVariable String billName, @PathVariable String userUuid) {
         return billService.getBillByBillName(billName, userUuid);
     }
 
     //checked
+    //    front +
     @GetMapping("/allBills/{userUuid}")
     public List<BillDto> getAllBillsByUserUuid(@PathVariable String userUuid) {
         return billService.getAllBillsByUser(userUuid);
@@ -87,6 +90,7 @@ public class BillController {
         return billService.getAllBillsByUserUuidAndCurrency(userUuid, billsCurrency);
     }
 
+//    TODO check method of main bill
     /**
      * @param billName
      * @return BillDto
@@ -101,10 +105,10 @@ public class BillController {
 
     @PutMapping()
     public TransferResourcesResponseDto transferResources(@Validated @RequestBody TransferResourcesBetweenBillsDto transferDto) {
-            validatorService.checkBillByUserAndCurrency(transferDto.getBillNameFrom(), transferDto.getUserUuid(),
-                    transferDto.getCurrency());
-            validatorService.checkBillByUserAndCurrency(transferDto.getBillNameTo(), transferDto.getUserUuid(),
-                    transferDto.getCurrency());
+//            validatorService.checkBillByUserAndCurrency(transferDto.getBillNameFrom(), transferDto.getUserUuid(),
+//                    transferDto.getCurrency());
+//            validatorService.checkBillByUserAndCurrency(transferDto.getBillNameTo(), transferDto.getUserUuid(),
+//                    transferDto.getCurrency());
 //        }
         validatorService.checkBillByUser(transferDto.getBillNameFrom(), transferDto.getUserUuid());
         return billService.transferResources(transferDto);
@@ -116,6 +120,7 @@ public class BillController {
      * @return SUCCESS or ERROR
      */
     //checked
+    //    front +
     @DeleteMapping("/{billName}/{userUuid}")
     public OperationStatuDto deleteBill(@PathVariable String billName, @PathVariable String userUuid) {
         validatorService.checkBillByUser(billName, userUuid);
@@ -134,6 +139,7 @@ public class BillController {
      * @param userUuid
      * return True or False
      */
+//    front +
     @GetMapping("/valid/{billName}/{userUuid}")
     public Boolean getUserByUserEmail(@PathVariable String billName, @PathVariable String userUuid){
         return billService.getBillByNameForValidation(billName, userUuid);

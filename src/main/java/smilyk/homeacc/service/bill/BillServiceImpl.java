@@ -245,11 +245,17 @@ public class BillServiceImpl implements BillService {
     }
 
         private List<BillDto> makeMainBillFirst (List < BillDto > listBillDto) {
-            BillDto mainBillDto = listBillDto.stream().filter(b -> b.getMainBill() == true)
-                    .findAny().get();
-            listBillDto.remove(mainBillDto);
-            listBillDto.add(0, mainBillDto);
-            return listBillDto;
+
+            Optional<BillDto> mainBillDtoOptional = listBillDto.stream().filter(b -> b.getMainBill())
+                    .findAny();
+            if(mainBillDtoOptional.isPresent()){
+                BillDto mainBillDto = mainBillDtoOptional.get();
+                listBillDto.remove(mainBillDto);
+                listBillDto.add(0, mainBillDto);
+                return listBillDto;
+            }else{
+                return listBillDto;
+            }
         }
 
         private BillDto billEntityToBillDto (Bill bill){
