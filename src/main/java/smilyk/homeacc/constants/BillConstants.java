@@ -28,4 +28,5 @@ public class BillConstants {
     public static final String FOR = " for: " ;
     public static final String TO = " to: ";
     public static final String EXISTS = " exists ";
+    public static final String BILL_SUM = " bill`s sum ";
 }
