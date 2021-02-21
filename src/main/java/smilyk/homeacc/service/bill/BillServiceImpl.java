@@ -129,7 +129,6 @@ public class BillServiceImpl implements BillService {
     }
 
     private TransferResourcesResponseDto changeSumByUsaDollar(Bill billFrom, Bill billTo, Double sum) {
-//        TODO
         Double startSumFrom = billFrom.getSumUsa();
         Double newSumFrom = startSumFrom - sum;
         billFrom.setSumUsa(newSumFrom);
