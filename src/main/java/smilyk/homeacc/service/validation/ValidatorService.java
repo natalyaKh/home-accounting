@@ -1,7 +1,10 @@
 package smilyk.homeacc.service.validation;
 
-import smilyk.homeacc.dto.BillDto;
 import smilyk.homeacc.enums.Currency;
+import smilyk.homeacc.model.Category;
+import smilyk.homeacc.model.Subcategory;
+
+import javax.validation.constraints.NotNull;
 
 public interface ValidatorService {
     void checkUserUnique(String email);
@@ -18,4 +21,8 @@ public interface ValidatorService {
     void checkUserExists(String userUuid);
 
     void checkMainBillsForDeleted(String billName);
+
+    Category checkCategory(String categoryUuid, String userUuid);
+
+    Subcategory subCategory(String subCategoryUuid, String userUuid);
 }
