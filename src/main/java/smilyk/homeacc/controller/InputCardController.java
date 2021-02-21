@@ -44,7 +44,7 @@ public class InputCardController {
         }
         Category category = validatorService.checkCategory(inputCardDto.getCategoryName(), inputCardDto.getUserUuid());
         Subcategory subcategory = validatorService
-            .subCategory(inputCardDto.getSubCategoryName(), inputCardDto.getUserUuid());
+            .checkSubcategory(inputCardDto.getSubCategoryName(), inputCardDto.getUserUuid());
         inputCardDto.setCategoryUuid(category.getCategoryUuid());
         inputCardDto.setSubCategoryUuid(subcategory.getSubcategoryUuid());
         return this.inputCardService.createInputCard(

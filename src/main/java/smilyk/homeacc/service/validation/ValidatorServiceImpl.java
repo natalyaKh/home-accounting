@@ -101,7 +101,7 @@ public class ValidatorServiceImpl implements ValidatorService {
     }
 
     @Override
-    public Subcategory subCategory(String subcategoryName, String userUuid) {
+    public Subcategory checkSubcategory(String subcategoryName, String userUuid) {
         Optional<Subcategory> subcategoryOptional = subcategoryRepository
             .findBySubcategoryNameAndUserUuid(subcategoryName, userUuid);
         if (subcategoryOptional.isPresent()) {

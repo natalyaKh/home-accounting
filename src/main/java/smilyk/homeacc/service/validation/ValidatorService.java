@@ -24,5 +24,5 @@ public interface ValidatorService {
 
     Category checkCategory(String categoryUuid, String userUuid);
 
-    Subcategory subCategory(String subCategoryUuid, String userUuid);
+    Subcategory checkSubcategory(String subCategoryUuid, String userUuid);
 }

@@ -215,10 +215,12 @@ class ValidatorServiceImplTest {
 
     @Test
     void testCheckBillByUserAndCurrencyValid() {
-        when(billRepository.findByBillNameAndUserUuidAndDeletedAndCurrencyName(
-                anyString(), anyString(), eq(false), anyString()
+        when(billRepository.findByBillNameAndUserUuidAndDeleted(
+                anyString(), anyString(), eq(false)
         )).thenReturn(returnCacheValue);
         validatorService.checkBillByUserAndCurrency(BILL_NAME, USER_UUID, Currency.ALL);
+
+//        TODO -> check currency
     }
 
     @Test
@@ -257,5 +259,15 @@ class ValidatorServiceImplTest {
     void testCheckMainBillNotValid() {
         when(billRepository.findByMainBill(eq(true))).thenReturn(returnCacheValue);
         assertThrows(HomeaccException.class, () -> validatorService.checkMainBill(true));
+    }
+
+    @Test
+    void testCheckCategory(){
+//        TODO
+    }
+
+    @Test
+    void testCheckCSubcategory(){
+//        TODO
     }
 }

@@ -7,18 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import smilyk.homeacc.constants.BillConstants;
 import smilyk.homeacc.constants.InputCardConstant;
-import smilyk.homeacc.dto.BillDto;
 import smilyk.homeacc.dto.InputCardDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.model.Bill;
 import smilyk.homeacc.model.InputCard;
 import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.repo.InputCardRepository;
-import smilyk.homeacc.service.bill.BillService;
 import smilyk.homeacc.service.user.UserServiceImpl;
 import smilyk.homeacc.utils.Utils;
-
-import java.util.Optional;
 
 @Service
 public class InputCardServiceImpl implements InputCardService {
@@ -54,7 +50,7 @@ public class InputCardServiceImpl implements InputCardService {
         else if (inputCardDto.getCurrency().equals(Currency.ISR)) {
             bill.setSumIsr(bill.getSumIsr() - inputCardDto.getSum());
         }
-        else if (inputCardDto.getSum().equals(Currency.UKR)) {
+        else if (inputCardDto.getCurrency().equals(Currency.UKR)) {
             bill.setSumUkr(bill.getSumUkr() - inputCardDto.getSum());
         }
         return bill;

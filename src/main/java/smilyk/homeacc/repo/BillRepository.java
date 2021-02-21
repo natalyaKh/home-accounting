@@ -1,8 +1,6 @@
 package smilyk.homeacc.repo;
 
-import org.springframework.data.jpa.repository.JpaContext;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import smilyk.homeacc.model.Bill;
 
 import java.util.List;
@@ -19,6 +17,6 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
 
     List<Bill> findAllByUserUuidAndDeleted(String userUuid, boolean b);
 
-    Optional<Bill> findByBillNameAndUserUuidAndDeletedAndCurrencyName(String billName, String userUuid, boolean b, String name);
+    Optional<Bill> findByBillNameAndUserUuidAndDeletedAndCurrencyName(String billName, String userUuid, boolean b, String CurrencyName);
 
 }
