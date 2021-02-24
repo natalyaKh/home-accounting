@@ -12,6 +12,12 @@ import smilyk.homeacc.repo.CategoryRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
 import smilyk.homeacc.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -30,4 +36,22 @@ public class CategoryServiceImpl implements CategoryService {
             CategorySubcategoryConstant.CREATED);
         return savedCategory;
     }
+
+    @Override
+    public List<CategoryDto> getAllCategoryByUserUuid(String userUuid) {
+//        TODO test
+        Optional<Category> categoryOptional = categoryRepository.findByUserUuid(userUuid);
+        if(!categoryOptional.isPresent()){
+            return new ArrayList<>();
+        }
+        List<CategoryDto> categoryDtoList = categoryOptional.stream().map(this::categoryToCategoryDto)
+            .collect(Collectors.toList());
+        return categoryDtoList;
+    }
+
+    private  CategoryDto categoryToCategoryDto(Category category) {
+        return modelMapper.map(category, CategoryDto.class);
+    }
+
+
 }

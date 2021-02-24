@@ -12,6 +12,11 @@ import smilyk.homeacc.repo.SubcategoryRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
 import smilyk.homeacc.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class SubcategoryServiceImpl implements SubcategoryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -29,5 +34,21 @@ public class SubcategoryServiceImpl implements SubcategoryService {
         LOGGER.info(CategorySubcategoryConstant.SUBCATEGORY_WITH_NAME + subcategoryDto.getSubCategoryName() +
             CategorySubcategoryConstant.CREATED);
         return savedSubcategory;
+    }
+
+    @Override
+    public List<SubcategoryDto> getAllSubcategoryByUserUuid(String userUuid) {
+//        TODO test
+        Optional<Subcategory> subcategoryOptional = subcategoryRepository.findByUserUuid(userUuid);
+        if(!subcategoryOptional.isPresent()){
+            return new ArrayList<>();
+        }
+        List<SubcategoryDto> subcategoryDto = subcategoryOptional.stream().map(this::subcategoryToSubcategoryDto)
+            .collect(Collectors.toList());
+        return subcategoryDto;
+    }
+
+    private SubcategoryDto  subcategoryToSubcategoryDto(Subcategory subcategory) {
+        return modelMapper.map(subcategory, SubcategoryDto.class);
     }
 }
