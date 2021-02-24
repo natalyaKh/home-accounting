@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @Builder
-public class InputCardDto {
+public class OutputCardDto {
     @NotNull(message="User uuid cannot be null")
     String userUuid;
     @NotNull(message="Bill name cannot be null")

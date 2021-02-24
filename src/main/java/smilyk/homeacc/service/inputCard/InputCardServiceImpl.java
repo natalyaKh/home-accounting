@@ -6,11 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import smilyk.homeacc.constants.BillConstants;
-import smilyk.homeacc.constants.InputCardConstant;
-import smilyk.homeacc.dto.InputCardDto;
+import smilyk.homeacc.constants.OutputCardConstant;
+import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.model.Bill;
-import smilyk.homeacc.model.InputCard;
+import smilyk.homeacc.model.OutputCard;
 import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.repo.InputCardRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
@@ -28,54 +28,54 @@ public class InputCardServiceImpl implements InputCardService {
     BillRepository billRepository;
 
     @Override
-    public InputCardDto createInputCard(InputCardDto inputCardDto) {
-        Bill bill = billRepository.findByBillNameAndUserUuidAndDeleted(inputCardDto.getBillName(),
-            inputCardDto.getUserUuid(), false).get();
+    public OutputCardDto createInputCard(OutputCardDto outputCardDto) {
+        Bill bill = billRepository.findByBillNameAndUserUuidAndDeleted(outputCardDto.getBillName(),
+            outputCardDto.getUserUuid(), false).get();
         billRepository.delete(bill);
-        bill = changeSum(inputCardDto, bill);
+        bill = changeSum(outputCardDto, bill);
         billRepository.save(bill);
         LOGGER.info(BillConstants.BILL_SUM + BillConstants.FOR + BillConstants.BILL_WITH_NAME
         +bill.getBillName() + BillConstants.CHANGED);
-        InputCard inputCard = getInputCard(inputCardDto);
-        inputCardRepository.save(inputCard);
-        LOGGER.info(InputCardConstant.INPUT_CARD + inputCardDto.getUserUuid() +
-            InputCardConstant.CREATED);
-        return modelMapper.map(inputCard, InputCardDto.class);
+        OutputCard outputCard = getInputCard(outputCardDto);
+        inputCardRepository.save(outputCard);
+        LOGGER.info(OutputCardConstant.OUTPUT_CARD + outputCardDto.getUserUuid() +
+            OutputCardConstant.CREATED);
+        return modelMapper.map(outputCard, OutputCardDto.class);
     }
 
-    private Bill changeSum(InputCardDto inputCardDto, Bill bill) {
-        if (inputCardDto.getCurrency().equals(Currency.USA)) {
-            bill.setSumUsa(bill.getSumUsa() - inputCardDto.getSum());
+    private Bill changeSum(OutputCardDto outputCardDto, Bill bill) {
+        if (outputCardDto.getCurrency().equals(Currency.USA)) {
+            bill.setSumUsa(bill.getSumUsa() - outputCardDto.getSum());
         }
-        else if (inputCardDto.getCurrency().equals(Currency.ISR)) {
-            bill.setSumIsr(bill.getSumIsr() - inputCardDto.getSum());
+        else if (outputCardDto.getCurrency().equals(Currency.ISR)) {
+            bill.setSumIsr(bill.getSumIsr() - outputCardDto.getSum());
         }
-        else if (inputCardDto.getCurrency().equals(Currency.UKR)) {
-            bill.setSumUkr(bill.getSumUkr() - inputCardDto.getSum());
+        else if (outputCardDto.getCurrency().equals(Currency.UKR)) {
+            bill.setSumUkr(bill.getSumUkr() - outputCardDto.getSum());
         }
         return bill;
     }
 
-    private InputCard getInputCard(InputCardDto inputCardDto) {
-        InputCard inputCard = InputCard.builder()
+    private OutputCard getInputCard(OutputCardDto outputCardDto) {
+        OutputCard outputCard = OutputCard.builder()
             .deleted(false)
-            .subcategoryUuid(inputCardDto.getSubCategoryUuid())
-            .subcategoryName(inputCardDto.getSubCategoryName())
-            .categoryUuid(inputCardDto.getCategoryUuid())
-            .categoryName(inputCardDto.getCategoryName())
-            .billName(inputCardDto.getBillName())
-            .billUuid(inputCardDto.getBillUuid())
+            .subcategoryUuid(outputCardDto.getSubCategoryUuid())
+            .subcategoryName(outputCardDto.getSubCategoryName())
+            .categoryUuid(outputCardDto.getCategoryUuid())
+            .categoryName(outputCardDto.getCategoryName())
+            .billName(outputCardDto.getBillName())
+            .billUuid(outputCardDto.getBillUuid())
             .inputCardUuid(utils.generateUserUuid().toString())
-            .count(inputCardDto.getCount())
-            .currency(inputCardDto.getCurrency())
-            .userUuid(inputCardDto.getUserUuid())
-            .discount(inputCardDto.getDiscount())
-            .note(inputCardDto.getNote())
-            .sum(inputCardDto.getSum())
-            .unit(inputCardDto.getUnit())
+            .count(outputCardDto.getCount())
+            .currency(outputCardDto.getCurrency())
+            .userUuid(outputCardDto.getUserUuid())
+            .discount(outputCardDto.getDiscount())
+            .note(outputCardDto.getNote())
+            .sum(outputCardDto.getSum())
+            .unit(outputCardDto.getUnit())
             .build();
-        inputCard.setInputCardUuid(utils.generateUserUuid().toString());
-        inputCard.setDeleted(false);
-        return inputCard;
+        outputCard.setInputCardUuid(utils.generateUserUuid().toString());
+        outputCard.setDeleted(false);
+        return outputCard;
     }
 }

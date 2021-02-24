@@ -1,8 +1,8 @@
 package smilyk.homeacc.service.inputCard;
 
-import smilyk.homeacc.dto.InputCardDto;
+import smilyk.homeacc.dto.OutputCardDto;
 
 public interface InputCardService {
 
-    InputCardDto createInputCard(InputCardDto inputCardDto);
+    OutputCardDto createInputCard(OutputCardDto outputCardDto);
 }

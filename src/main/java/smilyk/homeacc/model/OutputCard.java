@@ -12,8 +12,8 @@ import java.io.Serializable;
 @Setter
 @Builder
 @Entity
-@Table(name = "input")
-public class InputCard extends BaseEntity implements Serializable {
+@Table(name = "output")
+public class OutputCard extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 6834942411559736697L;
 
     @Column(nullable = false, unique = true)

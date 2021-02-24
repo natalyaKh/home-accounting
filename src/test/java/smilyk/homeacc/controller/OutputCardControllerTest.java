@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import smilyk.homeacc.dto.InputCardDto;
+import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.enums.CategoryType;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.model.Category;
@@ -20,18 +20,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-class InputCardControllerTest {
+class OutputCardControllerTest {
     private static final String CATEGORY_NAME = "category";
     private static final String CATEGORY_UUID = "2222";
     private static final String USER_UUID = "4444";
     private static final String SUBCATEGORY_NAME = "subcategory";
     private static final String SUBCATEGORY_UUID = "3333";
-    private InputCardDto inputCardDto;
-    private InputCardDto inputCardDtoNullFields;
+    private OutputCardDto outputCardDto;
+    private OutputCardDto outputCardDtoNullFields;
     private Category category;
     private Subcategory subcategory;
     @InjectMocks
-    InputCardController inputCardController;
+    OutputCardController outputCardController;
 
     @Mock
     InputCardService inputCardService;
@@ -42,7 +42,7 @@ class InputCardControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        inputCardDto = InputCardDto.builder()
+        outputCardDto = OutputCardDto.builder()
             .billName("bill")
             .billUuid("1111")
             .currency(Currency.USA)
@@ -57,7 +57,7 @@ class InputCardControllerTest {
             .unit("p")
             .userUuid(USER_UUID)
             .build();
-        inputCardDtoNullFields = InputCardDto.builder()
+        outputCardDtoNullFields = OutputCardDto.builder()
             .billName("bill")
             .billUuid("1111")
             .currency(Currency.USA)
@@ -90,26 +90,26 @@ class InputCardControllerTest {
 
     @Test
     void createInputCard() {
-        when(inputCardService.createInputCard(any(InputCardDto.class))).thenReturn(inputCardDto);
+        when(inputCardService.createInputCard(any(OutputCardDto.class))).thenReturn(outputCardDto);
         when(validatorService.checkCategory(anyString(), anyString())).thenReturn(category);
         when(validatorService.checkSubcategory(anyString(), anyString())).thenReturn(subcategory);
-        InputCardDto restoredInputCardDto = inputCardController.createInputCard(inputCardDto);
+        OutputCardDto restoredOutputCardDto = outputCardController.createInputCard(outputCardDto);
 
-        assertNotNull(restoredInputCardDto);
-        assertEquals(inputCardDto, restoredInputCardDto);
-        assertEquals(inputCardDto.getCategoryUuid(), restoredInputCardDto.getCategoryUuid());
+        assertNotNull(restoredOutputCardDto);
+        assertEquals(outputCardDto, restoredOutputCardDto);
+        assertEquals(outputCardDto.getCategoryUuid(), restoredOutputCardDto.getCategoryUuid());
     }
     @Test
     void nullFields(){
-        when(inputCardService.createInputCard(any(InputCardDto.class))).thenReturn(inputCardDtoNullFields);
+        when(inputCardService.createInputCard(any(OutputCardDto.class))).thenReturn(outputCardDtoNullFields);
         when(validatorService.checkCategory(anyString(), anyString())).thenReturn(category);
         when(validatorService.checkSubcategory(anyString(), anyString())).thenReturn(subcategory);
-        InputCardDto restoredInputCardDto = inputCardController.createInputCard(inputCardDtoNullFields);
+        OutputCardDto restoredOutputCardDto = outputCardController.createInputCard(outputCardDtoNullFields);
 
-        assertNotNull(restoredInputCardDto);
-        assertEquals("", restoredInputCardDto.getUnit());
-        assertEquals("", restoredInputCardDto.getNote());
-        assertEquals(0.0, restoredInputCardDto.getDiscount());
+        assertNotNull(restoredOutputCardDto);
+        assertEquals("", restoredOutputCardDto.getUnit());
+        assertEquals("", restoredOutputCardDto.getNote());
+        assertEquals(0.0, restoredOutputCardDto.getDiscount());
     }
 
 }

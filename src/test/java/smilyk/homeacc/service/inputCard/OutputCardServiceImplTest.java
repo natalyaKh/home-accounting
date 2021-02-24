@@ -6,10 +6,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
-import smilyk.homeacc.dto.InputCardDto;
+import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.model.Bill;
-import smilyk.homeacc.model.InputCard;
+import smilyk.homeacc.model.OutputCard;
 import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.repo.InputCardRepository;
 import smilyk.homeacc.utils.Utils;
@@ -22,14 +22,14 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-class InputCardServiceImplTest {
+class OutputCardServiceImplTest {
 
     private static final String BILL_UUID = "1111";
     private static final String USER_UUID = "3333";
     ModelMapper modelMapper = new ModelMapper();
-    private InputCard inputCardUsa;
-    private InputCard inputCardUkr;
-    private InputCard inputCardIsr;
+    private OutputCard outputCardUsa;
+    private OutputCard outputCardUkr;
+    private OutputCard outputCardIsr;
     private Bill billAllCurrency;
 
     @InjectMocks
@@ -44,7 +44,7 @@ class InputCardServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        inputCardUsa = InputCard.builder()
+        outputCardUsa = OutputCard.builder()
             .billUuid(BILL_UUID)
             .billName("testBill")
             .userUuid(USER_UUID)
@@ -62,7 +62,7 @@ class InputCardServiceImplTest {
             .subcategoryUuid("2222")
             .deleted(false)
             .build();
-        inputCardIsr = InputCard.builder()
+        outputCardIsr = OutputCard.builder()
             .billUuid(BILL_UUID)
             .billName("testBill")
             .userUuid(USER_UUID)
@@ -80,7 +80,7 @@ class InputCardServiceImplTest {
             .subcategoryUuid("2222")
             .deleted(false)
             .build();
-        inputCardUkr = InputCard.builder()
+        outputCardUkr = OutputCard.builder()
             .billUuid(BILL_UUID)
             .billName("testBill")
             .userUuid(USER_UUID)
@@ -118,16 +118,16 @@ class InputCardServiceImplTest {
         when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(),
             eq(false))).thenReturn(restoredBill);
         when(billRepository.save(any(Bill.class))).thenReturn(billAllCurrency);
-        when(inputCardRepository.save(any(InputCard.class))).thenReturn(inputCardIsr);
+        when(inputCardRepository.save(any(OutputCard.class))).thenReturn(outputCardIsr);
         when(utils.generateUserUuid()).thenReturn(UUID.randomUUID());
-        InputCardDto inputCardDto = modelMapper.map(inputCardIsr, InputCardDto.class);
-        InputCardDto inputCard = inputCardService.createInputCard(inputCardDto);
+        OutputCardDto outputCardDto = modelMapper.map(outputCardIsr, OutputCardDto.class);
+        OutputCardDto inputCard = inputCardService.createInputCard(outputCardDto);
 
         assertEquals(0.0, billAllCurrency.getSumIsr());
         assertNotNull(inputCard);
-        assertEquals(inputCard.getUserUuid(), inputCardDto.getUserUuid());
-        assertNotNull(inputCardDto.getBillUuid());
-        assertNotNull(inputCardDto.getUserUuid());
+        assertEquals(inputCard.getUserUuid(), outputCardDto.getUserUuid());
+        assertNotNull(outputCardDto.getBillUuid());
+        assertNotNull(outputCardDto.getUserUuid());
     }
     @Test
     void createInputCardUsa() {
@@ -135,16 +135,16 @@ class InputCardServiceImplTest {
         when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(),
             eq(false))).thenReturn(restoredBill);
         when(billRepository.save(any(Bill.class))).thenReturn(billAllCurrency);
-        when(inputCardRepository.save(any(InputCard.class))).thenReturn(inputCardUsa);
+        when(inputCardRepository.save(any(OutputCard.class))).thenReturn(outputCardUsa);
         when(utils.generateUserUuid()).thenReturn(UUID.randomUUID());
-        InputCardDto inputCardDto = modelMapper.map(inputCardUsa, InputCardDto.class);
-        InputCardDto inputCard = inputCardService.createInputCard(inputCardDto);
+        OutputCardDto outputCardDto = modelMapper.map(outputCardUsa, OutputCardDto.class);
+        OutputCardDto inputCard = inputCardService.createInputCard(outputCardDto);
 
         assertEquals(10.0, billAllCurrency.getSumUsa());
         assertNotNull(inputCard);
-        assertEquals(inputCard.getUserUuid(), inputCardDto.getUserUuid());
-        assertNotNull(inputCardDto.getBillUuid());
-        assertNotNull(inputCardDto.getUserUuid());
+        assertEquals(inputCard.getUserUuid(), outputCardDto.getUserUuid());
+        assertNotNull(outputCardDto.getBillUuid());
+        assertNotNull(outputCardDto.getUserUuid());
     }
 
     @Test
@@ -153,15 +153,15 @@ class InputCardServiceImplTest {
         when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(),
             eq(false))).thenReturn(restoredBill);
         when(billRepository.save(any(Bill.class))).thenReturn(billAllCurrency);
-        when(inputCardRepository.save(any(InputCard.class))).thenReturn(inputCardUkr);
+        when(inputCardRepository.save(any(OutputCard.class))).thenReturn(outputCardUkr);
         when(utils.generateUserUuid()).thenReturn(UUID.randomUUID());
-        InputCardDto inputCardDto = modelMapper.map(inputCardUkr, InputCardDto.class);
-        InputCardDto inputCard = inputCardService.createInputCard(inputCardDto);
+        OutputCardDto outputCardDto = modelMapper.map(outputCardUkr, OutputCardDto.class);
+        OutputCardDto inputCard = inputCardService.createInputCard(outputCardDto);
 
         assertEquals(20.0, billAllCurrency.getSumUkr());
         assertNotNull(inputCard);
-        assertEquals(inputCard.getUserUuid(), inputCardDto.getUserUuid());
-        assertNotNull(inputCardDto.getBillUuid());
-        assertNotNull(inputCardDto.getUserUuid());
+        assertEquals(inputCard.getUserUuid(), outputCardDto.getUserUuid());
+        assertNotNull(outputCardDto.getBillUuid());
+        assertNotNull(outputCardDto.getUserUuid());
     }
 }
