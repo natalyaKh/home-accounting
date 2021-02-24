@@ -1,23 +1,35 @@
 package smilyk.homeacc.service.validation;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import smilyk.homeacc.constants.ValidatorConstants;
-import smilyk.homeacc.dto.TransferResourcesBetweenBillsDto;
+import smilyk.homeacc.dto.CategoryDto;
+import smilyk.homeacc.dto.SubcategoryDto;
+import smilyk.homeacc.enums.CategoryType;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
+import smilyk.homeacc.model.Category;
+import smilyk.homeacc.model.Subcategory;
 import smilyk.homeacc.model.User;
 import smilyk.homeacc.repo.BillRepository;
+import smilyk.homeacc.repo.CategoryRepository;
+import smilyk.homeacc.repo.SubcategoryRepository;
 import smilyk.homeacc.repo.UserRepository;
+import smilyk.homeacc.service.category.CategoryService;
+import smilyk.homeacc.service.subcategory.SubcategoryService;
+import smilyk.homeacc.utils.Utils;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -38,12 +50,18 @@ class ValidatorServiceImplTest {
     private static final Double SUMM_ISR = 100.0;
     private static final Double SUMM_UKR = 20.0;
     private static final Double SUMM_USA = 130.0;
+    private static final String CATEGORY_NAME = "Products";
+    private static final String CATEGORY_UUID = "5555";
+    private static final String SUBCATEGORY_UUID = "6666";
+    private static final String SUBCATEGORY_NAME = "dress";
     private User user;
     private Bill bill;
     private Bill mainBill;
-    private Bill billCurrencyUsa;
-    private Bill anotherUsersBill;
-    private Bill billForDeleted;
+    private Bill billUsa;
+    private Category category;
+    private Subcategory subcategory;
+
+
     Optional<Bill> returnCacheValue;
     Optional<User> returnCacheValueUser;
 
@@ -51,7 +69,16 @@ class ValidatorServiceImplTest {
     ValidatorServiceImpl validatorService;
     @Mock
     UserRepository userRepository;
-
+    @Mock
+    CategoryRepository categoryRepository;
+    @Mock
+    SubcategoryRepository subcategoryRepository;
+    @Mock
+    CategoryService categoryService;
+    @Mock
+    SubcategoryService subcategoryService;
+    @Mock
+    Utils utils;
     @Mock
     BillRepository billRepository;
 
@@ -60,76 +87,67 @@ class ValidatorServiceImplTest {
         MockitoAnnotations.initMocks(this);
 
         user = User.builder()
-                .firstName(USER_FIRST_NAME)
-                .lastName(USER_LAST_NAME)
-                .encryptedPassword(ENCRYPTED_PASSWORD)
-                .deleted(false)
-                .email(EMAIL)
-                .userUuid(USER_UUID)
-                .emailVerificationStatus(false)
-                .emailVerificationToken(EMAIL_VERIFICATION_TOKEN)
-                .build();
+            .firstName(USER_FIRST_NAME)
+            .lastName(USER_LAST_NAME)
+            .encryptedPassword(ENCRYPTED_PASSWORD)
+            .deleted(false)
+            .email(EMAIL)
+            .userUuid(USER_UUID)
+            .emailVerificationStatus(false)
+            .emailVerificationToken(EMAIL_VERIFICATION_TOKEN)
+            .build();
         bill = Bill.builder()
-                .billName("bill")
-                .billUuid(BILL_UUID)
-                .userUuid(USER_UUID)
-                .currencyName(Currency.ALL)
-                .mainBill(false)
-                .description("")
-                .sumIsr(SUMM_ISR)
-                .sumUkr(SUMM_UKR)
-                .sumUsa(SUMM_USA)
-                .deleted(false)
-                .build();
-        billCurrencyUsa = Bill.builder()
-                .billName("billCurrencyUsa")
-                .billUuid(BILL_UUID)
-                .userUuid(USER_UUID)
-                .currencyName(Currency.USA)
-                .mainBill(false)
-                .description("")
-                .sumIsr(SUMM_ISR)
-                .sumUkr(SUMM_UKR)
-                .sumUsa(SUMM_USA)
-                .deleted(false)
-                .build();
+            .billName("bill")
+            .billUuid(BILL_UUID)
+            .userUuid(USER_UUID)
+            .currencyName(Currency.ALL)
+            .mainBill(false)
+            .description("")
+            .sumIsr(SUMM_ISR)
+            .sumUkr(SUMM_UKR)
+            .sumUsa(SUMM_USA)
+            .deleted(false)
+            .build();
 //        mainBill
         mainBill = Bill.builder()
-                .billName("mainBill")
-                .billUuid(BILL_UUID)
-                .userUuid(USER_UUID)
-                .currencyName(All_CURRENCY_NAME)
-                .mainBill(true)
-                .description("")
-                .sumIsr(SUMM_ISR)
-                .sumUkr(SUMM_UKR)
-                .sumUsa(SUMM_USA)
-                .deleted(false)
-                .build();
-        anotherUsersBill = Bill.builder()
-                .billName("mainBill")
-                .billUuid(BILL_UUID)
-                .userUuid(USER_UUID)
-                .currencyName(All_CURRENCY_NAME)
-                .mainBill(true)
-                .description("")
-                .sumIsr(SUMM_ISR)
-                .sumUkr(SUMM_UKR)
-                .sumUsa(SUMM_USA)
-                .deleted(false)
-                .build();
-        billForDeleted = Bill.builder()
-                .billName("bill for deleted")
-                .billUuid(BILL_UUID)
-                .userUuid(USER_UUID)
-                .currencyName(Currency.ALL)
-                .mainBill(false)
-                .description("")
-                .sumIsr(0.00)
-                .sumUkr(0.00)
-                .sumUsa(0.00)
-                .deleted(false)
-                .build();
+            .billName("mainBill")
+            .billUuid(BILL_UUID)
+            .userUuid(USER_UUID)
+            .currencyName(All_CURRENCY_NAME)
+            .mainBill(true)
+            .description("")
+            .sumIsr(SUMM_ISR)
+            .sumUkr(SUMM_UKR)
+            .sumUsa(SUMM_USA)
+            .deleted(false)
+            .build();
+        billUsa = Bill.builder()
+            .billName("mainBill")
+            .billUuid(BILL_UUID)
+            .userUuid(USER_UUID)
+            .currencyName(Currency.USA)
+            .mainBill(true)
+            .description("")
+            .sumIsr(SUMM_ISR)
+            .sumUkr(SUMM_UKR)
+            .sumUsa(SUMM_USA)
+            .deleted(false)
+            .build();
+        category = Category.builder()
+            .categoryName(CATEGORY_NAME)
+            .categoryUuid(CATEGORY_UUID)
+            .userUuid(USER_UUID)
+            .deleted(false)
+            .description("")
+            .type(CategoryType.OUTPUT)
+            .build();
+        subcategory = Subcategory.builder()
+            .subcategoryUuid(SUBCATEGORY_UUID)
+            .subcategoryName(SUBCATEGORY_NAME)
+            .deleted(false)
+            .userUuid("2222")
+            .description("this is subcategory")
+            .build();
         returnCacheValue = Optional.of(bill);
         returnCacheValueUser = Optional.of(user);
 
@@ -138,14 +156,14 @@ class ValidatorServiceImplTest {
     @Test
     void testCheckUserUniqueNotValid() {
         when(userRepository.findByEmailAndDeleted(anyString(), eq(false)))
-                .thenReturn(returnCacheValueUser);
+            .thenReturn(returnCacheValueUser);
         assertThrows(HomeaccException.class, () -> validatorService.checkUserUnique(USER_UUID));
     }
 
     @Test
     void testCheckUserUniqueValid() {
         when(userRepository.findByEmailAndDeleted(anyString(), eq(false)))
-                .thenReturn(Optional.empty());
+            .thenReturn(Optional.empty());
         validatorService.checkUserUnique("m@mail.com");
 
     }
@@ -200,36 +218,54 @@ class ValidatorServiceImplTest {
     }
 
     @Test
+    void billCurrencyNotValid(){
+        returnCacheValue = Optional.of(mainBill);
+        when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(), eq(false)))
+            .thenReturn(Optional.empty());
+        assertThrows(HomeaccException.class, () -> validatorService.checkBillByUserAndCurrency(BILL_NAME, USER_UUID, Currency.USA));
+    }
+
+    @Test
     void testCheckBillByUserValid() {
         when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(), eq(false)))
-                .thenReturn(returnCacheValue);
+            .thenReturn(returnCacheValue);
         validatorService.checkBillByUser(BILL_NAME, USER_UUID);
     }
 
     @Test
     void testCheckBillByUserNotValid() {
         when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(), eq(false)))
-                .thenReturn(Optional.empty());
+            .thenReturn(Optional.empty());
         assertThrows(HomeaccException.class, () -> validatorService.checkBillByUser(BILL_NAME, USER_UUID));
     }
 
     @Test
     void testCheckBillByUserAndCurrencyValid() {
         when(billRepository.findByBillNameAndUserUuidAndDeleted(
-                anyString(), anyString(), eq(false)
+            anyString(), anyString(), eq(false)
         )).thenReturn(returnCacheValue);
         validatorService.checkBillByUserAndCurrency(BILL_NAME, USER_UUID, Currency.ALL);
 
-//        TODO -> check currency
     }
 
     @Test
     void testCheckBillByUserAndCurrencyNotValid() {
         when(billRepository.findByBillNameAndUserUuidAndDeletedAndCurrencyName(
-                anyString(), anyString(), eq(false), anyString()
+            anyString(), anyString(), eq(false), anyString()
         )).thenReturn(Optional.empty());
         assertThrows(HomeaccException.class, () -> validatorService.checkBillByUserAndCurrency(BILL_NAME, USER_UUID,
-                Currency.ALL));
+            Currency.ALL));
+    }
+
+    @Test
+    void testCheckWrongCurrency(){
+        returnCacheValue = Optional.of(billUsa);
+        when(billRepository.findByBillNameAndUserUuidAndDeleted(
+           anyString(), anyString(), eq(false)
+        )).thenReturn(returnCacheValue);
+        assertThrows(HomeaccException.class, () -> validatorService.checkBillByUserAndCurrency(BILL_NAME, USER_UUID,
+            Currency.UKR));
+
     }
 
     @Test
@@ -262,12 +298,42 @@ class ValidatorServiceImplTest {
     }
 
     @Test
-    void testCheckCategory(){
-//        TODO create test
+    void testCheckCategory() {
+        Optional<Category> restoredCategory = Optional.of(category);
+        when(categoryRepository.findByCategoryNameAndUserUuid(anyString(), anyString())).thenReturn(restoredCategory);
+        Category returnedCategory = validatorService.checkCategory(CATEGORY_NAME, USER_UUID);
+
+        assertNotNull(returnedCategory);
     }
 
     @Test
-    void testCheckCSubcategory(){
-//        TODO create test
+    void testCheckNewCategory() {
+        when(categoryRepository.findByCategoryNameAndUserUuid(anyString(), anyString())).thenReturn(Optional.empty());
+        when(utils.generateUserUuid()).thenReturn(UUID.randomUUID());
+        when(categoryService.save(any(CategoryDto.class))).thenReturn(category);
+        Category returnedCategory = validatorService.checkCategory("newCategory", USER_UUID);
+
+        assertNotNull(returnedCategory);
+    }
+
+    @Test
+    void testCheckCSubcategory() {
+        Optional<Subcategory> restoredSubcategory = Optional.of(subcategory);
+        when(subcategoryRepository.findBySubcategoryNameAndUserUuid(anyString(), anyString()))
+            .thenReturn(restoredSubcategory);
+        Subcategory returnedSubcategory = validatorService.checkSubcategory(SUBCATEGORY_NAME, USER_UUID);
+
+        assertNotNull(returnedSubcategory);
+    }
+
+    @Test
+    void testCheckNewSubcategory() {
+        when(subcategoryRepository.findBySubcategoryNameAndUserUuid(anyString(), anyString()))
+            .thenReturn(Optional.empty());
+        when(utils.generateUserUuid()).thenReturn(UUID.randomUUID());
+        when(subcategoryService.save(any(SubcategoryDto.class))).thenReturn(subcategory);
+        Subcategory returnedSubcategory = validatorService.checkSubcategory("subc", USER_UUID);
+
+        assertNotNull(returnedSubcategory);
     }
 }

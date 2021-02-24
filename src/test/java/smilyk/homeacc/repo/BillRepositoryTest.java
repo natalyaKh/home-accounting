@@ -214,5 +214,4 @@ public class BillRepositoryTest {
     public void findByBillNameAndUserUuidAndDeletedAndCurrencyName() {
 //       TODO create test
     }
-
 }

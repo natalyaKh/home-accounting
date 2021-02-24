@@ -20,7 +20,6 @@ public class InputCardController {
     InputCardService inputCardService;
     @Autowired
     ValidatorService validatorService;
-//create test TODO create test
 
     /**
      * method create input card
