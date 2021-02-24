@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.model.Category;
 import smilyk.homeacc.model.Subcategory;
-import smilyk.homeacc.service.inputCard.InputCardService;
+import smilyk.homeacc.service.uotputCard.OutputCardService;
 import smilyk.homeacc.service.validation.ValidatorService;
 
 @RestController
-@RequestMapping("v1/input")
+@RequestMapping("v1/output")
 public class OutputCardController {
 
     @Autowired
-    InputCardService inputCardService;
+    OutputCardService outputCardService;
     @Autowired
     ValidatorService validatorService;
 
@@ -46,7 +46,7 @@ public class OutputCardController {
             .checkSubcategory(outputCardDto.getSubCategoryName(), outputCardDto.getUserUuid());
         outputCardDto.setCategoryUuid(category.getCategoryUuid());
         outputCardDto.setSubCategoryUuid(subcategory.getSubcategoryUuid());
-        return this.inputCardService.createInputCard(
+        return this.outputCardService.createInputCard(
             outputCardDto);
     }
 

@@ -1,4 +1,4 @@
-package smilyk.homeacc.service.inputCard;
+package smilyk.homeacc.service.uotputCard;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class OutputCardServiceImplTest {
     private Bill billAllCurrency;
 
     @InjectMocks
-    InputCardServiceImpl inputCardService;
+    OutputCardServiceImpl inputCardService;
     @Mock
     InputCardRepository inputCardRepository;
     @Mock

@@ -11,7 +11,7 @@ import smilyk.homeacc.enums.CategoryType;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.model.Category;
 import smilyk.homeacc.model.Subcategory;
-import smilyk.homeacc.service.inputCard.InputCardService;
+import smilyk.homeacc.service.uotputCard.OutputCardService;
 import smilyk.homeacc.service.validation.ValidatorService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,7 +34,7 @@ class OutputCardControllerTest {
     OutputCardController outputCardController;
 
     @Mock
-    InputCardService inputCardService;
+    OutputCardService outputCardService;
 
     @Mock
     ValidatorService validatorService;
@@ -90,7 +90,7 @@ class OutputCardControllerTest {
 
     @Test
     void createInputCard() {
-        when(inputCardService.createInputCard(any(OutputCardDto.class))).thenReturn(outputCardDto);
+        when(outputCardService.createInputCard(any(OutputCardDto.class))).thenReturn(outputCardDto);
         when(validatorService.checkCategory(anyString(), anyString())).thenReturn(category);
         when(validatorService.checkSubcategory(anyString(), anyString())).thenReturn(subcategory);
         OutputCardDto restoredOutputCardDto = outputCardController.createInputCard(outputCardDto);
@@ -101,7 +101,7 @@ class OutputCardControllerTest {
     }
     @Test
     void nullFields(){
-        when(inputCardService.createInputCard(any(OutputCardDto.class))).thenReturn(outputCardDtoNullFields);
+        when(outputCardService.createInputCard(any(OutputCardDto.class))).thenReturn(outputCardDtoNullFields);
         when(validatorService.checkCategory(anyString(), anyString())).thenReturn(category);
         when(validatorService.checkSubcategory(anyString(), anyString())).thenReturn(subcategory);
         OutputCardDto restoredOutputCardDto = outputCardController.createInputCard(outputCardDtoNullFields);

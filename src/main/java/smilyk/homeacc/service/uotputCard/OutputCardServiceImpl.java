@@ -1,4 +1,4 @@
-package smilyk.homeacc.service.inputCard;
+package smilyk.homeacc.service.uotputCard;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import smilyk.homeacc.service.user.UserServiceImpl;
 import smilyk.homeacc.utils.Utils;
 
 @Service
-public class InputCardServiceImpl implements InputCardService {
+public class OutputCardServiceImpl implements OutputCardService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
     ModelMapper modelMapper = new ModelMapper();
     @Autowired
@@ -73,6 +73,7 @@ public class InputCardServiceImpl implements InputCardService {
             .note(outputCardDto.getNote())
             .sum(outputCardDto.getSum())
             .unit(outputCardDto.getUnit())
+            .createCardDate(outputCardDto.getCreateCardDate())
             .build();
         outputCard.setInputCardUuid(utils.generateUserUuid().toString());
         outputCard.setDeleted(false);

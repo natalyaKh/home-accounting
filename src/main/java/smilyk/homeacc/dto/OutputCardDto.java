@@ -4,6 +4,7 @@ import lombok.*;
 import smilyk.homeacc.enums.Currency;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,7 +32,8 @@ public class OutputCardDto {
     Double discount;
     @NotNull(message="Count cannot be null")
     Double count;
-
     String unit;
+    @NotNull(message = "Create date can not bu null")
+    Date createCardDate;
 
 }

@@ -5,6 +5,7 @@ import smilyk.homeacc.enums.Currency;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -62,5 +63,7 @@ public class OutputCard extends BaseEntity implements Serializable {
     String categoryName;
     @Column(nullable = false)
     String subcategoryName;
+    @Column(nullable = false)
+    private Date createCardDate;
 
 }
