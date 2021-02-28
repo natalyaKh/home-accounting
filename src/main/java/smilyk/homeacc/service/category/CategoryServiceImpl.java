@@ -40,11 +40,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryDto> getAllCategoryByUserUuid(String userUuid) {
 //        TODO test
-        Optional<Category> categoryOptional = categoryRepository.findByUserUuid(userUuid);
+        Optional<List<Category>> categoryOptional = categoryRepository.findByUserUuid(userUuid);
         if(!categoryOptional.isPresent()){
             return new ArrayList<>();
         }
-        List<CategoryDto> categoryDtoList = categoryOptional.stream().map(this::categoryToCategoryDto)
+        List<CategoryDto> categoryDtoList = categoryOptional.get().stream().map(this::categoryToCategoryDto)
             .collect(Collectors.toList());
         return categoryDtoList;
     }
@@ -52,6 +52,5 @@ public class CategoryServiceImpl implements CategoryService {
     private  CategoryDto categoryToCategoryDto(Category category) {
         return modelMapper.map(category, CategoryDto.class);
     }
-
 
 }

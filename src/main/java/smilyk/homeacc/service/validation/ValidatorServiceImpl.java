@@ -108,7 +108,7 @@ public class ValidatorServiceImpl implements ValidatorService {
             return subcategoryOptional.get();
         }
         SubcategoryDto subcategoryDto = SubcategoryDto.builder()
-            .subCategoryName(subcategoryName)
+            .subcategoryName(subcategoryName)
             .userUuid(userUuid)
             .description("")
             .build();

@@ -31,7 +31,7 @@ public class SubcategoryServiceImpl implements SubcategoryService {
         subcategory.setSubcategoryUuid(utils.generateUserUuid().toString());
         subcategory.setDeleted(false);
         Subcategory savedSubcategory = subcategoryRepository.save(subcategory);
-        LOGGER.info(CategorySubcategoryConstant.SUBCATEGORY_WITH_NAME + subcategoryDto.getSubCategoryName() +
+        LOGGER.info(CategorySubcategoryConstant.SUBCATEGORY_WITH_NAME + subcategoryDto.getSubcategoryName() +
             CategorySubcategoryConstant.CREATED);
         return savedSubcategory;
     }
@@ -39,11 +39,11 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     @Override
     public List<SubcategoryDto> getAllSubcategoryByUserUuid(String userUuid) {
 //        TODO test
-        Optional<Subcategory> subcategoryOptional = subcategoryRepository.findByUserUuid(userUuid);
+        Optional<List<Subcategory>> subcategoryOptional = subcategoryRepository.findByUserUuid(userUuid);
         if(!subcategoryOptional.isPresent()){
             return new ArrayList<>();
         }
-        List<SubcategoryDto> subcategoryDto = subcategoryOptional.stream().map(this::subcategoryToSubcategoryDto)
+        List<SubcategoryDto> subcategoryDto = subcategoryOptional.get().stream().map(this::subcategoryToSubcategoryDto)
             .collect(Collectors.toList());
         return subcategoryDto;
     }

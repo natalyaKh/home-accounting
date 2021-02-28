@@ -11,15 +11,15 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Builder
 public class CategoryDto {
-    @NotNull(message="User uuid cannot be null")
+    @NotNull(message = "User uuid cannot be null")
     String userUuid;
 
-    @NotNull(message="Category name cannot be null")
+    @NotNull(message = "Category name cannot be null")
     String categoryName;
-
+    String categoryUuid;
     String description;
 
-    @NotNull(message="Category type cannot be null")
+    @NotNull(message = "Category type cannot be null")
     CategoryType type;
 
 }

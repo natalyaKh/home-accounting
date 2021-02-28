@@ -13,9 +13,10 @@ public class SubcategoryDto {
     @NotNull(message="User uuid cannot be null")
     String userUuid;
     @NotNull(message="Subategory name cannot be null")
-    String subCategoryName;
+    String subcategoryName;
     @NotNull(message="Category name cannot be null")
     String description;
+    String subcategoryUuid;
 
 
 }
