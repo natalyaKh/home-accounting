@@ -7,7 +7,6 @@ import smilyk.homeacc.dto.BillDto;
 import smilyk.homeacc.dto.OperationStatuDto;
 import smilyk.homeacc.dto.TransferResourcesBetweenBillsDto;
 import smilyk.homeacc.dto.TransferResourcesResponseDto;
-import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.enums.RequestOperationName;
 import smilyk.homeacc.enums.RequestOperationStatus;
 import smilyk.homeacc.service.bill.BillService;
@@ -98,7 +97,7 @@ public class BillController {
 //    checked
     @PutMapping("/{billName}/{userUuid}")
     public BillDto changeMailBill(@PathVariable String billName, @PathVariable String userUuid) {
-        validatorService.ckeckBill(billName);
+        validatorService.checkBill(billName);
         validatorService.checkBillByUser(billName, userUuid);
         return billService.changeMailBill(billName);
     }

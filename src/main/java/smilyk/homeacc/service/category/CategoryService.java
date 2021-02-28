@@ -10,4 +10,12 @@ public interface CategoryService {
     Category save(CategoryDto categoryDto);
 
     List<CategoryDto> getAllCategoryByUserUuid(String userUuid);
+
+    CategoryDto createCategory(CategoryDto categoryDto);
+
+    CategoryDto deleteCategoryByCategoryUuid(String categoryUuid);
+
+    CategoryDto updateCategory(CategoryDto categoryDto);
+
+    CategoryDto getCategoryByCategoryUuid(String categoryUuid);
 }

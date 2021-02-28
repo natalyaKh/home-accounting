@@ -27,7 +27,6 @@ import smilyk.homeacc.service.user.UserServiceImpl;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -116,6 +115,32 @@ public class ValidatorServiceImpl implements ValidatorService {
     }
 
     @Override
+    public void checkCategoryByName(String categoryName, String userUuid){
+        Optional<Category> categoryOptional = categoryRepository.findByCategoryNameAndUserUuid(categoryName, userUuid);
+        if(categoryOptional.isPresent()){
+            LOGGER.error(CategorySubcategoryConstant.CATEGORY_WITH_NAME + categoryName
+                + CategorySubcategoryConstant.EXISTS);
+            throw new HomeaccException(
+                CategorySubcategoryConstant.CATEGORY_WITH_NAME + categoryName + CategorySubcategoryConstant.EXISTS
+            );
+        }
+//        TODO test
+    }
+
+    @Override
+    public void checkCategoryByNameForDeleted(String categoryUuid, String userUuid) {
+        Optional<Category> categoryOptional = categoryRepository.findByCategoryUuidAndUserUuid(categoryUuid, userUuid);
+        if(!categoryOptional.isPresent()){
+            LOGGER.error(CategorySubcategoryConstant.CATEGORY_WITH_UUID + categoryUuid
+                + CategorySubcategoryConstant.NOT_FOUND);
+            throw new HomeaccException(
+                CategorySubcategoryConstant.CATEGORY_WITH_UUID + categoryUuid + CategorySubcategoryConstant.NOT_FOUND
+            );
+        }
+        //        TODO test
+    }
+
+    @Override
     public void checkUniqueBill(String billName) {
         LOGGER.info(ValidatorConstants.CHECK_BILL_BY_BILL_NAME + billName);
         Optional<Bill> bill = billRepository.findByBillNameAndDeleted(billName, false);
@@ -126,7 +151,7 @@ public class ValidatorServiceImpl implements ValidatorService {
     }
 
     @Override
-    public void ckeckBill(String billName) {
+    public void checkBill(String billName) {
         LOGGER.info(ValidatorConstants.CHECK_BILL_BY_BILL_NAME + billName);
         Optional<Bill> bill = billRepository.findByBillNameAndDeleted(billName, false);
         if (bill.isEmpty()) {

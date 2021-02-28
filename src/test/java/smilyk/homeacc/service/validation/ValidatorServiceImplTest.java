@@ -1,7 +1,5 @@
 package smilyk.homeacc.service.validation;
 
-import static org.mockito.ArgumentMatchers.any;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -31,8 +29,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 class ValidatorServiceImplTest {
@@ -208,13 +205,13 @@ class ValidatorServiceImplTest {
     @Test
     void testCkeckBillValid() {
         when(billRepository.findByBillNameAndDeleted(anyString(), eq(false))).thenReturn(returnCacheValue);
-        validatorService.ckeckBill(BILL_NAME);
+        validatorService.checkBill(BILL_NAME);
     }
 
     @Test
     void testCheckBillNotValid() {
         when(billRepository.findByBillNameAndDeleted(anyString(), eq(false))).thenReturn(Optional.empty());
-        assertThrows(HomeaccException.class, () -> validatorService.ckeckBill(BILL_NAME));
+        assertThrows(HomeaccException.class, () -> validatorService.checkBill(BILL_NAME));
     }
 
     @Test

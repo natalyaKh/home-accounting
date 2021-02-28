@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -26,30 +25,71 @@ public class CategoryServiceImpl implements CategoryService {
     CategoryRepository categoryRepository;
     @Autowired
     Utils utils;
+
     @Override
     public Category save(CategoryDto categoryDto) {
-        Category category = modelMapper.map(categoryDto, Category.class);
-        category.setCategoryUuid(utils.generateUserUuid().toString());
-        category.setDeleted(false);
-        Category savedCategory = categoryRepository.save(category);
-        LOGGER.info(CategorySubcategoryConstant.CATEGORY_WITH_NAME + category.getCategoryName() +
-            CategorySubcategoryConstant.CREATED);
-        return savedCategory;
+        return createCategoryForSaving(categoryDto);
     }
 
     @Override
     public List<CategoryDto> getAllCategoryByUserUuid(String userUuid) {
 //        TODO test
         Optional<List<Category>> categoryOptional = categoryRepository.findByUserUuid(userUuid);
-        if(!categoryOptional.isPresent()){
-            return new ArrayList<>();
-        }
-        List<CategoryDto> categoryDtoList = categoryOptional.get().stream().map(this::categoryToCategoryDto)
-            .collect(Collectors.toList());
-        return categoryDtoList;
+        return categoryOptional.map(categories -> categories.stream().map(this::categoryToCategoryDto)
+            .collect(Collectors.toList())).orElseGet(ArrayList::new);
     }
 
-    private  CategoryDto categoryToCategoryDto(Category category) {
+    @Override
+    public CategoryDto createCategory(CategoryDto categoryDto) {
+        Category category = createCategoryForSaving(categoryDto);
+//        TODO test
+        return modelMapper.map(category, CategoryDto.class);
+    }
+
+    private Category createCategoryForSaving(CategoryDto categoryDto) {
+        Category category = modelMapper.map(categoryDto, Category.class);
+        category.setCategoryUuid(utils.generateUserUuid().toString());
+        category.setDeleted(false);
+        Category savedCategory = categoryRepository.save(category);
+        LOGGER.info(CategorySubcategoryConstant.CATEGORY_WITH_NAME + category.getCategoryName() +
+            CategorySubcategoryConstant.CREATED);
+        return category;
+    }
+
+    @Override
+    public CategoryDto deleteCategoryByCategoryUuid(String categoryUuid) {
+        //        TODO test
+        Optional<Category> category = categoryRepository.findByCategoryUuid(categoryUuid);
+        categoryRepository.delete(category.get());
+        LOGGER.info(CategorySubcategoryConstant.CATEGORY_WITH_UUID + categoryUuid + CategorySubcategoryConstant.DELETED);
+        return modelMapper.map(category.get(), CategoryDto.class);
+    }
+
+    @Override
+    public CategoryDto updateCategory(CategoryDto categoryDto) {
+        //        TODO test
+        Optional<Category> optionalCategory = categoryRepository.findByCategoryUuidAndUserUuid(categoryDto.getCategoryUuid(),
+            categoryDto.getUserUuid());
+        Category category = optionalCategory.get();
+        category.setDescription(categoryDto.getDescription());
+        category.setCategoryName(categoryDto.getCategoryName());
+        categoryRepository.save(category);
+        LOGGER.info(CategorySubcategoryConstant.CATEGORY_WITH_UUID + categoryDto.getCategoryUuid()
+            + CategorySubcategoryConstant.UPDATED);
+        return categoryDto;
+    }
+
+    @Override
+    public CategoryDto getCategoryByCategoryUuid(String categoryUuid) {
+        //        TODO test
+     Optional<Category> optionalCategory = categoryRepository.findByCategoryUuid(categoryUuid);
+     if (!optionalCategory.isPresent()){
+         return CategoryDto.builder().build();
+     }
+        return  modelMapper.map(optionalCategory.get(), CategoryDto.class);
+    }
+
+    private CategoryDto categoryToCategoryDto(Category category) {
         return modelMapper.map(category, CategoryDto.class);
     }
 
