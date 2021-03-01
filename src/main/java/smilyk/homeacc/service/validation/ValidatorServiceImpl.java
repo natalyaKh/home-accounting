@@ -141,6 +141,18 @@ public class ValidatorServiceImpl implements ValidatorService {
     }
 
     @Override
+    public void checkSubcategoryByName(String subcategoryName, String userUuid) {
+        //        TODO test
+//        TODO
+    }
+
+    @Override
+    public void checkSubcategoryByNameForDeleted(String subcategoryUuid, String userUuid) {
+        //        TODO test
+//        TODO
+    }
+
+    @Override
     public void checkUniqueBill(String billName) {
         LOGGER.info(ValidatorConstants.CHECK_BILL_BY_BILL_NAME + billName);
         Optional<Bill> bill = billRepository.findByBillNameAndDeleted(billName, false);

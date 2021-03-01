@@ -27,4 +27,8 @@ public interface ValidatorService {
     void checkCategoryByName(String categoryName, String userUuid);
 
     void checkCategoryByNameForDeleted(String categoryUuid, String userUuid);
+
+    void checkSubcategoryByName(String subcategoryName, String userUuid);
+
+    void checkSubcategoryByNameForDeleted(String subcategoryUuid, String userUuid);
 }

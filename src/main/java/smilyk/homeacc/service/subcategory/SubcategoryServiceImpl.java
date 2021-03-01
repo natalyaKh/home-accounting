@@ -40,12 +40,36 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     public List<SubcategoryDto> getAllSubcategoryByUserUuid(String userUuid) {
 //        TODO test
         Optional<List<Subcategory>> subcategoryOptional = subcategoryRepository.findByUserUuid(userUuid);
-        if(!subcategoryOptional.isPresent()){
-            return new ArrayList<>();
-        }
-        List<SubcategoryDto> subcategoryDto = subcategoryOptional.get().stream().map(this::subcategoryToSubcategoryDto)
-            .collect(Collectors.toList());
-        return subcategoryDto;
+        return subcategoryOptional.map(subcategories -> subcategories.stream().map(this::subcategoryToSubcategoryDto)
+            .collect(Collectors.toList())).orElseGet(ArrayList::new);
+    }
+
+    @Override
+    public SubcategoryDto createSubcategory(SubcategoryDto subcategoryDto) {
+        //        TODO test
+//        TODO
+        return null;
+    }
+
+    @Override
+    public SubcategoryDto getSubcategoryBySubcategoryUuid(String subcategoryUuid) {
+        //        TODO test
+//        TODO
+        return null;
+    }
+
+    @Override
+    public SubcategoryDto deleteSubcategoryBySubcategoryUuid(String subcategoryUuid) {
+        //        TODO test
+//        TODO
+        return null;
+    }
+
+    @Override
+    public SubcategoryDto updateSubcategory(SubcategoryDto subcategoryDto) {
+        //        TODO test
+//        TODO
+        return null;
     }
 
     private SubcategoryDto  subcategoryToSubcategoryDto(Subcategory subcategory) {

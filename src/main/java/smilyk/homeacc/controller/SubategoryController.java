@@ -1,13 +1,8 @@
 package smilyk.homeacc.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import smilyk.homeacc.dto.CategoryDto;
+import org.springframework.web.bind.annotation.*;
 import smilyk.homeacc.dto.SubcategoryDto;
-import smilyk.homeacc.service.category.CategoryService;
 import smilyk.homeacc.service.subcategory.SubcategoryService;
 import smilyk.homeacc.service.validation.ValidatorService;
 
@@ -22,9 +17,36 @@ public class SubategoryController {
     @Autowired
     ValidatorService validatorService;
 
+    @PostMapping
+    public SubcategoryDto createSubcategory(@RequestBody SubcategoryDto subcategoryDto){
+        //        TODO test
+        validatorService.checkSubcategoryByName(subcategoryDto.getSubcategoryName(), subcategoryDto.getUserUuid());
+        return subcategoryService.createSubcategory(subcategoryDto);
+    }
+
     @GetMapping("/{userUuid}")
     public List<SubcategoryDto> getAllSubcategoryByUser(@PathVariable String userUuid){
 //        TODO test
         return subcategoryService.getAllSubcategoryByUserUuid(userUuid);
+    }
+
+    @GetMapping("/{subcategoryUuid}")
+    public SubcategoryDto getSubcategoryBySubcategoryUuid(@PathVariable String subcategoryUuid){
+        //        TODO test
+        return subcategoryService.getSubcategoryBySubcategoryUuid(subcategoryUuid);
+    }
+
+    @DeleteMapping("/{subcategoryUuid}/{userUuid}")
+    public SubcategoryDto deleteSubcategory(@PathVariable String subcategoryUuid, @PathVariable String userUuid){
+        validatorService.checkSubcategoryByNameForDeleted(subcategoryUuid, userUuid);
+        //        TODO test
+        return subcategoryService.deleteSubcategoryBySubcategoryUuid(subcategoryUuid);
+    }
+
+    @PutMapping()
+    public SubcategoryDto updateSubcategory(@RequestBody SubcategoryDto subcategoryDto){
+        validatorService.checkCategoryByNameForDeleted(subcategoryDto.getSubcategoryName(), subcategoryDto.getUserUuid());
+        //        TODO test
+        return subcategoryService.updateSubcategory(subcategoryDto);
     }
 }
