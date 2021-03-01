@@ -12,7 +12,7 @@ import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.model.Bill;
 import smilyk.homeacc.model.OutputCard;
 import smilyk.homeacc.repo.BillRepository;
-import smilyk.homeacc.repo.InputCardRepository;
+import smilyk.homeacc.repo.OutputCardRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
 import smilyk.homeacc.utils.Utils;
 
@@ -21,7 +21,7 @@ public class OutputCardServiceImpl implements OutputCardService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
     ModelMapper modelMapper = new ModelMapper();
     @Autowired
-    InputCardRepository inputCardRepository;
+    OutputCardRepository outputCardRepository;
     @Autowired
     Utils utils;
     @Autowired
@@ -36,8 +36,8 @@ public class OutputCardServiceImpl implements OutputCardService {
         billRepository.save(bill);
         LOGGER.info(BillConstants.BILL_SUM + BillConstants.FOR + BillConstants.BILL_WITH_NAME
         +bill.getBillName() + BillConstants.CHANGED);
-        OutputCard outputCard = getInputCard(outputCardDto);
-        inputCardRepository.save(outputCard);
+        OutputCard outputCard = getOutputCard(outputCardDto);
+        outputCardRepository.save(outputCard);
         LOGGER.info(OutputCardConstant.OUTPUT_CARD + outputCardDto.getUserUuid() +
             OutputCardConstant.CREATED);
         return modelMapper.map(outputCard, OutputCardDto.class);
@@ -56,7 +56,7 @@ public class OutputCardServiceImpl implements OutputCardService {
         return bill;
     }
 
-    private OutputCard getInputCard(OutputCardDto outputCardDto) {
+    private OutputCard getOutputCard(OutputCardDto outputCardDto) {
         OutputCard outputCard = OutputCard.builder()
             .deleted(false)
             .subcategoryUuid(outputCardDto.getSubCategoryUuid())
@@ -65,7 +65,7 @@ public class OutputCardServiceImpl implements OutputCardService {
             .categoryName(outputCardDto.getCategoryName())
             .billName(outputCardDto.getBillName())
             .billUuid(outputCardDto.getBillUuid())
-            .inputCardUuid(utils.generateUserUuid().toString())
+            .outputCardUuid(utils.generateUserUuid().toString())
             .count(outputCardDto.getCount())
             .currency(outputCardDto.getCurrency())
             .userUuid(outputCardDto.getUserUuid())
@@ -75,7 +75,7 @@ public class OutputCardServiceImpl implements OutputCardService {
             .unit(outputCardDto.getUnit())
             .createCardDate(outputCardDto.getCreateCardDate())
             .build();
-        outputCard.setInputCardUuid(utils.generateUserUuid().toString());
+        outputCard.setOutputCardUuid(utils.generateUserUuid().toString());
         outputCard.setDeleted(false);
         return outputCard;
     }

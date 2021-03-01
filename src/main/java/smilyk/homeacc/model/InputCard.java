@@ -13,15 +13,15 @@ import java.util.Date;
 @Setter
 @Builder
 @Entity
-@Table(name = "output")
-public class OutputCard extends BaseEntity implements Serializable {
-    private static final long serialVersionUID = 6834942411559736697L;
+@Table(name = "input")
+public class InputCard extends BaseEntity implements Serializable {
+    private static final long serialVersionUID = 5152647687223062984L;
 
     @Column(nullable = false, unique = true)
-    private String outputCardUuid;
+     String inputCardUuid;
 
     @Column(nullable = false)
-    private String userUuid;
+     String userUuid;
 
     @Column(nullable = false)
     String billName;
@@ -30,16 +30,16 @@ public class OutputCard extends BaseEntity implements Serializable {
     String billUuid;
 
     @Column(nullable = false)
+    String categoryName;
+
+    @Column(nullable = false)
+    String subcategoryName;
+
+    @Column(nullable = false)
     String subcategoryUuid;
 
     @Column(nullable = false)
     String categoryUuid;
-//    примечания
-    @Column()
-    String note;
-    //    by default = false
-    @Column(nullable = false)
-    boolean deleted;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -48,22 +48,22 @@ public class OutputCard extends BaseEntity implements Serializable {
     //by default = 0
     @Column(nullable = false)
     Double sum;
-     //скидка
-    //by default = 0
-    @Column(nullable = false)
-    Double discount;
 
     //by default = 0
     @Column(nullable = false)
     Double count;
+
     //ед измерения
     @Column()
     String unit;
-    @Column(nullable = false)
-    String categoryName;
-    @Column(nullable = false)
-    String subcategoryName;
-    @Column(nullable = false)
-    Date createCardDate;
 
+    @Column(nullable = false)
+     Date createCardDate;
+
+    @Column()
+    String note;
+
+    //    by default = false
+    @Column(nullable = false)
+    boolean deleted;
 }

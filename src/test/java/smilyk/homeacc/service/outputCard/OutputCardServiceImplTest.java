@@ -11,7 +11,7 @@ import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.model.Bill;
 import smilyk.homeacc.model.OutputCard;
 import smilyk.homeacc.repo.BillRepository;
-import smilyk.homeacc.repo.InputCardRepository;
+import smilyk.homeacc.repo.OutputCardRepository;
 import smilyk.homeacc.utils.Utils;
 
 import java.util.Optional;
@@ -35,7 +35,7 @@ class OutputCardServiceImplTest {
     @InjectMocks
     OutputCardServiceImpl inputCardService;
     @Mock
-    InputCardRepository inputCardRepository;
+    OutputCardRepository outputCardRepository;
     @Mock
     Utils utils;
     @Mock
@@ -56,7 +56,7 @@ class OutputCardServiceImplTest {
             .discount(10.0)
             .userUuid("2222")
             .currency(Currency.USA)
-            .inputCardUuid("121212")
+            .outputCardUuid("121212")
             .count(2.0)
             .categoryUuid("2121")
             .subcategoryUuid("2222")
@@ -74,7 +74,7 @@ class OutputCardServiceImplTest {
             .discount(10.0)
             .userUuid("2222")
             .currency(Currency.ISR)
-            .inputCardUuid("121212")
+            .outputCardUuid("121212")
             .count(2.0)
             .categoryUuid("2121")
             .subcategoryUuid("2222")
@@ -92,7 +92,7 @@ class OutputCardServiceImplTest {
             .discount(10.0)
             .userUuid("2222")
             .currency(Currency.UKR)
-            .inputCardUuid("121212")
+            .outputCardUuid("121212")
             .count(2.0)
             .categoryUuid("2121")
             .subcategoryUuid("2222")
@@ -118,7 +118,7 @@ class OutputCardServiceImplTest {
         when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(),
             eq(false))).thenReturn(restoredBill);
         when(billRepository.save(any(Bill.class))).thenReturn(billAllCurrency);
-        when(inputCardRepository.save(any(OutputCard.class))).thenReturn(outputCardIsr);
+        when(outputCardRepository.save(any(OutputCard.class))).thenReturn(outputCardIsr);
         when(utils.generateUserUuid()).thenReturn(UUID.randomUUID());
         OutputCardDto outputCardDto = modelMapper.map(outputCardIsr, OutputCardDto.class);
         OutputCardDto inputCard = inputCardService.createInputCard(outputCardDto);
@@ -135,7 +135,7 @@ class OutputCardServiceImplTest {
         when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(),
             eq(false))).thenReturn(restoredBill);
         when(billRepository.save(any(Bill.class))).thenReturn(billAllCurrency);
-        when(inputCardRepository.save(any(OutputCard.class))).thenReturn(outputCardUsa);
+        when(outputCardRepository.save(any(OutputCard.class))).thenReturn(outputCardUsa);
         when(utils.generateUserUuid()).thenReturn(UUID.randomUUID());
         OutputCardDto outputCardDto = modelMapper.map(outputCardUsa, OutputCardDto.class);
         OutputCardDto inputCard = inputCardService.createInputCard(outputCardDto);
@@ -153,7 +153,7 @@ class OutputCardServiceImplTest {
         when(billRepository.findByBillNameAndUserUuidAndDeleted(anyString(), anyString(),
             eq(false))).thenReturn(restoredBill);
         when(billRepository.save(any(Bill.class))).thenReturn(billAllCurrency);
-        when(inputCardRepository.save(any(OutputCard.class))).thenReturn(outputCardUkr);
+        when(outputCardRepository.save(any(OutputCard.class))).thenReturn(outputCardUkr);
         when(utils.generateUserUuid()).thenReturn(UUID.randomUUID());
         OutputCardDto outputCardDto = modelMapper.map(outputCardUkr, OutputCardDto.class);
         OutputCardDto inputCard = inputCardService.createInputCard(outputCardDto);

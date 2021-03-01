@@ -28,7 +28,7 @@ public class OutputCardController {
      * @return inputCardDto
      */
     @PostMapping
-    public OutputCardDto createInputCard(@Validated @RequestBody OutputCardDto outputCardDto) {
+    public OutputCardDto createOutputCard(@Validated @RequestBody OutputCardDto outputCardDto) {
         validatorService.checkBillByUser(outputCardDto.getBillName(), outputCardDto.getUserUuid());
         validatorService.checkBillByUserAndCurrency(
             outputCardDto.getBillName(), outputCardDto.getUserUuid(), outputCardDto.getCurrency());

@@ -93,7 +93,7 @@ class OutputCardControllerTest {
         when(outputCardService.createInputCard(any(OutputCardDto.class))).thenReturn(outputCardDto);
         when(validatorService.checkCategory(anyString(), anyString())).thenReturn(category);
         when(validatorService.checkSubcategory(anyString(), anyString())).thenReturn(subcategory);
-        OutputCardDto restoredOutputCardDto = outputCardController.createInputCard(outputCardDto);
+        OutputCardDto restoredOutputCardDto = outputCardController.createOutputCard(outputCardDto);
 
         assertNotNull(restoredOutputCardDto);
         assertEquals(outputCardDto, restoredOutputCardDto);
@@ -104,7 +104,7 @@ class OutputCardControllerTest {
         when(outputCardService.createInputCard(any(OutputCardDto.class))).thenReturn(outputCardDtoNullFields);
         when(validatorService.checkCategory(anyString(), anyString())).thenReturn(category);
         when(validatorService.checkSubcategory(anyString(), anyString())).thenReturn(subcategory);
-        OutputCardDto restoredOutputCardDto = outputCardController.createInputCard(outputCardDtoNullFields);
+        OutputCardDto restoredOutputCardDto = outputCardController.createOutputCard(outputCardDtoNullFields);
 
         assertNotNull(restoredOutputCardDto);
         assertEquals("", restoredOutputCardDto.getUnit());
