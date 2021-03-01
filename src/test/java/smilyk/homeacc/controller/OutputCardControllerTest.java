@@ -11,7 +11,7 @@ import smilyk.homeacc.enums.CategoryType;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.model.Category;
 import smilyk.homeacc.model.Subcategory;
-import smilyk.homeacc.service.uotputCard.OutputCardService;
+import smilyk.homeacc.service.outputCard.OutputCardService;
 import smilyk.homeacc.service.validation.ValidatorService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

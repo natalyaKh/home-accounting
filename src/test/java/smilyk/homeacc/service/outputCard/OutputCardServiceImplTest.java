@@ -1,4 +1,4 @@
-package smilyk.homeacc.service.uotputCard;
+package smilyk.homeacc.service.outputCard;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

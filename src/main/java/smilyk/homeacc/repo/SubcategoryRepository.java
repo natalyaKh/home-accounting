@@ -11,4 +11,6 @@ public interface SubcategoryRepository extends JpaRepository<Subcategory, Long> 
     Optional<Subcategory> findBySubcategoryNameAndUserUuid(String subcategoryName, String userUuid);
 
     Optional<List<Subcategory>> findByUserUuid(String userUuid);
+
+
 }

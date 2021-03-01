@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.model.Category;
 import smilyk.homeacc.model.Subcategory;
-import smilyk.homeacc.service.uotputCard.OutputCardService;
+import smilyk.homeacc.service.outputCard.OutputCardService;
 import smilyk.homeacc.service.validation.ValidatorService;
 
 @RestController

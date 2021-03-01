@@ -1,4 +1,4 @@
-package smilyk.homeacc.service.uotputCard;
+package smilyk.homeacc.service.outputCard;
 
 import smilyk.homeacc.dto.OutputCardDto;
 

@@ -1,4 +1,4 @@
-package smilyk.homeacc.service.uotputCard;
+package smilyk.homeacc.service.outputCard;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;

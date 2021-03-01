@@ -142,14 +142,30 @@ public class ValidatorServiceImpl implements ValidatorService {
 
     @Override
     public void checkSubcategoryByName(String subcategoryName, String userUuid) {
-        //        TODO test
+        Optional<Subcategory> subcategoryOptional = subcategoryRepository
+            .findBySubcategoryNameAndUserUuid(subcategoryName, userUuid);
+        if(subcategoryOptional.isPresent()){
+            LOGGER.error(CategorySubcategoryConstant.SUBCATEGORY_WITH_NAME + subcategoryName
+                + CategorySubcategoryConstant.EXISTS);
+            throw new HomeaccException(
+                CategorySubcategoryConstant.CATEGORY_WITH_NAME + subcategoryName + CategorySubcategoryConstant.EXISTS
+            );
+        }
 //        TODO
     }
 
     @Override
     public void checkSubcategoryByNameForDeleted(String subcategoryUuid, String userUuid) {
+        Optional<Subcategory> subcategoryOptional = subcategoryRepository
+            .findBySubcategoryNameAndUserUuid(subcategoryUuid, userUuid);
+        if(!subcategoryOptional.isPresent()){
+            LOGGER.error(CategorySubcategoryConstant.SUBCATEGORY_WITH_UUID + subcategoryUuid
+                + CategorySubcategoryConstant.NOT_FOUND);
+            throw new HomeaccException(
+                CategorySubcategoryConstant.CATEGORY_WITH_UUID + subcategoryUuid + CategorySubcategoryConstant.NOT_FOUND
+            );
+        }
         //        TODO test
-//        TODO
     }
 
     @Override
@@ -227,10 +243,6 @@ public class ValidatorServiceImpl implements ValidatorService {
             throw new HomeaccException(ValidatorConstants.CURRENCY_IS_WRONG + ValidatorConstants.CHOOSE_CURRENCY +
                 mapper.writeValueAsString(currency)
             );
-//         } catch (JsonProcessingException e) {
-//             LOGGER.error(e.getMessage());
-//             throw new HomeaccException(e.getMessage());
-
         }
     }
 
