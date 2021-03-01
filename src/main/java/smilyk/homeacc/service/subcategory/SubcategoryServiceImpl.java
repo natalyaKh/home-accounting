@@ -25,8 +25,13 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     SubcategoryRepository subcategoryRepository;
     @Autowired
     Utils utils;
+
     @Override
     public Subcategory save(SubcategoryDto subcategoryDto) {
+        return getSavedSubcategory(subcategoryDto);
+    }
+
+    private Subcategory getSavedSubcategory(SubcategoryDto subcategoryDto) {
         Subcategory subcategory = modelMapper.map(subcategoryDto, Subcategory.class);
         subcategory.setSubcategoryUuid(utils.generateUserUuid().toString());
         subcategory.setDeleted(false);
@@ -34,6 +39,13 @@ public class SubcategoryServiceImpl implements SubcategoryService {
         LOGGER.info(CategorySubcategoryConstant.SUBCATEGORY_WITH_NAME + subcategoryDto.getSubcategoryName() +
             CategorySubcategoryConstant.CREATED);
         return savedSubcategory;
+    }
+
+    @Override
+    public SubcategoryDto createSubcategory(SubcategoryDto subcategoryDto) {
+        //        TODO test
+        Subcategory savedSubcategory = getSavedSubcategory(subcategoryDto);
+        return modelMapper.map(savedSubcategory, SubcategoryDto.class);
     }
 
     @Override
@@ -45,34 +57,42 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     }
 
     @Override
-    public SubcategoryDto createSubcategory(SubcategoryDto subcategoryDto) {
-        //        TODO test
-//        TODO
-        return null;
-    }
-
-    @Override
     public SubcategoryDto getSubcategoryBySubcategoryUuid(String subcategoryUuid) {
         //        TODO test
-//        TODO
-        return null;
+        Optional<Subcategory> optionalSubcategory = subcategoryRepository.findBySubcategoryUuid(subcategoryUuid);
+        if (optionalSubcategory.isEmpty()) {
+            return SubcategoryDto.builder().build();
+        }
+        return modelMapper.map(optionalSubcategory.get(), SubcategoryDto.class);
     }
 
     @Override
     public SubcategoryDto deleteSubcategoryBySubcategoryUuid(String subcategoryUuid) {
         //        TODO test
-//        TODO
-        return null;
+        Optional<Subcategory> optionalSubcategory = subcategoryRepository.findBySubcategoryUuid(subcategoryUuid);
+//        dont check optional because checked it in validation
+        subcategoryRepository.delete(optionalSubcategory.get());
+        LOGGER.info(CategorySubcategoryConstant.SUBCATEGORY_WITH_UUID + subcategoryUuid
+            + CategorySubcategoryConstant.DELETED);
+
+        return modelMapper.map(optionalSubcategory.get(), SubcategoryDto.class);
     }
 
     @Override
     public SubcategoryDto updateSubcategory(SubcategoryDto subcategoryDto) {
         //        TODO test
-//        TODO
-        return null;
+        Subcategory subcategory = subcategoryRepository.findBySubcategoryNameAndUserUuid(
+            subcategoryDto.getSubcategoryName(), subcategoryDto.getUserUuid()
+        ).get();
+        subcategory.setSubcategoryName(subcategoryDto.getSubcategoryName());
+        subcategory.setDescription(subcategoryDto.getDescription());
+        Subcategory savedSubcategory = subcategoryRepository.save(subcategory);
+        LOGGER.info(CategorySubcategoryConstant.SUBCATEGORY_WITH_UUID + savedSubcategory.getSubcategoryUuid()
+            + CategorySubcategoryConstant.UPDATED);
+        return modelMapper.map(savedSubcategory, SubcategoryDto.class);
     }
 
-    private SubcategoryDto  subcategoryToSubcategoryDto(Subcategory subcategory) {
+    private SubcategoryDto subcategoryToSubcategoryDto(Subcategory subcategory) {
         return modelMapper.map(subcategory, SubcategoryDto.class);
     }
 }
