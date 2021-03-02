@@ -24,7 +24,7 @@ public class SubategoryController {
         return subcategoryService.createSubcategory(subcategoryDto);
     }
 
-    @GetMapping("/{userUuid}")
+    @GetMapping("/user/{userUuid}")
     public List<SubcategoryDto> getAllSubcategoryByUser(@PathVariable String userUuid){
 //        TODO test
         return subcategoryService.getAllSubcategoryByUserUuid(userUuid);

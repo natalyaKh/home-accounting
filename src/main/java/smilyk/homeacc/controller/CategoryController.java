@@ -24,7 +24,7 @@ public class CategoryController {
         return categoryService.createCategory(categoryDto);
     }
 
-    @GetMapping("/{userUuid}")
+    @GetMapping("/user/{userUuid}")
     public List<CategoryDto> getAllCategoryByUser(@PathVariable String userUuid){
 //        TODO test
         return categoryService.getAllCategoryByUserUuid(userUuid);
