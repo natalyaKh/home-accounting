@@ -52,12 +52,21 @@ public class OutputCardServiceImpl implements OutputCardService {
 
 
 
+
     @Override
     public List<OutputCardDto> getAllOutputCardsByUserUuid(String userUuid) {
         Optional<List<OutputCard>> optionalInputCards = outputCardRepository.findAllByUserUuid(userUuid);
         return optionalInputCards.map(categories -> categories.stream().map(this::outputCardToOutputCardDto)
             .collect(Collectors.toList())).orElseGet(ArrayList::new);
 
+    }
+
+    @Override
+    public OutputCardDto deleteOutputCard(String outputCardUuid) {
+        Optional<OutputCard> optionalOutputCard = outputCardRepository.findByOutputCardUuid(outputCardUuid);
+        outputCardRepository.delete(optionalOutputCard.get());
+        LOGGER.info(OutputCardConstant.OUTPUT_CARD_WITH_UUID + outputCardUuid + OutputCardConstant.DELETED);
+        return modelMapper.map(optionalOutputCard.get(), OutputCardDto.class);
     }
 
     private OutputCardDto outputCardToOutputCardDto(OutputCard outputCard) {

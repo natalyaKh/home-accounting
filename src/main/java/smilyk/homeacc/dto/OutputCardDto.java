@@ -12,7 +12,7 @@ import java.util.Date;
 @Setter
 @Builder
 public class OutputCardDto {
-    String outputCardUuid;
+    String outputcardUuid;
     @NotNull(message="User uuid cannot be null")
     String userUuid;
     @NotNull(message="Bill name cannot be null")

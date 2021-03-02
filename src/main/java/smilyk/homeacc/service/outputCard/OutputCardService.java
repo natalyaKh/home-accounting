@@ -9,4 +9,6 @@ public interface OutputCardService {
     OutputCardDto createInputCard(OutputCardDto outputCardDto);
 
     List<OutputCardDto> getAllOutputCardsByUserUuid(String userUuid);
+
+    OutputCardDto deleteOutputCard(String outputCardUuid);
 }

@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface OutputCardRepository extends JpaRepository<OutputCard, Long> {
 
     Optional<List<OutputCard>> findAllByUserUuid(String userUuid);
+
+    Optional<OutputCard> findByOutputCardUuid(String outputCardUuid);
 }

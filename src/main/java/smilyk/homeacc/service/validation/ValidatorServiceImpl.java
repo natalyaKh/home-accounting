@@ -7,20 +7,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import smilyk.homeacc.constants.CategorySubcategoryConstant;
+import smilyk.homeacc.constants.OutputCardConstant;
 import smilyk.homeacc.constants.ValidatorConstants;
 import smilyk.homeacc.dto.CategoryDto;
 import smilyk.homeacc.dto.SubcategoryDto;
 import smilyk.homeacc.enums.CategoryType;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.exceptions.HomeaccException;
-import smilyk.homeacc.model.Bill;
-import smilyk.homeacc.model.Category;
-import smilyk.homeacc.model.Subcategory;
-import smilyk.homeacc.model.User;
-import smilyk.homeacc.repo.BillRepository;
-import smilyk.homeacc.repo.CategoryRepository;
-import smilyk.homeacc.repo.SubcategoryRepository;
-import smilyk.homeacc.repo.UserRepository;
+import smilyk.homeacc.model.*;
+import smilyk.homeacc.repo.*;
 import smilyk.homeacc.service.category.CategoryService;
 import smilyk.homeacc.service.subcategory.SubcategoryService;
 import smilyk.homeacc.service.user.UserServiceImpl;
@@ -52,6 +47,12 @@ public class ValidatorServiceImpl implements ValidatorService {
 
     @Autowired
     SubcategoryService subcategoryService;
+
+    @Autowired
+    OutputCardRepository outputCardRepository;
+
+    @Autowired
+    InputCardRepository inputCardRepository;
 
     @Override
     public void checkUserUnique(String email) {
@@ -166,6 +167,17 @@ public class ValidatorServiceImpl implements ValidatorService {
             );
         }
         //        TODO test
+    }
+
+    @Override
+    public void checkOutputForDeleted(String outputCardUuid) {
+        Optional<OutputCard> optionalOutputCard = outputCardRepository.findByOutputCardUuid(outputCardUuid);
+        if(!optionalOutputCard.isPresent()){
+            LOGGER.error(OutputCardConstant.OUTPUT_CARD_WITH_UUID + outputCardUuid
+            + OutputCardConstant.NOT_FOUND);
+            throw new HomeaccException(OutputCardConstant.OUTPUT_CARD_WITH_UUID + outputCardUuid
+                + OutputCardConstant.NOT_FOUND);
+        }
     }
 
     @Override
