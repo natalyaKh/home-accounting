@@ -51,16 +51,16 @@ public class InputCardServiceImpl implements InputCardService {
     }
 
     @Override
-    public List<InputCardDto> getAllInputCardsByUserUuid(String userUuid) {
+    public List<InputCardDto> getAllInputCardsByUserUuid(String userUuid){
         Optional<List<InputCard>> optionalInputCards = inputCardRepository.findAllByUserUuid(userUuid);
         return optionalInputCards.map(categories -> categories.stream().map(this::inputCardToInputCardDto)
             .collect(Collectors.toList())).orElseGet(ArrayList::new);
-    }
 
+    }
+// TODO test
     private InputCardDto inputCardToInputCardDto(InputCard inputCard) {
         return modelMapper.map(inputCard, InputCardDto.class);
     }
-
 
     private InputCard getInputCard(InputCardDto inputCardDto) {
         return InputCard.builder()

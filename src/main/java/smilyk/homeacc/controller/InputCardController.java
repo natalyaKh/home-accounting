@@ -47,6 +47,7 @@ public class InputCardController {
 
     @GetMapping("/{userUuid}")
     public List<InputCardDto> getAllInputCardsByUserUuid(@PathVariable String userUuid){
+//        TODO test
         return this.inputCardService.getAllInputCardsByUserUuid(userUuid);
     }
 
