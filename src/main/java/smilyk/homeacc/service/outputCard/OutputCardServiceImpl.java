@@ -70,7 +70,9 @@ public class OutputCardServiceImpl implements OutputCardService {
     }
 
     private OutputCardDto outputCardToOutputCardDto(OutputCard outputCard) {
-        return modelMapper.map(outputCard, OutputCardDto.class);
+        OutputCardDto outputCardDto = modelMapper.map(outputCard, OutputCardDto.class);
+        outputCardDto.setOutputcardUuid(outputCard.getOutputCardUuid());
+        return outputCardDto;
 // TODO test
     }
 

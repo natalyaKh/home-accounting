@@ -33,5 +33,7 @@ public interface ValidatorService {
     void checkSubcategoryByNameForDeleted(String subcategoryUuid, String userUuid);
 
     void checkOutputForDeleted(String outputCardUuid);
+
+    void checkInputForDeleted(String inputCardUuid);
 }
 

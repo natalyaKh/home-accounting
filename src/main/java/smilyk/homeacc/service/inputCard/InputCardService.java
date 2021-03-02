@@ -8,4 +8,6 @@ public interface InputCardService {
     InputCardDto createInputCard(InputCardDto inputCardDto);
 
     List<InputCardDto> getAllInputCardsByUserUuid(String userUuid);
+
+    InputCardDto deleteInputCard(String inputCardUuid);
 }

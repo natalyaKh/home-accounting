@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import smilyk.homeacc.constants.BillConstants;
 import smilyk.homeacc.constants.InputCardConstant;
 import smilyk.homeacc.dto.InputCardDto;
-import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.model.Bill;
 import smilyk.homeacc.model.InputCard;
@@ -57,7 +56,16 @@ public class InputCardServiceImpl implements InputCardService {
             .collect(Collectors.toList())).orElseGet(ArrayList::new);
 
     }
-// TODO test
+
+    @Override
+    public InputCardDto deleteInputCard(String inputCardUuid) {
+        Optional<InputCard> optionalInputCard = inputCardRepository.findByInputCardUuid(inputCardUuid);
+        inputCardRepository.delete(optionalInputCard.get());
+        LOGGER.info(InputCardConstant.INPUT_CARD_WITH_UUID + inputCardUuid + InputCardConstant.DELETED);
+        return modelMapper.map(optionalInputCard.get(), InputCardDto.class);
+    }
+
+    // TODO test
     private InputCardDto inputCardToInputCardDto(InputCard inputCard) {
         return modelMapper.map(inputCard, InputCardDto.class);
     }

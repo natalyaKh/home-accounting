@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface InputCardRepository extends JpaRepository<InputCard, Long> {
     Optional<List<InputCard>> findAllByUserUuid(String userUuid);
+
+    Optional<InputCard> findByInputCardUuid(String inputCardUuid);
 }

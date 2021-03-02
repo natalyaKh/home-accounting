@@ -51,4 +51,10 @@ public class InputCardController {
         return this.inputCardService.getAllInputCardsByUserUuid(userUuid);
     }
 
+    @DeleteMapping("/{inputCardUuid}")
+    public InputCardDto deleteInputCard(@PathVariable String inputCardUuid){
+        validatorService.checkInputForDeleted(inputCardUuid);
+//        TODO test
+        return this.inputCardService.deleteInputCard(inputCardUuid);
+    }
 }

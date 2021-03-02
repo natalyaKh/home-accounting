@@ -181,6 +181,17 @@ public class ValidatorServiceImpl implements ValidatorService {
     }
 
     @Override
+    public void checkInputForDeleted(String inputCardUuid) {
+        Optional<InputCard> optionalInputCard = inputCardRepository.findByInputCardUuid(inputCardUuid);
+        if(!optionalInputCard.isPresent()){
+            LOGGER.error(OutputCardConstant.INPUT_CARD_WITH_UUID + inputCardUuid
+                + OutputCardConstant.NOT_FOUND);
+            throw new HomeaccException(OutputCardConstant.INPUT_CARD_WITH_UUID + inputCardUuid
+                + OutputCardConstant.NOT_FOUND);
+        }
+    }
+
+    @Override
     public void checkUniqueBill(String billName) {
         LOGGER.info(ValidatorConstants.CHECK_BILL_BY_BILL_NAME + billName);
         Optional<Bill> bill = billRepository.findByBillNameAndDeleted(billName, false);
