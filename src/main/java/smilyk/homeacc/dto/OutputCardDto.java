@@ -12,6 +12,7 @@ import java.util.Date;
 @Setter
 @Builder
 public class OutputCardDto {
+    String outputCardUuid;
     @NotNull(message="User uuid cannot be null")
     String userUuid;
     @NotNull(message="Bill name cannot be null")
@@ -19,8 +20,8 @@ public class OutputCardDto {
     @NotNull(message="Bill uuid cannot be null")
     String billUuid;
     @NotNull(message="Subategory name cannot be null")
-    String subCategoryName;
-    String subCategoryUuid;
+    String subcategoryName;
+    String subcategoryUuid;
     @NotNull(message="Category name cannot be null")
     String categoryName;
     String categoryUuid;

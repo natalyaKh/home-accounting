@@ -7,14 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import smilyk.homeacc.constants.BillConstants;
 import smilyk.homeacc.constants.OutputCardConstant;
+import smilyk.homeacc.dto.InputCardDto;
 import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.model.Bill;
+import smilyk.homeacc.model.InputCard;
 import smilyk.homeacc.model.OutputCard;
 import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.repo.OutputCardRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
 import smilyk.homeacc.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OutputCardServiceImpl implements OutputCardService {
@@ -43,6 +50,21 @@ public class OutputCardServiceImpl implements OutputCardService {
         return modelMapper.map(outputCard, OutputCardDto.class);
     }
 
+
+
+    @Override
+    public List<OutputCardDto> getAllOutputCardsByUserUuid(String userUuid) {
+        Optional<List<OutputCard>> optionalInputCards = outputCardRepository.findAllByUserUuid(userUuid);
+        return optionalInputCards.map(categories -> categories.stream().map(this::outputCardToOutputCardDto)
+            .collect(Collectors.toList())).orElseGet(ArrayList::new);
+
+    }
+
+    private OutputCardDto outputCardToOutputCardDto(OutputCard outputCard) {
+        return modelMapper.map(outputCard, OutputCardDto.class);
+// TODO test
+    }
+
     private Bill changeSum(OutputCardDto outputCardDto, Bill bill) {
         if (outputCardDto.getCurrency().equals(Currency.USA)) {
             bill.setSumUsa(bill.getSumUsa() - outputCardDto.getSum());
@@ -59,8 +81,8 @@ public class OutputCardServiceImpl implements OutputCardService {
     private OutputCard getOutputCard(OutputCardDto outputCardDto) {
         OutputCard outputCard = OutputCard.builder()
             .deleted(false)
-            .subcategoryUuid(outputCardDto.getSubCategoryUuid())
-            .subcategoryName(outputCardDto.getSubCategoryName())
+            .subcategoryUuid(outputCardDto.getSubcategoryUuid())
+            .subcategoryName(outputCardDto.getSubcategoryName())
             .categoryUuid(outputCardDto.getCategoryUuid())
             .categoryName(outputCardDto.getCategoryName())
             .billName(outputCardDto.getBillName())

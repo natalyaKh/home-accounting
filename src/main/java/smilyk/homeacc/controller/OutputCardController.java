@@ -2,15 +2,14 @@ package smilyk.homeacc.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.model.Category;
 import smilyk.homeacc.model.Subcategory;
 import smilyk.homeacc.service.outputCard.OutputCardService;
 import smilyk.homeacc.service.validation.ValidatorService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("v1/output")
@@ -43,11 +42,17 @@ public class OutputCardController {
         }
         Category category = validatorService.checkCategory(outputCardDto.getCategoryName(), outputCardDto.getUserUuid());
         Subcategory subcategory = validatorService
-            .checkSubcategory(outputCardDto.getSubCategoryName(), outputCardDto.getUserUuid());
+            .checkSubcategory(outputCardDto.getSubcategoryName(), outputCardDto.getUserUuid());
         outputCardDto.setCategoryUuid(category.getCategoryUuid());
-        outputCardDto.setSubCategoryUuid(subcategory.getSubcategoryUuid());
+        outputCardDto.setSubcategoryUuid(subcategory.getSubcategoryUuid());
         return this.outputCardService.createInputCard(
             outputCardDto);
+    }
+
+    @GetMapping("/{userUuid}")
+    public List<OutputCardDto> getAllOutputCardsByUserUuid(@PathVariable String userUuid){
+//        TODO test
+        return this.outputCardService.getAllOutputCardsByUserUuid(userUuid);
     }
 
 }
