@@ -25,9 +25,9 @@ public class InputCardDto {
     String categoryName;
 
     @NotNull(message = "Subategory name cannot be null")
-    String subCategoryName;
+    String subcategoryName;
 
-    String subCategoryUuid;
+    String subcategoryUuid;
     String categoryUuid;
 
     @NotNull(message = "Currency cannot be null")

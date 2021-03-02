@@ -46,18 +46,34 @@ public class InputCardServiceImpl implements InputCardService {
     }
 
     private InputCard getInputCard(InputCardDto inputCardDto) {
-        return modelMapper.map(inputCardDto, InputCard.class);
+        return InputCard.builder()
+            .userUuid(inputCardDto.getUserUuid())
+            .inputCardUuid(utils.generateUserUuid().toString())
+            .deleted(false)
+            .subcategoryUuid(inputCardDto.getSubcategoryUuid())
+            .subcategoryName(inputCardDto.getSubcategoryName())
+            .billUuid(inputCardDto.getBillUuid())
+            .billName(inputCardDto.getBillName())
+            .categoryUuid(inputCardDto.getCategoryUuid())
+            .categoryName(inputCardDto.getCategoryName())
+            .count(inputCardDto.getCount())
+            .currency(inputCardDto.getCurrency())
+            .note(inputCardDto.getNote())
+            .sum(inputCardDto.getSum())
+            .unit(inputCardDto.getUnit())
+            .createCardDate(inputCardDto.getCreateCardDate())
+            .build();
     }
 
     private Bill changeSum(InputCardDto inputCardDto, Bill bill) {
         if (inputCardDto.getCurrency().equals(Currency.USA)) {
-            bill.setSumUsa(bill.getSumUsa() - inputCardDto.getSum());
+            bill.setSumUsa(bill.getSumUsa() + inputCardDto.getSum());
         }
         else if (inputCardDto.getCurrency().equals(Currency.ISR)) {
-            bill.setSumIsr(bill.getSumIsr() - inputCardDto.getSum());
+            bill.setSumIsr(bill.getSumIsr() + inputCardDto.getSum());
         }
         else if (inputCardDto.getCurrency().equals(Currency.UKR)) {
-            bill.setSumUkr(bill.getSumUkr() - inputCardDto.getSum());
+            bill.setSumUkr(bill.getSumUkr() + inputCardDto.getSum());
         }
         return bill;
     }

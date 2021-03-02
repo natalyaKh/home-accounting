@@ -30,17 +30,17 @@ public class InputCardController {
 //        if (outputCardDto.getDiscount() == null) {
 //            outputCardDto.setDiscount(0.0);
 //        }
-//        if (outputCardDto.getNote() == null) {
-//            outputCardDto.setNote("");
-//        }
-//        if (outputCardDto.getUnit() == null) {
-//            outputCardDto.setUnit("");
-//        }
+        if (inputCardDto.getNote() == null) {
+            inputCardDto.setNote("");
+        }
+        if (inputCardDto.getUnit() == null) {
+            inputCardDto.setUnit("");
+        }
         Category category = validatorService.checkCategory(inputCardDto.getCategoryName(), inputCardDto.getUserUuid());
         Subcategory subcategory = validatorService
-            .checkSubcategory(inputCardDto.getSubCategoryName(), inputCardDto.getUserUuid());
+            .checkSubcategory(inputCardDto.getSubcategoryName(), inputCardDto.getUserUuid());
         inputCardDto.setCategoryUuid(category.getCategoryUuid());
-        inputCardDto.setSubCategoryUuid(subcategory.getSubcategoryUuid());
+        inputCardDto.setSubcategoryUuid(subcategory.getSubcategoryUuid());
         return this.inputCardService.createInputCard(inputCardDto);
 
 //        TODO test
