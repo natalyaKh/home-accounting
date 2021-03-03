@@ -45,7 +45,7 @@ public class CategoryController {
 
     @PutMapping()
     public CategoryDto updateCategory(@RequestBody CategoryDto categoryDto){
-        validatorService.checkCategoryByNameForDeleted(categoryDto.getCategoryName(), categoryDto.getUserUuid());
+        validatorService.checkCategoryByNameForDeleted(categoryDto.getCategoryUuid(), categoryDto.getUserUuid());
         //        TODO test
         return categoryService.updateCategory(categoryDto);
     }
