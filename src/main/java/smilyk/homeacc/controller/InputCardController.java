@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import smilyk.homeacc.dto.InputCardDto;
-import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.model.Category;
 import smilyk.homeacc.model.Subcategory;
 import smilyk.homeacc.service.inputCard.InputCardService;

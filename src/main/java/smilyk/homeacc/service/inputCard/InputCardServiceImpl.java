@@ -9,12 +9,10 @@ import smilyk.homeacc.constants.BillConstants;
 import smilyk.homeacc.constants.InputCardConstant;
 import smilyk.homeacc.constants.OutputCardConstant;
 import smilyk.homeacc.dto.InputCardDto;
-import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
 import smilyk.homeacc.model.InputCard;
-import smilyk.homeacc.model.OutputCard;
 import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.repo.InputCardRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
@@ -80,8 +78,7 @@ public class InputCardServiceImpl implements InputCardService {
             throw new HomeaccException(OutputCardConstant.OUTPUT_CARD_WITH_UUID + inputCardUuid + " or "
                 + OutputCardConstant.OUTPUT_CARD + userUuid + OutputCardConstant.NOT_FOUND);
         }
-        InputCardDto inputCardDto = modelMapper.map(optionalInputCard.get(), InputCardDto.class);
-        return inputCardDto;
+        return modelMapper.map(optionalInputCard.get(), InputCardDto.class);
     }
 
     // TODO test
