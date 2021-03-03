@@ -18,4 +18,6 @@ public interface CategoryService {
     CategoryDto updateCategory(CategoryDto categoryDto);
 
     CategoryDto getCategoryByCategoryUuid(String categoryUuid);
+
+    Boolean getCategoryForValidationUniqueName(String userUuid, String categoryUuid);
 }

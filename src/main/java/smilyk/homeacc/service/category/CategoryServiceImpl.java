@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import smilyk.homeacc.constants.BillConstants;
 import smilyk.homeacc.constants.CategorySubcategoryConstant;
 import smilyk.homeacc.dto.CategoryDto;
 import smilyk.homeacc.model.Category;
@@ -87,6 +88,18 @@ public class CategoryServiceImpl implements CategoryService {
          return CategoryDto.builder().build();
      }
         return  modelMapper.map(optionalCategory.get(), CategoryDto.class);
+    }
+
+    @Override
+    public Boolean getCategoryForValidationUniqueName(String userUuid, String categoryName) {
+        Optional<Category> optionalCategory = categoryRepository.findByCategoryNameAndUserUuid(categoryName, userUuid);
+        if(optionalCategory.isPresent()){
+            LOGGER.info(CategorySubcategoryConstant.CATEGORY_WITH_NAME + categoryName
+                + CategorySubcategoryConstant.FOR_USER + userUuid + CategorySubcategoryConstant.EXISTS);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     private CategoryDto categoryToCategoryDto(Category category) {

@@ -10,4 +10,5 @@ public class CategorySubcategoryConstant {
     public static final String NOT_FOUND = " not found in DB ";
     public static final String DELETED = " deleted ";
     public static final String UPDATED = " updated ";
+    public static final String FOR_USER = " for user: ";
 }

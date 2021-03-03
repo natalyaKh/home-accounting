@@ -49,4 +49,8 @@ public class CategoryController {
         //        TODO test
         return categoryService.updateCategory(categoryDto);
     }
+    @GetMapping("/valid/{categoryUuid}/{userUuid}")
+    public Boolean getUserByUserEmail(@PathVariable String categoryUuid, @PathVariable String userUuid){
+        return categoryService.getCategoryForValidationUniqueName(userUuid, categoryUuid);
+    }
 }
