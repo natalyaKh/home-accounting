@@ -10,4 +10,6 @@ public interface InputCardService {
     List<InputCardDto> getAllInputCardsByUserUuid(String userUuid);
 
     InputCardDto deleteInputCard(String inputCardUuid);
+
+    InputCardDto getInputCardByUuid(String userUuid, String inputCardUuid);
 }

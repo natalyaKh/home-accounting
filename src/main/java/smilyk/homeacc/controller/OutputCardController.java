@@ -58,7 +58,6 @@ public class OutputCardController {
     @GetMapping("/{userUuid}/{outputCardUuid}")
     public OutputCardDto getOutputCardByUuid(@PathVariable String userUuid, @PathVariable String outputCardUuid){
 //       TODO test
-        OutputCardDto x = this.outputCardService.getOutputCardByUuid(userUuid, outputCardUuid);
         return this.outputCardService.getOutputCardByUuid(userUuid, outputCardUuid);
     }
 

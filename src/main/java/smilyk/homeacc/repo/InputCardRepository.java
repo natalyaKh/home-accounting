@@ -10,4 +10,6 @@ public interface InputCardRepository extends JpaRepository<InputCard, Long> {
     Optional<List<InputCard>> findAllByUserUuid(String userUuid);
 
     Optional<InputCard> findByInputCardUuid(String inputCardUuid);
+
+    Optional<InputCard> findByUserUuidAndInputCardUuid(String userUuid, String inputCardUuid);
 }

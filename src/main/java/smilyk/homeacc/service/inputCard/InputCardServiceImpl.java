@@ -7,10 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import smilyk.homeacc.constants.BillConstants;
 import smilyk.homeacc.constants.InputCardConstant;
+import smilyk.homeacc.constants.OutputCardConstant;
 import smilyk.homeacc.dto.InputCardDto;
+import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.enums.Currency;
+import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
 import smilyk.homeacc.model.InputCard;
+import smilyk.homeacc.model.OutputCard;
 import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.repo.InputCardRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
@@ -63,6 +67,21 @@ public class InputCardServiceImpl implements InputCardService {
         inputCardRepository.delete(optionalInputCard.get());
         LOGGER.info(InputCardConstant.INPUT_CARD_WITH_UUID + inputCardUuid + InputCardConstant.DELETED);
         return modelMapper.map(optionalInputCard.get(), InputCardDto.class);
+    }
+
+    @Override
+    public InputCardDto getInputCardByUuid(String userUuid, String inputCardUuid) {
+        //        TODO test
+        Optional<InputCard> optionalInputCard = inputCardRepository.findByUserUuidAndInputCardUuid(
+            userUuid, inputCardUuid);
+        if(!optionalInputCard.isPresent()){
+            LOGGER.error(OutputCardConstant.INPUT_CARD_WITH_UUID + inputCardUuid + " or "
+                + OutputCardConstant.INPUT_CARD + userUuid + OutputCardConstant.NOT_FOUND);
+            throw new HomeaccException(OutputCardConstant.OUTPUT_CARD_WITH_UUID + inputCardUuid + " or "
+                + OutputCardConstant.OUTPUT_CARD + userUuid + OutputCardConstant.NOT_FOUND);
+        }
+        InputCardDto inputCardDto = modelMapper.map(optionalInputCard.get(), InputCardDto.class);
+        return inputCardDto;
     }
 
     // TODO test
