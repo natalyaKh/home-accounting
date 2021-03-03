@@ -12,4 +12,6 @@ public interface OutputCardRepository extends JpaRepository<OutputCard, Long> {
     Optional<List<OutputCard>> findAllByUserUuid(String userUuid);
 
     Optional<OutputCard> findByOutputCardUuid(String outputCardUuid);
+
+    Optional<OutputCard> findByUserUuidAndOutputCardUuid(String userUuid, String outputCardUuid);
 }

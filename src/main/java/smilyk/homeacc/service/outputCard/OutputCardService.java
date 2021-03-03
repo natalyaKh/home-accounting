@@ -11,4 +11,6 @@ public interface OutputCardService {
     List<OutputCardDto> getAllOutputCardsByUserUuid(String userUuid);
 
     OutputCardDto deleteOutputCard(String outputCardUuid);
+
+    OutputCardDto getOutputCardByUuid(String userUuid, String outputCardUuid);
 }

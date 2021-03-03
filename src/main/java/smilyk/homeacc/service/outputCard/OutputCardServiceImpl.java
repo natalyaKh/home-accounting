@@ -10,6 +10,7 @@ import smilyk.homeacc.constants.OutputCardConstant;
 import smilyk.homeacc.dto.InputCardDto;
 import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.enums.Currency;
+import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
 import smilyk.homeacc.model.InputCard;
 import smilyk.homeacc.model.OutputCard;
@@ -59,6 +60,21 @@ public class OutputCardServiceImpl implements OutputCardService {
         return optionalInputCards.map(categories -> categories.stream().map(this::outputCardToOutputCardDto)
             .collect(Collectors.toList())).orElseGet(ArrayList::new);
 
+    }
+
+    @Override
+    public OutputCardDto getOutputCardByUuid(String userUuid, String outputCardUuid) {
+//        TODO test
+        Optional<OutputCard> optionalOutputCard = outputCardRepository.findByUserUuidAndOutputCardUuid(
+            userUuid, outputCardUuid);
+        if(!optionalOutputCard.isPresent()){
+            LOGGER.error(OutputCardConstant.OUTPUT_CARD_WITH_UUID + outputCardUuid + " or "
+            + OutputCardConstant.OUTPUT_CARD + userUuid + OutputCardConstant.NOT_FOUND);
+            throw new HomeaccException(OutputCardConstant.OUTPUT_CARD_WITH_UUID + outputCardUuid + " or "
+                + OutputCardConstant.OUTPUT_CARD + userUuid + OutputCardConstant.NOT_FOUND);
+        }
+        OutputCardDto outputCardDto = modelMapper.map(optionalOutputCard.get(), OutputCardDto.class);
+        return outputCardDto;
     }
 
     @Override

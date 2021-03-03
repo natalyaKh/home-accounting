@@ -55,11 +55,20 @@ public class OutputCardController {
         return this.outputCardService.getAllOutputCardsByUserUuid(userUuid);
     }
 
+    @GetMapping("/{userUuid}/{outputCardUuid}")
+    public OutputCardDto getOutputCardByUuid(@PathVariable String userUuid, @PathVariable String outputCardUuid){
+//       TODO test
+        OutputCardDto x = this.outputCardService.getOutputCardByUuid(userUuid, outputCardUuid);
+        return this.outputCardService.getOutputCardByUuid(userUuid, outputCardUuid);
+    }
+
     @DeleteMapping("/{outputCardUuid}")
     public OutputCardDto deleteOutputCard(@PathVariable String outputCardUuid){
         validatorService.checkOutputForDeleted(outputCardUuid);
 //        TODO test
         return this.outputCardService.deleteOutputCard(outputCardUuid);
     }
+
+
 
 }
