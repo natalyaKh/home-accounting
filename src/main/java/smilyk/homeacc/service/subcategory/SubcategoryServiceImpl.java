@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import smilyk.homeacc.constants.CategorySubcategoryConstant;
 import smilyk.homeacc.dto.SubcategoryDto;
+import smilyk.homeacc.model.Category;
 import smilyk.homeacc.model.Subcategory;
 import smilyk.homeacc.repo.SubcategoryRepository;
 import smilyk.homeacc.service.user.UserServiceImpl;
@@ -81,8 +82,8 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     @Override
     public SubcategoryDto updateSubcategory(SubcategoryDto subcategoryDto) {
         //        TODO test
-        Subcategory subcategory = subcategoryRepository.findBySubcategoryNameAndUserUuid(
-            subcategoryDto.getSubcategoryName(), subcategoryDto.getUserUuid()
+        Subcategory subcategory = subcategoryRepository.findBySubcategoryUuidAndUserUuid(
+            subcategoryDto.getSubcategoryUuid(), subcategoryDto.getUserUuid()
         ).get();
         subcategory.setSubcategoryName(subcategoryDto.getSubcategoryName());
         subcategory.setDescription(subcategoryDto.getDescription());
@@ -90,6 +91,19 @@ public class SubcategoryServiceImpl implements SubcategoryService {
         LOGGER.info(CategorySubcategoryConstant.SUBCATEGORY_WITH_UUID + savedSubcategory.getSubcategoryUuid()
             + CategorySubcategoryConstant.UPDATED);
         return modelMapper.map(savedSubcategory, SubcategoryDto.class);
+    }
+
+    @Override
+    public Boolean getSubcategoryForValidationUniqueName(String userUuid, String subcategoryName) {
+        Optional<Subcategory> optionalSubcategory = subcategoryRepository.findBySubcategoryNameAndUserUuid(
+            subcategoryName, userUuid);
+        if(optionalSubcategory.isPresent()){
+            LOGGER.info(CategorySubcategoryConstant.SUBCATEGORY_WITH_NAME + subcategoryName
+                + CategorySubcategoryConstant.FOR_USER + userUuid + CategorySubcategoryConstant.EXISTS);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     private SubcategoryDto subcategoryToSubcategoryDto(Subcategory subcategory) {

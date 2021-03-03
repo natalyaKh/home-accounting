@@ -156,9 +156,9 @@ public class ValidatorServiceImpl implements ValidatorService {
     }
 
     @Override
-    public void checkSubcategoryByNameForDeleted(String subcategoryUuid, String userUuid) {
+    public void checkSubcategoryByUuidForDeleted(String subcategoryUuid, String userUuid) {
         Optional<Subcategory> subcategoryOptional = subcategoryRepository
-            .findBySubcategoryNameAndUserUuid(subcategoryUuid, userUuid);
+            .findBySubcategoryUuidAndUserUuid(subcategoryUuid, userUuid);
         if(!subcategoryOptional.isPresent()){
             LOGGER.error(CategorySubcategoryConstant.SUBCATEGORY_WITH_UUID + subcategoryUuid
                 + CategorySubcategoryConstant.NOT_FOUND);

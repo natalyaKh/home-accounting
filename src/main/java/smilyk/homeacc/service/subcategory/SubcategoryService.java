@@ -17,4 +17,6 @@ public interface SubcategoryService {
     SubcategoryDto deleteSubcategoryBySubcategoryUuid(String subcategoryUuid);
 
     SubcategoryDto updateSubcategory(SubcategoryDto subcategoryDto);
+
+    Boolean getSubcategoryForValidationUniqueName(String userUuid, String subcategoryName);
 }

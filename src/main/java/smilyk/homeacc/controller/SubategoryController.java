@@ -38,15 +38,20 @@ public class SubategoryController {
 
     @DeleteMapping("/{subcategoryUuid}/{userUuid}")
     public SubcategoryDto deleteSubcategory(@PathVariable String subcategoryUuid, @PathVariable String userUuid){
-        validatorService.checkSubcategoryByNameForDeleted(subcategoryUuid, userUuid);
+        validatorService.checkSubcategoryByUuidForDeleted(subcategoryUuid, userUuid);
         //        TODO test
         return subcategoryService.deleteSubcategoryBySubcategoryUuid(subcategoryUuid);
     }
 
     @PutMapping()
     public SubcategoryDto updateSubcategory(@RequestBody SubcategoryDto subcategoryDto){
-        validatorService.checkCategoryByNameForDeleted(subcategoryDto.getSubcategoryName(), subcategoryDto.getUserUuid());
+        validatorService.checkSubcategoryByUuidForDeleted(subcategoryDto.getSubcategoryUuid(), subcategoryDto.getUserUuid());
         //        TODO test
         return subcategoryService.updateSubcategory(subcategoryDto);
+    }
+
+    @GetMapping("/valid/{subcategoryName}/{userUuid}")
+    public Boolean getSubcategoryForValid(@PathVariable String subcategoryName, @PathVariable String userUuid){
+        return subcategoryService.getSubcategoryForValidationUniqueName(userUuid, subcategoryName);
     }
 }

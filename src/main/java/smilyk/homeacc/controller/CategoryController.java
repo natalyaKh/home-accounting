@@ -50,7 +50,7 @@ public class CategoryController {
         return categoryService.updateCategory(categoryDto);
     }
     @GetMapping("/valid/{categoryUuid}/{userUuid}")
-    public Boolean getUserByUserEmail(@PathVariable String categoryUuid, @PathVariable String userUuid){
+    public Boolean getCategoryForValid(@PathVariable String categoryUuid, @PathVariable String userUuid){
         return categoryService.getCategoryForValidationUniqueName(userUuid, categoryUuid);
     }
 }
