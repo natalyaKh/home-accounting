@@ -7,12 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import smilyk.homeacc.constants.BillConstants;
 import smilyk.homeacc.constants.OutputCardConstant;
-import smilyk.homeacc.dto.InputCardDto;
 import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.enums.Currency;
 import smilyk.homeacc.exceptions.HomeaccException;
 import smilyk.homeacc.model.Bill;
-import smilyk.homeacc.model.InputCard;
 import smilyk.homeacc.model.OutputCard;
 import smilyk.homeacc.repo.BillRepository;
 import smilyk.homeacc.repo.OutputCardRepository;
@@ -20,6 +18,7 @@ import smilyk.homeacc.service.user.UserServiceImpl;
 import smilyk.homeacc.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -73,8 +72,13 @@ public class OutputCardServiceImpl implements OutputCardService {
             throw new HomeaccException(OutputCardConstant.OUTPUT_CARD_WITH_UUID + outputCardUuid + " or "
                 + OutputCardConstant.OUTPUT_CARD + userUuid + OutputCardConstant.NOT_FOUND);
         }
-        OutputCardDto outputCardDto = modelMapper.map(optionalOutputCard.get(), OutputCardDto.class);
-        return outputCardDto;
+        return modelMapper.map(optionalOutputCard.get(), OutputCardDto.class);
+    }
+
+    @Override
+    public List<OutputCard> getAllOutputCardsByUserAndDate(String userUuid, Date chosenDate) {
+        String date = chosenDate.toInstant().toString();
+        return outputCardRepository.getListOutputCatdsByUserAndDate(userUuid, date);
     }
 
     @Override

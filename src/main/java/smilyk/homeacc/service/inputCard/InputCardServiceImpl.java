@@ -19,6 +19,7 @@ import smilyk.homeacc.service.user.UserServiceImpl;
 import smilyk.homeacc.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -79,6 +80,12 @@ public class InputCardServiceImpl implements InputCardService {
                 + OutputCardConstant.OUTPUT_CARD + userUuid + OutputCardConstant.NOT_FOUND);
         }
         return modelMapper.map(optionalInputCard.get(), InputCardDto.class);
+    }
+
+    @Override
+    public List<InputCard> getAllInputCardsByUserUuidAndDate(String userUuid, Date chosenDate) {
+        String date = chosenDate.toInstant().toString();
+        return inputCardRepository.getListInputsCardByUserAndDate(userUuid, date);
     }
 
     // TODO test
