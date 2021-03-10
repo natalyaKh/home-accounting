@@ -60,8 +60,8 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
             ;
 
         return new ApiInfoBuilder()
-            .title("Test Work")
-            .description("Spring Boot REST API with SpringTokenSecurity autorization")
+            .title("Home Accounting ver2")
+            .description("Spring Boot REST API with SpringTokenSecurity authorization")
             .version("1.0.0")
             .license("Apache License Version 2.0")
             .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0\"")
