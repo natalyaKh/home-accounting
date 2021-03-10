@@ -137,6 +137,11 @@ public class UserServiceImpl implements UserService {
             throw new HomeaccException(UserConstants.USER_WITH_EMAIL + email + UserConstants.NOT_FOUND);
         }
         User userEntity = userOptional.get();
+        Boolean confirmEmail = userEntity.getEmailVerificationStatus();
+        if(!confirmEmail){
+            LOGGER.error(UserConstants.USER_WITH_EMAIL + userEntity.getEmail() + UserConstants.NOT_CONFIRM_EMAIL);
+            throw new HomeaccException(UserConstants.CONFIRM_EMAIL + userEntity.getEmail());
+        }
         UserDto returnValue = new UserDto();
         BeanUtils.copyProperties(userEntity, returnValue);
         return returnValue;
@@ -177,6 +182,12 @@ public class UserServiceImpl implements UserService {
            throw new HomeaccException(UserConstants.USER_WITH_EMAIL + email + UserConstants.NOT_FOUND);
        }
        User userEntity = userOptional.get();
+//       return new org.springframework.security.core.userdetails.User(
+//           userEntity.getEmail(), userEntity.getEncryptedPassword(),
+//           userEntity.getEmailVerificationStatus(),
+//           true, true,
+//           true, new ArrayList<>()
+//       );
         return new org.springframework.security.core.userdetails.User(userEntity.getEmail(),
                 userEntity.getEncryptedPassword(), new ArrayList<>());
     }

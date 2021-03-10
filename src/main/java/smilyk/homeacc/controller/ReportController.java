@@ -13,7 +13,7 @@ public class ReportController {
     @Autowired
     ReportService reportService;
 
-    @GetMapping("/last/{userUuid}")
+    @PostMapping("/last/{userUuid}")
     public List<LastOperationsDto> getUserByUserEmail(@RequestBody LastOperationsRequestDto dto,
                                                       @PathVariable String userUuid){
         return reportService.getAllLastOperations(dto, userUuid);

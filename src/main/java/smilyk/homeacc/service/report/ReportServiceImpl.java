@@ -69,6 +69,7 @@ public class ReportServiceImpl implements ReportService {
             .sum(inputCard.getSum())
             .operationUuid(inputCard.getInputCardUuid())
             .type(CategoryType.INPUT)
+            .currency(inputCard.getCurrency().name())
             .build();
     }
 
@@ -82,6 +83,7 @@ public class ReportServiceImpl implements ReportService {
             .sum(outputCard.getSum())
             .operationUuid(outputCard.getOutputCardUuid())
             .type(CategoryType.OUTPUT)
+            .currency(outputCard.getCurrency().name())
             .build();
     }
 

@@ -21,4 +21,5 @@ public class LastOperationsDto {
     String description;
     Double sum;
     String operationUuid;
+    String currency;
 }

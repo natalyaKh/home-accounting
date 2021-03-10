@@ -15,6 +15,8 @@ public class UserConstants {
     public static final String USERS_LIST = " list of all users returned. ";
     public static final String DELETED = " was deleted from db ";
     public static final String SAVED = " was saved";
-    public static final String USER_WITH_EMAIL = "user with provided email";
+    public static final String USER_WITH_EMAIL = "user with provided email: ";
     public static final String EXISTS = " exists";
+    public static final String CONFIRM_EMAIL = " You should confirm yor email. The letter was send to email: ";
+    public static final String NOT_CONFIRM_EMAIL = " did not confirm his email";
 }
