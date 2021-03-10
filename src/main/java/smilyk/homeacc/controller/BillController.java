@@ -30,7 +30,7 @@ public class BillController {
      * @param billDto
      * @return billDto
      */
-
+    @RequestMapping(value = "ADD BILL", method = RequestMethod.POST, produces = "application/json")
     @PostMapping
     //checked
     //    front +

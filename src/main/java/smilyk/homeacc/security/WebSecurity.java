@@ -37,6 +37,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.GET, SecurityConstants.CHECK_USER_FOR_VALIDATION)
                 .permitAll()
+            .antMatchers( "/v2/api-docs",
+                "/swagger-resources/**",
+                "/swagger-ui.html",
+                "/webjars/**")
+            .permitAll()
                 .anyRequest().authenticated()
         .and()
                 .addFilter(getAuthenticationFilter())
