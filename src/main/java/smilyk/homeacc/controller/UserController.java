@@ -1,6 +1,7 @@
 package smilyk.homeacc.controller;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,8 @@ public class UserController {
      * @param userDto
      * @return userDto
      */
-    //checked
+
+    @ApiOperation(value = "Create user", response = UserDto.class)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public UserDto createUser(@Validated @RequestBody UserDto userDto) throws MessagingException {
@@ -55,6 +57,7 @@ public class UserController {
      * @return userDto
      */
 //checked
+    @ApiOperation(value = "Search user by his uuid", response = UserDto.class)
     @GetMapping("/{userUuid}")
     public UserDto getUserByUuid(@PathVariable String userUuid) {
         return userService.getUserByUserUuid(userUuid);
@@ -65,7 +68,8 @@ public class UserController {
      *
      * @return List<userDto>
      */
-    //checked
+
+    @ApiOperation(value = "View a list of users")
     @GetMapping()
     public List<UserDto> getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
                                   @RequestParam(value = "limit", defaultValue = "2") int limit) {
@@ -83,7 +87,8 @@ public class UserController {
      * @param userUuid
      * @return SUCCESS or ERROR
      */
-//    checked
+
+    @ApiOperation(value = "Delete user")
     @DeleteMapping("/{userUuid}")
     public OperationStatuDto deleteUser(@PathVariable String userUuid) {
         OperationStatuDto returnValue = new OperationStatuDto();
@@ -102,6 +107,7 @@ public class UserController {
      * http://localhost:8082/user/email-verification?token=sdfsdf
      */
 
+    @ApiOperation(value = "check if email confirm")
     @GetMapping(path = "/email-verification")
     public OperationStatuDto verifyEmailToken(@RequestParam(value = "token") String token) {
         OperationStatuDto returnValue = new OperationStatuDto();
@@ -121,9 +127,10 @@ public class UserController {
      * @param email
      * return True or False
      */
-    @GetMapping("/valid/{email}")
-    public Boolean getUserByUserEmail(@PathVariable String email){
-        return userService.getUserByEmailForValidation(email);
-    }
+
+//    @GetMapping("/valid/{email}")
+//    public Boolean getUserByUserEmail(@PathVariable String email){
+//        return userService.getUserByEmailForValidation(email);
+//    }
 
 }

@@ -1,6 +1,7 @@
 package smilyk.homeacc.controller;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -28,11 +29,9 @@ public class BillController {
     @Autowired
     ValidatorService validatorService;
 
+    @ApiOperation(value = "Create bill", response = BillDto.class)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    //checked
-    //    front +
-
     public BillDto createBill(@Validated @RequestBody BillDto billDto) {
 
         validatorService.checkUniqueBill(billDto.getBillName());
@@ -61,15 +60,15 @@ public class BillController {
      * @param billName
      * @return BillDto
      */
-    //checked
-    //    front +
+
+    @ApiOperation(value = "Search a bill by bills name and user Uuid", response = BillDto.class)
     @GetMapping("/{billName}/{userUuid}")
     public BillDto getBillByBillName(@PathVariable String billName, @PathVariable String userUuid) {
         return billService.getBillByBillName(billName, userUuid);
     }
 
-    //checked
-    //    front +
+
+    @ApiOperation(value = "View a list of all bills by user")
     @GetMapping("/allBills/{userUuid}")
     public List<BillDto> getAllBillsByUserUuid(@PathVariable String userUuid) {
         return billService.getAllBillsByUser(userUuid);
@@ -80,7 +79,7 @@ public class BillController {
      * @param billsCurrency
      * @return List<BillDto>
      */
-    //checked
+    @ApiOperation(value = "View a list of all bills by user and currency")
     @GetMapping("/allBills/{userUuid}/{billsCurrency}")
     public List<BillDto> getAllBillsByUserUuidAndCurrency(@PathVariable String userUuid,
                                                           @PathVariable String billsCurrency) {
@@ -95,7 +94,7 @@ public class BillController {
      * @return BillDto
      */
 //    checked
-
+    @ApiOperation(value = "Change main bill by user", response = BillDto.class)
     @PutMapping("/{billName}/{userUuid}")
     public BillDto changeMailBill(@PathVariable String billName, @PathVariable String userUuid) {
         validatorService.checkBill(billName);
@@ -103,6 +102,8 @@ public class BillController {
         return billService.changeMailBill(billName);
     }
 
+    @ApiOperation(value = "Transfer money from bill to another bill ",
+        response = TransferResourcesResponseDto.class)
     @PutMapping()
     public TransferResourcesResponseDto transferResources(@Validated @RequestBody TransferResourcesBetweenBillsDto transferDto) {
 //            validatorService.checkBillByUserAndCurrency(transferDto.getBillNameFrom(), transferDto.getUserUuid(),
@@ -121,6 +122,7 @@ public class BillController {
      */
     //checked
     //    front +
+    @ApiOperation(value = "Delete a bill")
     @DeleteMapping("/{billName}/{userUuid}")
     public OperationStatuDto deleteBill(@PathVariable String billName, @PathVariable String userUuid) {
         validatorService.checkBillByUser(billName, userUuid);
@@ -140,6 +142,7 @@ public class BillController {
      * return True or False
      */
 //    front +
+    @ApiOperation(value = "Search a user with an email")
     @GetMapping("/valid/{billName}/{userUuid}")
     public Boolean getUserByUserEmail(@PathVariable String billName, @PathVariable String userUuid){
         return billService.getBillByNameForValidation(billName, userUuid);

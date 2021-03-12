@@ -1,6 +1,7 @@
 package smilyk.homeacc.controller;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ public class ReportController {
     @Autowired
     ReportService reportService;
 
+    @ApiOperation(value = "Search last operations by user")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/last/{userUuid}")
     public List<LastOperationsDto> getUserByUserEmail(@RequestBody LastOperationsRequestDto dto,

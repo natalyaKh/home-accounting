@@ -1,10 +1,12 @@
 package smilyk.homeacc.controller;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import smilyk.homeacc.dto.InputCardDto;
 import smilyk.homeacc.dto.OutputCardDto;
 import smilyk.homeacc.model.Category;
 import smilyk.homeacc.model.Subcategory;
@@ -30,6 +32,7 @@ public class OutputCardController {
      * @param outputCardDto
      * @return inputCardDto
      */
+    @ApiOperation(value = "Create output card by user", response = OutputCardDto.class)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public OutputCardDto createOutputCard(@Validated @RequestBody OutputCardDto outputCardDto) {
@@ -54,18 +57,21 @@ public class OutputCardController {
             outputCardDto);
     }
 
+    @ApiOperation(value = "View a list of all output cards by user")
     @GetMapping("/{userUuid}")
     public List<OutputCardDto> getAllOutputCardsByUserUuid(@PathVariable String userUuid){
 //        TODO test
         return this.outputCardService.getAllOutputCardsByUserUuid(userUuid);
     }
 
+    @ApiOperation(value = "Search poutput card", response = OutputCardDto.class)
     @GetMapping("/{userUuid}/{outputCardUuid}")
     public OutputCardDto getOutputCardByUuid(@PathVariable String userUuid, @PathVariable String outputCardUuid){
 //       TODO test
         return this.outputCardService.getOutputCardByUuid(userUuid, outputCardUuid);
     }
 
+    @ApiOperation(value = "Delete output card", response = OutputCardDto.class)
     @DeleteMapping("/{outputCardUuid}")
     public OutputCardDto deleteOutputCard(@PathVariable String outputCardUuid){
         validatorService.checkOutputForDeleted(outputCardUuid);
