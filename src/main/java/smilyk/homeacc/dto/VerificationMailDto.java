@@ -1,6 +1,5 @@
 package smilyk.homeacc.dto;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 @AllArgsConstructor
