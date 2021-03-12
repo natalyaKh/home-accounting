@@ -4,15 +4,18 @@ package smilyk.homeacc.exceptions;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+
 
 
 @RestControllerAdvice
@@ -39,16 +42,15 @@ public class AppExceptionsHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> hangleValidatorException(MethodArgumentNotValidException ex, WebRequest request){
         BindingResult result = ex.getBindingResult();
-        final String[] message = {""};
-
-            result.getAllErrors().forEach(error -> {
+        String message = "";
+        for (ObjectError error : result.getAllErrors()) {
             String field = error instanceof FieldError ? ((FieldError) error).getField() :
                 error.getObjectName();
-             message[0] = error.getDefaultMessage();
-        });
+            message = error.getDefaultMessage();
+        }
         ErrorMessage errorMessage = new ErrorMessage(new Date(),
-            message[0]);
-        return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.resolve(000));
+            message);
+        return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.SEE_OTHER);
     }
 
 }

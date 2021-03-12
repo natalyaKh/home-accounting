@@ -1,5 +1,6 @@
 package smilyk.homeacc.exceptions;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class ErrorMessage {
