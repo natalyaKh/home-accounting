@@ -1,5 +1,6 @@
 package smilyk.homeacc.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 @AllArgsConstructor
@@ -8,6 +9,7 @@ import lombok.*;
 @Setter
 @Builder
 public class VerificationMailDto {
+
     String tokenValue;
     String userName;
     String userLastName;
