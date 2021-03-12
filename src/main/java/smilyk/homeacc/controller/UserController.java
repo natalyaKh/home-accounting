@@ -121,5 +121,4 @@ public class UserController {
         return userService.getUserByEmailForValidation(email);
     }
 
-
 }

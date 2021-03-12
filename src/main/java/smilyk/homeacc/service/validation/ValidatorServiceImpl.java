@@ -60,7 +60,7 @@ public class ValidatorServiceImpl implements ValidatorService {
         Optional<User> user = userRepository.findByEmailAndDeleted(email, false);
         if (!user.isEmpty()) {
             LOGGER.error(ValidatorConstants.NOT_UNIQUE_USER + email);
-            throw new HomeaccException(ValidatorConstants.NOT_UNIQUE_USER + email);
+            throw new HomeaccException(ValidatorConstants.NOT_UNIQUE_USER);
         }
     }
 
