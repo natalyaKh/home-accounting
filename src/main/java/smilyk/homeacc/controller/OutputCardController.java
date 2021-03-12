@@ -1,6 +1,7 @@
 package smilyk.homeacc.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import smilyk.homeacc.dto.OutputCardDto;
@@ -26,6 +27,7 @@ public class OutputCardController {
      * @param outputCardDto
      * @return inputCardDto
      */
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public OutputCardDto createOutputCard(@Validated @RequestBody OutputCardDto outputCardDto) {
         validatorService.checkBillByUser(outputCardDto.getBillName(), outputCardDto.getUserUuid());

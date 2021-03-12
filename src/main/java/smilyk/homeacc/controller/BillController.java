@@ -93,6 +93,7 @@ public class BillController {
      * @return BillDto
      */
 //    checked
+
     @PutMapping("/{billName}/{userUuid}")
     public BillDto changeMailBill(@PathVariable String billName, @PathVariable String userUuid) {
         validatorService.checkBill(billName);

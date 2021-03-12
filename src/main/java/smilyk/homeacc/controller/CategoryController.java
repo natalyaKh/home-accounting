@@ -1,6 +1,7 @@
 package smilyk.homeacc.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import smilyk.homeacc.dto.CategoryDto;
 import smilyk.homeacc.service.category.CategoryService;
@@ -17,6 +18,7 @@ public class CategoryController {
     @Autowired
     ValidatorService validatorService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public CategoryDto createCategory(@RequestBody CategoryDto categoryDto){
         //        TODO test

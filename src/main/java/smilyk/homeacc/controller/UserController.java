@@ -2,6 +2,7 @@ package smilyk.homeacc.controller;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import smilyk.homeacc.dto.OperationStatuDto;
@@ -37,6 +38,7 @@ public class UserController {
      * @return userDto
      */
     //checked
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
     public UserDto createUser(@Validated @RequestBody UserDto userDto) throws MessagingException {
         validatorService.checkUserUnique(userDto.getEmail());
