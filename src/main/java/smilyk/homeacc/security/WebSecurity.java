@@ -28,26 +28,28 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
-                .csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
-                .permitAll()
-                .antMatchers(HttpMethod.GET, SecurityConstants.CHECK_HEALTH)
-                .permitAll()
-                .antMatchers(HttpMethod.GET, SecurityConstants.VERIFICATION_EMAIL)
-                .permitAll()
-                .antMatchers(HttpMethod.GET, SecurityConstants.CHECK_USER_FOR_VALIDATION)
-                .permitAll()
-            .antMatchers( "/v2/api-docs",
+            .csrf().disable().authorizeRequests()
+            .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
+            .permitAll()
+            .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL2)
+            .permitAll()
+            .antMatchers(HttpMethod.GET, SecurityConstants.CHECK_HEALTH)
+            .permitAll()
+            .antMatchers(HttpMethod.GET, SecurityConstants.VERIFICATION_EMAIL)
+            .permitAll()
+            .antMatchers(HttpMethod.GET, SecurityConstants.CHECK_USER_FOR_VALIDATION)
+            .permitAll()
+            .antMatchers("/v2/api-docs",
                 "/swagger-resources/**",
                 "/swagger-ui.html",
                 "/webjars/**")
             .permitAll()
-                .anyRequest().authenticated()
-        .and()
-                .addFilter(getAuthenticationFilter())
-        .addFilter(new AuthorizationFilter(authenticationManager()))
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .anyRequest().authenticated()
+            .and()
+            .addFilter(getAuthenticationFilter())
+            .addFilter(new AuthorizationFilter(authenticationManager()))
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     /**
@@ -71,6 +73,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
         return source;
     }
+
     /**
      * логин пользователя теперь по ссылке ...v1/user/login
      * change user login link to ...v1/user/login

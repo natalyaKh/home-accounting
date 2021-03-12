@@ -8,6 +8,7 @@ public class SecurityConstants {
 //    public static final long EXPIRATION_TIME =600000; //tmp for test
     public static final long EXPIRATION_TIME = 864000000; // 10 days;
     public static final String SIGN_UP_URL = "/v1/user/";
+    public static final String SIGN_UP_URL2 = "/v1/user";
     public static final String CHECK_HEALTH ="/ping" ;
     public static final String VERIFICATION_EMAIL = "/v1/user/email-verification";
     public static final String CHECK_USER_FOR_VALIDATION = "/v1/user/valid/**";
