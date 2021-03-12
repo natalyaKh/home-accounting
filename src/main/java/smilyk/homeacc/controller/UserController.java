@@ -1,5 +1,6 @@
 package smilyk.homeacc.controller;
 
+import io.swagger.annotations.Api;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,8 @@ import java.lang.reflect.Type;
 import org.modelmapper.TypeToken;
 
 @RestController
+@Api( value = "home-accounting" , description = "Operations pertaining to users in HomeAccounting" )
+
 @RequestMapping("v1/user")
 
 public class UserController {

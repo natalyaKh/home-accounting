@@ -1,5 +1,6 @@
 package smilyk.homeacc.controller;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,7 @@ import smilyk.homeacc.service.validation.ValidatorService;
 import java.util.List;
 
 @RestController
+@Api( value = "home-accounting" , description = "Operations pertaining to bills in HomeAccounting" )
 @RequestMapping("v1/bill")
 public class BillController {
 
